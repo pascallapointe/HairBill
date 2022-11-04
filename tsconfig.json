@@ -8,7 +8,8 @@
     "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
     "target": "esnext",
     "paths": {
-      "@components/*": ["src/components/*"]
+      "@components/*": ["src/components/*"],
+      "@views/*": ["src/views/*"]
     }
   }
 }
