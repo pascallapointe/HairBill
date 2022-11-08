@@ -1,48 +1,61 @@
-import React, { useEffect } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NativeBaseProvider } from 'native-base';
-import AuthView from '@views/auth';
-import HomeView from '@views/home';
+import React, { useEffect, useState } from 'react';
+import AuthNavigation from '@views/auth-navigation';
+import AppNavigation from '@views/app-navigation';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 
-const Stack = createNativeStackNavigator();
+const changeLocale = async (value: string) => {
+  try {
+    await AsyncStorage.setItem('locale', value);
+  } catch (e) {
+    // saving error
+  }
+};
 
 const App = () => {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
+  // Set an initializing state whilst Firebase connects
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
 
-  const setLocale = async () => {
+  // Handle user state changes
+  function onAuthStateChanged(fbUser: FirebaseAuthTypes.User | null) {
+    console.log('Auth changed: ', user ? user.email : 'NULL');
+    setUser(fbUser);
+
+    if (initializing) {
+      setInitializing(false);
+    }
+  }
+
+  // Fetch user preferred locale
+  const handleLocale = async (): Promise<void> => {
     try {
-      const locale = await AsyncStorage.getItem('@storage_Key');
-      await i18n.changeLanguage(locale ? locale : 'en');
+      const storedLocale = (await AsyncStorage.getItem('locale')) || 'en';
+      await i18n.changeLanguage(storedLocale);
     } catch (e) {
       console.log(e);
     }
   };
 
   useEffect(() => {
-    setLocale();
-  });
+    // auth()
+    //   .signInWithEmailAndPassword('pascal.lapointe@hotmail.com', 'testtesttest')
+    //   .then(cred => console.log('Signed In!'))
+    //   .catch(console.log);
+    // auth().signOut().catch(console.log);
+    // changeLocale('fr');
+    handleLocale();
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
 
-  return (
-    <NativeBaseProvider>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen
-            name="Auth"
-            component={AuthView}
-            options={{ title: 'HairBill - Sign In' }}
-          />
-          <Stack.Screen
-            name="Home"
-            component={HomeView}
-            options={{ title: `HairBill - ${t('Home')}` }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </NativeBaseProvider>
-  );
+  if (initializing) {
+    return null;
+  }
+
+  return user ? <AppNavigation /> : <AuthNavigation />;
 };
 
 export default App;

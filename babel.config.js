@@ -9,6 +9,7 @@ module.exports = {
         alias: {
           '@components': './src/components',
           '@views': './src/views',
+          '@type': './src/types',
         },
       },
     ],

@@ -1,3 +1,14 @@
 {
-  "Home": "Accueil"
+  "Home": "Accueil",
+  "auth": {
+    "WelcomeTo": "Bienvenue sur HairBill",
+    "SignIn": "S'identifier",
+    "Register": "S'enregistrer",
+    "Email": "Courriel"
+  },
+  "validation":
+  {
+    "Required": "Obligatoire",
+    "invalidEmail": "Doit être un courriel valide"
+  }
 }

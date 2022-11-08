@@ -1,4 +1,5 @@
 import i18n from 'i18next';
+import 'intl-pluralrules';
 import { initReactI18next } from 'react-i18next';
 import enTranslations from './translations/en.translation.json';
 import frTranslations from './translations/fr.translation.json';
@@ -22,6 +23,8 @@ i18n
     lng: 'en', // language to use, more information here: https://www.i18next.com/overview/configuration-options#languages-namespaces-resources
     // you can use the i18n.changeLanguage function to change the language manually: https://www.i18next.com/overview/api#changelanguage
     // if you're using a language detector, do not define the lng option
+    fallbackLng: 'en',
+    // compatibilityJSON: 'v3',
 
     interpolation: {
       escapeValue: false, // react already safes from xss

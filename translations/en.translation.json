@@ -1,3 +1,14 @@
 {
-  "Home": "Home"
+  "Home": "Home",
+  "SignIn": "Sign In",
+  "auth": {
+    "WelcomeTo": "Welcome to HairBill",
+    "SignIn": "Sign In",
+    "Register": "Register",
+    "Email": "Email"
+  },
+  "validation": {
+    "Required": "Required",
+    "invalidEmail": "Must be a valid email"
+  }
 }
