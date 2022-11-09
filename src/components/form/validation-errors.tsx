@@ -3,7 +3,9 @@ import { FormControl, WarningOutlineIcon } from 'native-base';
 import { FlatList } from 'react-native';
 
 const ErrorMessage: React.FC<{ item: string }> = ({ item }) => (
-  <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+  <FormControl.ErrorMessage
+    _text={{ fontSize: 'sm' }}
+    leftIcon={<WarningOutlineIcon size="xs" />}>
     {item}
   </FormControl.ErrorMessage>
 );

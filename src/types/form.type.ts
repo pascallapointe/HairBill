@@ -1,4 +1,4 @@
-export type AutoCompleteType =
+export type AndroidAutoCompleteType =
   | 'birthdate-day'
   | 'birthdate-full'
   | 'birthdate-month'
@@ -38,4 +38,19 @@ export type AutoCompleteType =
   | 'off'
   | undefined;
 
-export type AutoCapitalize = 'characters' | 'words' | 'sentences' | 'none';
+export type AutoCapitalizeType = 'characters' | 'words' | 'sentences' | 'none';
+
+export type iOSClearButtonModeType =
+  | 'never'
+  | 'while-editing'
+  | 'unless-editing'
+  | 'always';
+
+export type KeyboardType =
+  | 'default'
+  | 'number-pad'
+  | 'decimal-pad'
+  | 'numeric'
+  | 'email-address'
+  | 'phone-pad'
+  | 'url';

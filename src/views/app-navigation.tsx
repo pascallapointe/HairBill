@@ -22,7 +22,7 @@ const AppNavigation = () => {
         <Stack.Screen
           name="Home"
           component={HomeMenu}
-          options={{ title: `HairBill - ${t('Home')}` }}
+          options={{ title: `HairBill - ${t('home')}` }}
         />
       </Stack.Navigator>
     </NavigationContainer>

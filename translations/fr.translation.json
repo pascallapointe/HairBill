@@ -1,14 +1,18 @@
 {
-  "Home": "Accueil",
+  "home": "Accueil",
   "auth": {
-    "WelcomeTo": "Bienvenue sur HairBill",
-    "SignIn": "S'identifier",
-    "Register": "S'enregistrer",
-    "Email": "Courriel"
+    "welcomeTo": "Bienvenue sur HairBill",
+    "signIn": "S'identifier",
+    "register": "S'enregistrer",
+    "email": "Courriel",
+    "emailPlaceholder": "votre.nom@courriel.com",
+    "password": "Mot de passe"
   },
   "validation":
   {
-    "Required": "Obligatoire",
-    "invalidEmail": "Doit être un courriel valide"
+    "required": "Obligatoire",
+    "invalidEmail": "Doit être un courriel valide",
+    "min_one": "Doit contenir au moins 1 caractère",
+    "min_other": "Doit contenir au moins {{count}} caractères"
   }
 }

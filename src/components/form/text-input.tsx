@@ -7,8 +7,14 @@ import React, {
 import { z, ZodString } from 'zod';
 import { FormControl, Icon, Input } from 'native-base';
 import ValidationErrors from '@components/form/validation-errors';
-import type { AutoCapitalize, AutoCompleteType } from '@type/form.type';
+import type {
+  AutoCapitalizeType,
+  AndroidAutoCompleteType,
+  iOSClearButtonModeType,
+  KeyboardType,
+} from '@type/form.type';
 import { NativeSyntheticEvent, TextInputFocusEventData } from 'react-native';
+import type { ThemeComponentSizeType } from 'native-base/lib/typescript/components/types';
 
 export type Props = {
   name: string;
@@ -16,9 +22,16 @@ export type Props = {
   label?: string | boolean;
   value?: string;
   placeholder?: string;
+  size?: ThemeComponentSizeType<'Input'>;
+  color?: string;
+  fontWeight?: string;
   required?: boolean;
-  autocomplete?: AutoCompleteType;
-  autoCapitalize?: AutoCapitalize;
+  clear?: iOSClearButtonModeType;
+  autoComplete?: AndroidAutoCompleteType;
+  autoCorrect?: boolean;
+  autoCapitalize?: AutoCapitalizeType;
+  keyboardType?: KeyboardType;
+  secureTextEntry?: boolean;
   validation?: boolean;
   schema?: ZodString;
   icon?: JSX.Element;
@@ -30,7 +43,7 @@ const InputLabel: React.FC<{
 }> = ({ label, fallback }) => {
   if (label) {
     return (
-      <FormControl.Label>
+      <FormControl.Label _text={{ fontSize: 'md', fontWeight: 'bold' }}>
         {typeof label === 'string' && label.length ? label : fallback}
       </FormControl.Label>
     );
@@ -41,7 +54,7 @@ const InputLabel: React.FC<{
 
 const InputIcon: React.FC<{ icon?: JSX.Element }> = ({ icon }) => {
   if (icon) {
-    return <Icon as={icon} size={5} ml="2" color="muted.400" />;
+    return <Icon as={icon} top="1px" size={5} ml="2" color="muted.400" />;
   }
   return null;
 };
@@ -53,8 +66,15 @@ const TextInput: React.FC<PropsWithRef<Props>> = forwardRef(
       label = true,
       value,
       placeholder,
-      autocomplete = 'off',
+      size = 'md',
+      color = 'light.600',
+      fontWeight = 'bold',
+      clear = 'never',
+      autoComplete = 'off',
+      autoCorrect = false,
       autoCapitalize = 'none',
+      keyboardType = 'default',
+      secureTextEntry = false,
       required = true,
       validation = true,
       schema = z.string({
@@ -71,13 +91,11 @@ const TextInput: React.FC<PropsWithRef<Props>> = forwardRef(
     const [error, setError] = useState(false);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
-    function initValidation(
+    function initAndValidate(
       e: NativeSyntheticEvent<TextInputFocusEventData>,
     ): void {
-      if (!init && validation) {
-        validate(e.nativeEvent.text);
-      }
-      setInit(true);
+      if (!init) setInit(true);
+      if (validation) validate(e.nativeEvent.text);
     }
 
     function validate(val?: string): boolean {
@@ -98,7 +116,7 @@ const TextInput: React.FC<PropsWithRef<Props>> = forwardRef(
     function handleChange(val: string) {
       setValue(val);
       if (init && validation) {
-        console.log(validate(val));
+        validate(val);
       }
     }
 
@@ -110,13 +128,21 @@ const TextInput: React.FC<PropsWithRef<Props>> = forwardRef(
         {...props}>
         <InputLabel label={label} fallback={name} />
         <Input
-          onBlur={initValidation}
+          onBlur={initAndValidate}
           onChangeText={handleChange}
-          autoComplete={autocomplete}
+          clearButtonMode={clear}
+          autoComplete={autoComplete}
+          autoCorrect={autoCorrect}
           autoCapitalize={autoCapitalize}
+          keyboardType={keyboardType}
+          secureTextEntry={secureTextEntry}
           InputLeftElement={<InputIcon icon={icon} />}
           value={_value}
           placeholder={placeholder ? placeholder : ''}
+          _focus={{ borderColor: 'violet.700', bg: 'fuchsia.100' }}
+          color={color}
+          fontWeight={fontWeight}
+          size={size}
         />
         <ValidationErrors error={error} errorMessages={errorMessages} />
       </FormControl>

@@ -24,12 +24,12 @@ const AuthNavigation = () => {
           <Stack.Screen
             name="SignIn"
             component={SignInView}
-            options={{ title: `HairBill - ${t('auth.SignIn')}` }}
+            options={{ title: `HairBill - ${t('auth.signIn')}` }}
           />
           <Stack.Screen
             name="Register"
             component={RegisterView}
-            options={{ title: `HairBill - ${t('auth.Register')}` }}
+            options={{ title: `HairBill - ${t('auth.register')}` }}
           />
         </Stack.Navigator>
       </NavigationContainer>
