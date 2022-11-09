@@ -1,11 +1,12 @@
 import React, {
   forwardRef,
   PropsWithRef,
+  useEffect,
   useImperativeHandle,
   useState,
 } from 'react';
 import { z, ZodString } from 'zod';
-import { FormControl, Icon, Input } from 'native-base';
+import { FormControl, Icon, IFormControlProps, Input } from 'native-base';
 import ValidationErrors from '@components/form/validation-errors';
 import type {
   AutoCapitalizeType,
@@ -16,11 +17,12 @@ import type {
 import { NativeSyntheticEvent, TextInputFocusEventData } from 'react-native';
 import type { ThemeComponentSizeType } from 'native-base/lib/typescript/components/types';
 
-export type Props = {
+interface Props extends IFormControlProps {
   name: string;
   id?: string;
   label?: string | boolean;
   value?: string;
+  bindValue: (val: string) => void;
   placeholder?: string;
   size?: ThemeComponentSizeType<'Input'>;
   color?: string;
@@ -35,7 +37,7 @@ export type Props = {
   validation?: boolean;
   schema?: ZodString;
   icon?: JSX.Element;
-};
+}
 
 const InputLabel: React.FC<{
   label: string | boolean;
@@ -64,7 +66,8 @@ const TextInput: React.FC<PropsWithRef<Props>> = forwardRef(
     {
       name,
       label = true,
-      value,
+      value = '',
+      bindValue,
       placeholder,
       size = 'md',
       color = 'light.600',
@@ -91,6 +94,9 @@ const TextInput: React.FC<PropsWithRef<Props>> = forwardRef(
     const [error, setError] = useState(false);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
+    // Re-render component if prop 'value' change
+    useEffect(() => setValue(value), [value]);
+
     function initAndValidate(
       e: NativeSyntheticEvent<TextInputFocusEventData>,
     ): void {
@@ -115,6 +121,7 @@ const TextInput: React.FC<PropsWithRef<Props>> = forwardRef(
 
     function handleChange(val: string) {
       setValue(val);
+      bindValue(val);
       if (init && validation) {
         validate(val);
       }

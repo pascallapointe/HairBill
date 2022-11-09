@@ -1,8 +1,9 @@
 {
   "home": "Accueil",
+  "waitButton": "... un instant",
   "auth": {
     "welcomeTo": "Bienvenue sur HairBill",
-    "signIn": "S'identifier",
+    "signIn": "Connexion",
     "register": "S'enregistrer",
     "email": "Courriel",
     "emailPlaceholder": "votre.nom@courriel.com",

@@ -40,10 +40,6 @@ const App = () => {
   };
 
   useEffect(() => {
-    // auth()
-    //   .signInWithEmailAndPassword('pascal.lapointe@hotmail.com', 'testtesttest')
-    //   .then(cred => console.log('Signed In!'))
-    //   .catch(console.log);
     // auth().signOut().catch(console.log);
     // changeLocale('fr');
     handleLocale();

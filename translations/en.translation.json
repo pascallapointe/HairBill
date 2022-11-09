@@ -1,5 +1,6 @@
 {
   "home": "Home",
+  "waitButton": "... a moment",
   "auth": {
     "welcomeTo": "Welcome to HairBill",
     "signIn": "Sign In",
