@@ -20,16 +20,16 @@ const AuthNavigation = () => {
   return (
     <NativeBaseProvider config={config}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={'SignIn'}>
+        <Stack.Navigator initialRouteName={'signIn'}>
           <Stack.Screen
-            name="SignIn"
+            name="signIn"
             component={SignInView}
             options={{ title: `HairBill - ${t('auth.signIn')}` }}
           />
           <Stack.Screen
-            name="Register"
+            name="register"
             component={RegisterView}
-            options={{ title: `HairBill - ${t('auth.register')}` }}
+            options={{ title: `HairBill - ${t('auth.newAccount')}` }}
           />
         </Stack.Navigator>
       </NavigationContainer>

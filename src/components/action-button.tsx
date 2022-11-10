@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleProp, ViewStyle } from 'react-native';
 import { Button, IButtonProps } from 'native-base';
 import { useTranslation } from 'react-i18next';
 
@@ -7,7 +7,7 @@ interface Props extends IButtonProps {
   text: string;
   icon?: ReactElement;
   wait?: boolean;
-  customStyle?: StyleSheet.NamedStyles<any>;
+  customStyle?: StyleProp<ViewStyle>;
   action: () => void;
 }
 
@@ -22,7 +22,6 @@ const ActionButton: React.FC<React.PropsWithChildren<Props>> = ({
   const { t } = useTranslation();
   return (
     <Button
-      minW="140px"
       isLoading={wait}
       onPress={action}
       startIcon={icon}

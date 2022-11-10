@@ -2,16 +2,8 @@ import React, { useEffect, useState } from 'react';
 import AuthNavigation from '@views/auth-navigation';
 import AppNavigation from '@views/app-navigation';
 import { useTranslation } from 'react-i18next';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
-
-const changeLocale = async (value: string) => {
-  try {
-    await AsyncStorage.setItem('locale', value);
-  } catch (e) {
-    // saving error
-  }
-};
+import { Platform, NativeModules } from 'react-native';
 
 const App = () => {
   const { i18n } = useTranslation();
@@ -21,7 +13,7 @@ const App = () => {
 
   // Handle user state changes
   function onAuthStateChanged(fbUser: FirebaseAuthTypes.User | null) {
-    console.log('Auth changed: ', user ? user.email : 'NULL');
+    console.log('Current User: ', fbUser ? fbUser.email : 'NULL');
     setUser(fbUser);
 
     if (initializing) {
@@ -31,18 +23,24 @@ const App = () => {
 
   // Fetch user preferred locale
   const handleLocale = async (): Promise<void> => {
-    try {
-      const storedLocale = (await AsyncStorage.getItem('locale')) || 'en';
-      await i18n.changeLanguage(storedLocale);
-    } catch (e) {
-      console.log(e);
+    if (Platform.OS === 'ios') {
+      const systemLocale =
+        NativeModules.SettingsManager.settings.AppleLocale ||
+        NativeModules.SettingsManager.settings.AppleLanguages[0];
+      i18n.changeLanguage(systemLocale.slice(0, 2)).catch(console.error);
     }
   };
 
   useEffect(() => {
-    // auth().signOut().catch(console.log);
-    // changeLocale('fr');
-    handleLocale();
+    handleLocale().catch(console.error);
+    /********************
+       BEGIN TEST CODE
+     *******************/
+    // auth().signOut().catch(console.error);
+    // i18n.changeLanguage('en');
+    /********************
+        END TEST CODE
+     *******************/
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
   }, []);

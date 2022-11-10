@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { z } from 'zod';
-import { Box, Heading, VStack } from 'native-base';
+import { Box, Button, Heading, Text, VStack } from 'native-base';
 import { SafeAreaView } from 'react-native';
 import Card from '@components/card';
 import { useTranslation } from 'react-i18next';
@@ -10,8 +10,14 @@ import TextInput from '@components/form/text-input';
 import ActionButton from '@components/action-button';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Modal from '@components/modal';
+import { NavigationProp, ParamListBase } from '@react-navigation/native';
 
-const SignInView = () => {
+interface Props {
+  navigation: NavigationProp<ParamListBase>;
+}
+
+const SignInView: React.FC<Props> = ({ navigation }) => {
   const { t } = useTranslation();
   const emailField = useRef(null);
   const [emailValue, setEmailValue] = useState('');
@@ -19,6 +25,7 @@ const SignInView = () => {
   const passwordField = useRef(null);
   const [passwordValue, setPasswordValue] = useState('');
   const [wait, setWait] = useState(false);
+  const errorModal = useRef(null);
 
   // Check the last signed-in email in localstorage
   useEffect(() => {
@@ -30,18 +37,20 @@ const SignInView = () => {
   function signIn() {
     setWait(true);
     const fields = [
-      emailField.current.validate(),
-      passwordField.current.validate(),
+      emailField.current && emailField.current.validate(),
+      passwordField.current && passwordField.current.validate(),
     ];
     if (fields.every(field => field)) {
       auth()
         .signInWithEmailAndPassword(emailValue, passwordValue)
         .then((cred: FirebaseAuthTypes.UserCredential) => {
-          console.log('Signed In!', cred);
           AsyncStorage.setItem('signInEmail', emailValue);
+          AsyncStorage.setItem('userID', cred.user.uid);
+          console.log(cred.user.uid);
         })
-        .catch(e => {
-          console.error(e);
+        .catch(() => {
+          // @ts-ignore
+          errorModal.current.open();
           setWait(false);
         });
     } else {
@@ -62,8 +71,8 @@ const SignInView = () => {
       <SafeAreaView
         style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <VStack space={4} alignItems="center">
-          <Heading color="white" size="2xl" mb={4}>
-            {t('auth.welcomeTo')}
+          <Heading color="white" size="4xl" mb={4} fontFamily="SignPainter">
+            &nbsp;HairBill&nbsp;
           </Heading>
           <Card
             w="400px"
@@ -105,11 +114,33 @@ const SignInView = () => {
                 size="lg"
                 wait={wait}
                 text={t('auth.signIn')}
+                colorScheme="violet"
                 action={signIn}>
                 {t('auth.signIn')}
               </ActionButton>
+              <Modal
+                ref={errorModal}
+                hideAction={true}
+                title={t('auth.authFailure.title')}>
+                <Text fontSize="md" mb={3} textAlign="center">
+                  {t('auth.authFailure.message1')}
+                </Text>
+                <Text fontSize="md" textAlign="center">
+                  {t('auth.authFailure.message2')}
+                </Text>
+              </Modal>
             </VStack>
           </Card>
+          <Text color="white" fontSize="md" fontWeight="bold">
+            {t('auth.noAccountYet')}?
+          </Text>
+          <Button
+            onPress={() => navigation.navigate('register')}
+            colorScheme="fuchsia"
+            size="lg"
+            shadow={5}>
+            {t('auth.createAccount')}
+          </Button>
         </VStack>
       </SafeAreaView>
     </Box>

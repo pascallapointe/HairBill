@@ -2,18 +2,28 @@
   "home": "Accueil",
   "waitButton": "... un instant",
   "auth": {
-    "welcomeTo": "Bienvenue sur HairBill",
-    "signIn": "Connexion",
-    "register": "S'enregistrer",
+    "welcomeTo": "Bienvenue sur",
+    "signIn": "Se connecter",
+    "newAccount": "Nouveau compte",
     "email": "Courriel",
     "emailPlaceholder": "votre.nom@courriel.com",
-    "password": "Mot de passe"
+    "password": "Mot de passe",
+    "createAccount": "Créer un compte",
+    "noAccountYet": "Vous n'avez pas encore de compte",
+    "authFailure": {
+      "title": "Échec de l'identification",
+      "message1": "Veuillez vérifier vos identifiants.",
+      "message2": "Assurez-vous que l'appareil est connecté à internet."
+    }
   },
-  "validation":
-  {
+  "validation": {
     "required": "Obligatoire",
     "invalidEmail": "Doit être un courriel valide",
     "min_one": "Doit contenir au moins 1 caractère",
     "min_other": "Doit contenir au moins {{count}} caractères"
+  },
+  "modal": {
+    "defaultActionText": "Ok",
+    "defaultCloseText": "Fermer"
   }
 }

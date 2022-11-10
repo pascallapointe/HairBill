@@ -2,17 +2,28 @@
   "home": "Home",
   "waitButton": "... a moment",
   "auth": {
-    "welcomeTo": "Welcome to HairBill",
+    "welcomeTo": "Welcome to",
     "signIn": "Sign In",
-    "register": "Register",
+    "newAccount": "New Account",
     "email": "Email",
     "emailPlaceholder": "your.name@email.com",
-    "password": "Password"
+    "password": "Password",
+    "createAccount": "Create an account",
+    "noAccountYet": "Don't have an account yet",
+    "authFailure": {
+      "title": "Authentication Failure",
+      "message1": "Please check your authentication credentials.",
+      "message2": "Make sure the device has internet access."
+    }
   },
   "validation": {
     "required": "Required",
     "invalidEmail": "Must be a valid email",
     "min_one": "Must contain at least 1 character",
     "min_other": "Must contain at least {{count}} characters"
+  },
+  "modal": {
+    "defaultActionText": "Ok",
+    "defaultCloseText": "Close"
   }
 }

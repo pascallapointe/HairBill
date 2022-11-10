@@ -95,16 +95,27 @@ const TextInput: React.FC<PropsWithRef<Props>> = forwardRef(
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     // Re-render component if prop 'value' change
-    useEffect(() => setValue(value), [value]);
+    useEffect(() => {
+      setValue(value);
+      bindValue(value);
+    }, [value]);
 
     function initAndValidate(
       e: NativeSyntheticEvent<TextInputFocusEventData>,
     ): void {
-      if (!init) setInit(true);
-      if (validation) validate(e.nativeEvent.text);
+      if (!init) {
+        setInit(true);
+      }
+      if (validation) {
+        validate(e.nativeEvent.text);
+      }
     }
 
     function validate(val?: string): boolean {
+      if (!init) {
+        setInit(true);
+      }
+
       let result = schema.safeParse(val ? val : _value);
 
       setError(!result.success);
