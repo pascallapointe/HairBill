@@ -8,22 +8,37 @@
     "email": "Email",
     "emailPlaceholder": "your.name@email.com",
     "password": "Password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
     "createAccount": "Create an account",
     "noAccountYet": "Don't have an account yet",
+    "backToSignIn": "Back to Sign-In",
     "authFailure": {
       "title": "Authentication Failure",
       "message1": "Please check your authentication credentials.",
       "message2": "Make sure the device has internet access."
+    },
+    "registerFailure": {
+      "title": "Failed to create account",
+      "usedEmail": "The email address is already in use by another account."
+    },
+    "registerSuccess": {
+      "title": "Account created",
+      "message1": "A verification email have been sent to {{email}}.",
+      "message2": "Access will only be granted upon email verification."
     }
   },
   "validation": {
     "required": "Required",
     "invalidEmail": "Must be a valid email",
+    "passwordMismatch": "Passwords don't match",
+    "passwordConstraint": "Passwords must contain at least: 1 upper case letter, 1 lower case letter, 1 number or special character",
     "min_one": "Must contain at least 1 character",
     "min_other": "Must contain at least {{count}} characters"
   },
   "modal": {
     "defaultActionText": "Ok",
-    "defaultCloseText": "Close"
+    "defaultCloseText": "Close",
+    "defaultErrorMessage": "Oops, something unexpected happened. Please try again later or contact support."
   }
 }

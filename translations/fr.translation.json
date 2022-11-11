@@ -8,22 +8,32 @@
     "email": "Courriel",
     "emailPlaceholder": "votre.nom@courriel.com",
     "password": "Mot de passe",
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Confirmez le mot de passe",
     "createAccount": "Créer un compte",
     "noAccountYet": "Vous n'avez pas encore de compte",
+    "backToSignIn": "Retour à la connexion",
     "authFailure": {
       "title": "Échec de l'identification",
       "message1": "Veuillez vérifier vos identifiants.",
       "message2": "Assurez-vous que l'appareil est connecté à internet."
+    },
+    "registerFailure": {
+      "title": "Échec de la création du compte",
+      "usedEmail": "L'adresse e-mail est déjà utilisée par un autre compte."
     }
   },
   "validation": {
     "required": "Obligatoire",
     "invalidEmail": "Doit être un courriel valide",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "passwordConstraint": "Les mots de passe doivent contenir au minimum : 1 lettre majuscule, 1 lettre minuscule, 1 chiffre ou caractère spécial",
     "min_one": "Doit contenir au moins 1 caractère",
     "min_other": "Doit contenir au moins {{count}} caractères"
   },
   "modal": {
     "defaultActionText": "Ok",
-    "defaultCloseText": "Fermer"
+    "defaultCloseText": "Fermer",
+    "defaultErrorMessage": "Oups, quelque chose d'inattendu s'est produit. Veuillez réessayer ultérieurement ou contactez l'assistance."
   }
 }

@@ -1,10 +1,10 @@
-import React, { forwardRef, useImperativeHandle } from 'react';
-import {
-  AlertDialog,
-  Modal as NBModal,
-  Button,
-  IModalProps,
-} from 'native-base';
+import React, {
+  forwardRef,
+  PropsWithChildren,
+  ReactNode,
+  useImperativeHandle,
+} from 'react';
+import { Modal as NBModal, Button, IModalProps } from 'native-base';
 import { StyleProp, ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import ActionButton from '@components/action-button';
@@ -20,9 +20,15 @@ interface Props extends IModalProps {
   hideAction?: boolean;
   outClick?: boolean;
   wait?: boolean;
+  children: ReactNode;
 }
 
-const Modal: React.FC<React.PropsWithRef<Props>> = forwardRef(
+export type ModalRef = {
+  open: () => void;
+  close: () => void;
+};
+
+const Modal = forwardRef<ModalRef, PropsWithChildren<Props>>(
   (
     {
       children,

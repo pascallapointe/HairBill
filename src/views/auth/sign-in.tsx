@@ -6,11 +6,11 @@ import Card from '@components/card';
 import { useTranslation } from 'react-i18next';
 import ZocialIcon from 'react-native-vector-icons/Zocial';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
-import TextInput from '@components/form/text-input';
+import TextInput, { InputRef } from '@components/form/text-input';
 import ActionButton from '@components/action-button';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Modal from '@components/modal';
+import Modal, { ModalRef } from '@components/modal';
 import { NavigationProp, ParamListBase } from '@react-navigation/native';
 
 interface Props {
@@ -19,13 +19,13 @@ interface Props {
 
 const SignInView: React.FC<Props> = ({ navigation }) => {
   const { t } = useTranslation();
-  const emailField = useRef(null);
+  const emailField = useRef<InputRef>(null);
   const [emailValue, setEmailValue] = useState('');
   const [defaultEmail, setDefaultEmail] = useState('');
-  const passwordField = useRef(null);
+  const passwordField = useRef<InputRef>(null);
   const [passwordValue, setPasswordValue] = useState('');
   const [wait, setWait] = useState(false);
-  const errorModal = useRef(null);
+  const errorModal = useRef<ModalRef>(null);
 
   // Check the last signed-in email in localstorage
   useEffect(() => {
@@ -46,12 +46,10 @@ const SignInView: React.FC<Props> = ({ navigation }) => {
         .then((cred: FirebaseAuthTypes.UserCredential) => {
           AsyncStorage.setItem('signInEmail', emailValue);
           AsyncStorage.setItem('userID', cred.user.uid);
-          console.log(cred.user.uid);
         })
-        .catch(() => {
-          // @ts-ignore
-          errorModal.current.open();
-          setWait(false);
+        .catch(e => {
+          console.error(e);
+          errorModal.current && errorModal.current.open();
         });
     } else {
       setWait(false);
@@ -81,10 +79,8 @@ const SignInView: React.FC<Props> = ({ navigation }) => {
             alignItems="center">
             <VStack pb={2} space={2} alignItems="center">
               <TextInput
-                ref={emailField}
                 value={defaultEmail}
                 bindValue={setEmailValue}
-                name="email"
                 label={t<string>('auth.email')}
                 placeholder={t<string>('auth.emailPlaceholder')}
                 icon={<ZocialIcon name="email" />}
@@ -95,19 +91,19 @@ const SignInView: React.FC<Props> = ({ navigation }) => {
                   })}
                 clear="while-editing"
                 keyboardType="email-address"
+                ref={emailField}
               />
               <TextInput
-                ref={passwordField}
                 bindValue={setPasswordValue}
-                name="password"
                 label={t<string>('auth.password')}
                 placeholder={t<string>('auth.password')}
                 icon={<FontAwesome5Icon name="key" />}
                 schema={z
                   .string({ required_error: t('validation.required') })
-                  .min(8, { message: t('validation.min', { count: 8 }) })}
+                  .min(8, t<string>('validation.min', { count: 8 }))}
                 clear="while-editing"
                 secureTextEntry={true}
+                ref={passwordField}
               />
               <ActionButton
                 m={2}
@@ -115,33 +111,33 @@ const SignInView: React.FC<Props> = ({ navigation }) => {
                 wait={wait}
                 text={t('auth.signIn')}
                 colorScheme="violet"
-                action={signIn}>
-                {t('auth.signIn')}
-              </ActionButton>
-              <Modal
-                ref={errorModal}
-                hideAction={true}
-                title={t('auth.authFailure.title')}>
-                <Text fontSize="md" mb={3} textAlign="center">
-                  {t('auth.authFailure.message1')}
-                </Text>
-                <Text fontSize="md" textAlign="center">
-                  {t('auth.authFailure.message2')}
-                </Text>
-              </Modal>
+                action={signIn}
+              />
             </VStack>
           </Card>
           <Text color="white" fontSize="md" fontWeight="bold">
             {t('auth.noAccountYet')}?
           </Text>
           <Button
-            onPress={() => navigation.navigate('register')}
+            onPress={() => navigation.navigate('signUp')}
             colorScheme="fuchsia"
             size="lg"
             shadow={5}>
             {t('auth.createAccount')}
           </Button>
         </VStack>
+        <Modal
+          ref={errorModal}
+          hideAction={true}
+          title={t('auth.authFailure.title')}
+          callback={() => setWait(false)}>
+          <Text fontSize="md" mb={3} textAlign="center">
+            {t('auth.authFailure.message1')}
+          </Text>
+          <Text fontSize="md" textAlign="center">
+            {t('auth.authFailure.message2')}
+          </Text>
+        </Modal>
       </SafeAreaView>
     </Box>
   );

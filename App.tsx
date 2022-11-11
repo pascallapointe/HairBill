@@ -13,8 +13,13 @@ const App = () => {
 
   // Handle user state changes
   function onAuthStateChanged(fbUser: FirebaseAuthTypes.User | null) {
-    console.log('Current User: ', fbUser ? fbUser.email : 'NULL');
-    setUser(fbUser);
+    console.log(
+      'Current User: ',
+      fbUser ? fbUser.email + ' verified: ' + fbUser.emailVerified : 'NULL',
+    );
+    if (fbUser?.emailVerified) {
+      setUser(fbUser);
+    }
 
     if (initializing) {
       setInitializing(false);

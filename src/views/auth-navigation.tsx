@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { NavigationContainer } from '@react-navigation/native';
 import SignInView from '@views/auth/sign-in';
-import RegisterView from '@views/auth/register';
+import SignUpView from '@views/auth/sign-up';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,8 +27,8 @@ const AuthNavigation = () => {
             options={{ title: `HairBill - ${t('auth.signIn')}` }}
           />
           <Stack.Screen
-            name="register"
-            component={RegisterView}
+            name="signUp"
+            component={SignUpView}
             options={{ title: `HairBill - ${t('auth.newAccount')}` }}
           />
         </Stack.Navigator>

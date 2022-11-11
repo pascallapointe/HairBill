@@ -1,11 +1,10 @@
 import React, {
   forwardRef,
-  PropsWithRef,
   useEffect,
   useImperativeHandle,
   useState,
 } from 'react';
-import { z, ZodString } from 'zod';
+import { z, ZodType } from 'zod';
 import { FormControl, Icon, IFormControlProps, Input } from 'native-base';
 import ValidationErrors from '@components/form/validation-errors';
 import type {
@@ -18,9 +17,7 @@ import { NativeSyntheticEvent, TextInputFocusEventData } from 'react-native';
 import type { ThemeComponentSizeType } from 'native-base/lib/typescript/components/types';
 
 interface Props extends IFormControlProps {
-  name: string;
-  id?: string;
-  label?: string | boolean;
+  label?: string;
   value?: string;
   bindValue: (val: string) => void;
   placeholder?: string;
@@ -35,18 +32,22 @@ interface Props extends IFormControlProps {
   keyboardType?: KeyboardType;
   secureTextEntry?: boolean;
   validation?: boolean;
-  schema?: ZodString;
+  schema?: ZodType;
   icon?: JSX.Element;
 }
 
+export type InputRef = {
+  validate: (val?: string) => void;
+  clearValue: () => void;
+};
+
 const InputLabel: React.FC<{
-  label: string | boolean;
-  fallback: string;
-}> = ({ label, fallback }) => {
-  if (label) {
+  label?: string;
+}> = ({ label }) => {
+  if (label && label.length) {
     return (
       <FormControl.Label _text={{ fontSize: 'md', fontWeight: 'bold' }}>
-        {typeof label === 'string' && label.length ? label : fallback}
+        {label}
       </FormControl.Label>
     );
   }
@@ -61,11 +62,10 @@ const InputIcon: React.FC<{ icon?: JSX.Element }> = ({ icon }) => {
   return null;
 };
 
-const TextInput: React.FC<PropsWithRef<Props>> = forwardRef(
+const TextInput = forwardRef<InputRef, Props>(
   (
     {
-      name,
-      label = true,
+      label,
       value = '',
       bindValue,
       placeholder,
@@ -93,12 +93,18 @@ const TextInput: React.FC<PropsWithRef<Props>> = forwardRef(
     const [_value, setValue] = useState(value);
     const [error, setError] = useState(false);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
+    const [_schema, setSchema] = useState<ZodType>(schema);
 
     // Re-render component if prop 'value' change
     useEffect(() => {
       setValue(value);
       bindValue(value);
     }, [value]);
+
+    // Re-render component if prop 'schema' change
+    useEffect(() => {
+      setSchema(schema);
+    }, [schema]);
 
     function initAndValidate(
       e: NativeSyntheticEvent<TextInputFocusEventData>,
@@ -116,7 +122,7 @@ const TextInput: React.FC<PropsWithRef<Props>> = forwardRef(
         setInit(true);
       }
 
-      let result = schema.safeParse(val ? val : _value);
+      let result = _schema.safeParse(val ?? _value);
 
       setError(!result.success);
       setErrorMessages([]);
@@ -128,7 +134,7 @@ const TextInput: React.FC<PropsWithRef<Props>> = forwardRef(
       return result.success;
     }
 
-    useImperativeHandle(ref, () => ({ validate }));
+    useImperativeHandle(ref, () => ({ validate, clearValue }));
 
     function handleChange(val: string) {
       setValue(val);
@@ -138,13 +144,18 @@ const TextInput: React.FC<PropsWithRef<Props>> = forwardRef(
       }
     }
 
+    function clearValue() {
+      setValue('');
+      bindValue('');
+    }
+
     return (
       <FormControl
         isInvalid={error}
         isRequired={required}
         minW="100%"
         {...props}>
-        <InputLabel label={label} fallback={name} />
+        <InputLabel label={label} />
         <Input
           onBlur={initAndValidate}
           onChangeText={handleChange}
