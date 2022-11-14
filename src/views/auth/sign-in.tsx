@@ -26,6 +26,7 @@ const SignInView: React.FC<Props> = ({ navigation }) => {
   const [passwordValue, setPasswordValue] = useState('');
   const [wait, setWait] = useState(false);
   const errorModal = useRef<ModalRef>(null);
+  const emailCheckModal = useRef<ModalRef>(null);
 
   // Check the last signed-in email in localstorage
   useEffect(() => {
@@ -46,6 +47,14 @@ const SignInView: React.FC<Props> = ({ navigation }) => {
         .then((cred: FirebaseAuthTypes.UserCredential) => {
           AsyncStorage.setItem('signInEmail', emailValue);
           AsyncStorage.setItem('userID', cred.user.uid);
+
+          if (!cred.user.emailVerified) {
+            emailCheckModal.current && emailCheckModal.current.open();
+          }
+
+          /**
+           * Listener in App.tsx will intercept the auth change
+           */
         })
         .catch(e => {
           console.error(e);
@@ -54,6 +63,11 @@ const SignInView: React.FC<Props> = ({ navigation }) => {
     } else {
       setWait(false);
     }
+  }
+
+  function signOut() {
+    setWait(false);
+    auth().signOut().catch(console.error);
   }
 
   return (
@@ -136,6 +150,18 @@ const SignInView: React.FC<Props> = ({ navigation }) => {
           </Text>
           <Text fontSize="md" textAlign="center">
             {t('auth.authFailure.message2')}
+          </Text>
+        </Modal>
+        <Modal
+          ref={emailCheckModal}
+          hideAction={true}
+          title={t('auth.authFailure.title')}
+          callback={signOut}>
+          <Text fontSize="md" mb={3} textAlign="center">
+            {t('auth.emailCheck.message1')}
+          </Text>
+          <Text fontSize="md" textAlign="center">
+            {t('auth.emailCheck.message2')}
           </Text>
         </Modal>
       </SafeAreaView>

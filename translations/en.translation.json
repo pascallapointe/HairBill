@@ -18,6 +18,10 @@
       "message1": "Please check your authentication credentials.",
       "message2": "Make sure the device has internet access."
     },
+    "emailCheck": {
+      "message1": "The email have not been verified yet.",
+      "message2": "Check your inbox and spam folder to complete the verification."
+    },
     "registerFailure": {
       "title": "Failed to create account",
       "usedEmail": "The email address is already in use by another account."

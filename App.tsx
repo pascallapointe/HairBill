@@ -19,6 +19,8 @@ const App = () => {
     );
     if (fbUser?.emailVerified) {
       setUser(fbUser);
+    } else {
+      setUser(null);
     }
 
     if (initializing) {

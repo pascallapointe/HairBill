@@ -18,9 +18,18 @@
       "message1": "Veuillez vérifier vos identifiants.",
       "message2": "Assurez-vous que l'appareil est connecté à internet."
     },
+    "emailCheck": {
+      "message1": "Le courriel n'a pas encore été vérifié.",
+      "message2": "Vérifiez votre boîte de réception et votre dossier de courrier indésirable pour terminer la vérification."
+    },
     "registerFailure": {
       "title": "Échec de la création du compte",
       "usedEmail": "L'adresse e-mail est déjà utilisée par un autre compte."
+    },
+    "registerSuccess": {
+      "title": "Compte créé",
+      "message1": "Un courriel de vérification a été envoyé à {{email}}.",
+      "message2": "L'accès ne sera accordé qu'après vérification du courriel."
     }
   },
   "validation": {
