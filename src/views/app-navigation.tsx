@@ -1,9 +1,10 @@
 import React from 'react';
 import { NativeBaseProvider } from 'native-base';
-import { Text, View } from 'native-base';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { NavigationContainer } from '@react-navigation/native';
+import MenuView from '@views/app/menu';
+import ServicesView from '@views/app/services/services';
 
 const Stack = createNativeStackNavigator();
 
@@ -14,24 +15,21 @@ const config = {
   },
 };
 
-const HomeMenu = () => {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home Screen</Text>
-    </View>
-  );
-};
-
 const AppNavigation = () => {
   const { t } = useTranslation();
   return (
     <NativeBaseProvider config={config}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={'Home'}>
+        <Stack.Navigator initialRouteName={'menu'}>
           <Stack.Screen
-            name="Home"
-            component={HomeMenu}
-            options={{ title: `HairBill - ${t('home')}` }}
+            name="menu"
+            component={MenuView}
+            options={{ title: `HairBill - ${t('home.title')}` }}
+          />
+          <Stack.Screen
+            name="services"
+            component={ServicesView}
+            options={{ title: `HairBill - ${t('services.title')}` }}
           />
         </Stack.Navigator>
       </NavigationContainer>

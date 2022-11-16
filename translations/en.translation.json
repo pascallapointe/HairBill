@@ -1,6 +1,25 @@
 {
-  "home": "Home",
   "waitButton": "... a moment",
+  "add": "Add",
+  "back": "Back",
+  "save": "Save",
+  "delete": "Delete",
+  "cancel": "Cancel",
+  "validation": {
+    "required": "Required",
+    "invalidEmail": "Must be a valid email",
+    "passwordMismatch": "Passwords don't match",
+    "passwordConstraint": "Passwords must contain at least: 1 upper case letter, 1 lower case letter, 1 number or special character",
+    "min_one": "Must contain at least 1 character",
+    "min_other": "Must contain at least {{count}} characters"
+  },
+  "modal": {
+    "defaultActionText": "Ok",
+    "defaultCloseText": "Close",
+    "defaultErrorMessage": "Oops, something unexpected happened. Please try again later or contact support.",
+    "confirmDelete": "Confirm delete",
+    "deleteMessage": "You are about to delete"
+  },
   "auth": {
     "welcomeTo": "Welcome to",
     "signIn": "Sign In",
@@ -32,17 +51,28 @@
       "message2": "Access will only be granted upon email verification."
     }
   },
-  "validation": {
-    "required": "Required",
-    "invalidEmail": "Must be a valid email",
-    "passwordMismatch": "Passwords don't match",
-    "passwordConstraint": "Passwords must contain at least: 1 upper case letter, 1 lower case letter, 1 number or special character",
-    "min_one": "Must contain at least 1 character",
-    "min_other": "Must contain at least {{count}} characters"
+  "home": {
+    "title": "Home",
+    "newReceipt": "New Receipt",
+    "listsReports": "Lists & Reports",
+    "services": "Services",
+    "options": "Options"
   },
-  "modal": {
-    "defaultActionText": "Ok",
-    "defaultCloseText": "Close",
-    "defaultErrorMessage": "Oops, something unexpected happened. Please try again later or contact support."
+  "services": {
+    "title": "Manage services",
+    "categories": "Categories",
+    "addCategory": "Add a category",
+    "noCategory": "No category",
+    "newCategory": "New category",
+    "categoryName": "Category name"
+  },
+  "exception": {
+    "unauthenticated": "Unauthenticated user",
+    "database": "Database operation failed",
+    "operationFailed": "Operation failed",
+    "db": {
+      "change-fail": "Failed to apply change",
+      "fetch-fail": "Failed to fetch data"
+    }
   }
 }

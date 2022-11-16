@@ -24,9 +24,6 @@ const RegisterView: React.FC<Props> = ({ navigation }) => {
   const [passwordValue, setPasswordValue] = useState('');
   const confirmField = useRef<InputRef>(null);
   const [confirmValue, setConfirmValue] = useState('');
-  const [confirmSchema, setConfirmSchema] = useState<ZodLiteral<string>>(
-    updatedConfirmSchema(''),
-  );
   const [wait, setWait] = useState(false);
 
   // Modals
@@ -35,11 +32,13 @@ const RegisterView: React.FC<Props> = ({ navigation }) => {
   const errorModal = useRef<ModalRef>(null);
 
   useEffect(() => {
-    setConfirmSchema(updatedConfirmSchema(passwordValue));
-    confirmField.current && confirmField.current.clearValue();
+    if (confirmField.current) {
+      confirmField.current.clearValue();
+      confirmField.current.updateSchema(getConfirmSchema(passwordValue));
+    }
   }, [passwordValue]);
 
-  function updatedConfirmSchema(val: string): ZodLiteral<string> {
+  function getConfirmSchema(val: string): ZodLiteral<string> {
     const customErrorMap: z.ZodErrorMap = (issue, ctx) => {
       if (typeof ctx.data === 'undefined') {
         return { message: t<string>('validation.required') };
@@ -134,7 +133,7 @@ const RegisterView: React.FC<Props> = ({ navigation }) => {
                 label={t<string>('auth.confirmPassword')}
                 placeholder={t<string>('auth.confirmPassword')}
                 icon={<FontAwesome5Icon name="key" />}
-                schema={confirmSchema}
+                schema={getConfirmSchema('')}
                 clear="while-editing"
                 secureTextEntry={true}
               />

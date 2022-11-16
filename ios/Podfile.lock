@@ -16,6 +16,9 @@ PODS:
     - FirebaseAuth (~> 10.1.0)
   - Firebase/CoreOnly (10.1.0):
     - FirebaseCore (= 10.1.0)
+  - Firebase/Database (10.1.0):
+    - Firebase/CoreOnly
+    - FirebaseDatabase (~> 10.1.0)
   - FirebaseAuth (10.1.0):
     - FirebaseCore (~> 10.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
@@ -27,6 +30,9 @@ PODS:
     - GoogleUtilities/Logger (~> 7.8)
   - FirebaseCoreInternal (10.1.0):
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
+  - FirebaseDatabase (10.1.0):
+    - FirebaseCore (~> 10.0)
+    - leveldb-library (~> 1.22)
   - fmt (6.2.1)
   - glog (0.3.5)
   - GoogleUtilities/AppDelegateSwizzler (7.8.0):
@@ -46,6 +52,7 @@ PODS:
     - GoogleUtilities/Logger
   - GTMSessionFetcher/Core (2.2.0)
   - hermes-engine (0.70.4)
+  - leveldb-library (1.22.1)
   - libevent (2.1.12)
   - PromisesObjC (2.1.1)
   - RCT-Folly (2021.07.22.00):
@@ -344,17 +351,23 @@ PODS:
     - React-perflogger (= 0.70.4)
   - RNCAsyncStorage (1.17.10):
     - React-Core
-  - RNFBApp (16.4.3):
+  - RNFBApp (16.4.4):
     - Firebase/CoreOnly (= 10.1.0)
     - React-Core
-  - RNFBAuth (16.4.3):
+  - RNFBAuth (16.4.4):
     - Firebase/Auth (= 10.1.0)
+    - React-Core
+    - RNFBApp
+  - RNFBDatabase (16.4.4):
+    - Firebase/Database (= 10.1.0)
     - React-Core
     - RNFBApp
   - RNScreens (3.18.2):
     - React-Core
     - React-RCTImage
   - RNSVG (12.4.4):
+    - React-Core
+  - RNVectorIcons (9.2.0):
     - React-Core
   - Yoga (1.14.0)
 
@@ -399,8 +412,10 @@ DEPENDENCIES:
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBAuth (from `../node_modules/@react-native-firebase/auth`)"
+  - "RNFBDatabase (from `../node_modules/@react-native-firebase/database`)"
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
+  - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -409,9 +424,11 @@ SPEC REPOS:
     - FirebaseAuth
     - FirebaseCore
     - FirebaseCoreInternal
+    - FirebaseDatabase
     - fmt
     - GoogleUtilities
     - GTMSessionFetcher
+    - leveldb-library
     - libevent
     - PromisesObjC
 
@@ -492,10 +509,14 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBAuth:
     :path: "../node_modules/@react-native-firebase/auth"
+  RNFBDatabase:
+    :path: "../node_modules/@react-native-firebase/database"
   RNScreens:
     :path: "../node_modules/react-native-screens"
   RNSVG:
     :path: "../node_modules/react-native-svg"
+  RNVectorIcons:
+    :path: "../node_modules/react-native-vector-icons"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -509,11 +530,13 @@ SPEC CHECKSUMS:
   FirebaseAuth: 19a85b8a42e7c1104a2ffa6987c748daa79a5e64
   FirebaseCore: 55e7ae35991ccca4db03ff8d8df6ed5f17a3e4c7
   FirebaseCoreInternal: 96d75228e10fd369564da51bd898414eb0f54df5
+  FirebaseDatabase: 2dad4f291390ace067f46f7988600d3b46764b4e
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
   GoogleUtilities: 1d20a6ad97ef46f67bbdec158ce00563a671ebb7
   GTMSessionFetcher: d62ffccea5108bb9e7762ee121ae63bbdd2c6303
   hermes-engine: 3623325e0d0676a45fbc544d72c57dd79fce7446
+  leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   RCT-Folly: 0080d0a6ebf2577475bda044aa59e2ca1f909cda
@@ -545,10 +568,12 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: 5407e26b5aaafa9b01a08e33653255f8247e7c31
   ReactCommon: abf3605a56f98b91671d0d1327addc4ffb87af77
   RNCAsyncStorage: 0c357f3156fcb16c8589ede67cc036330b6698ca
-  RNFBApp: e2157f61e4769b53641df8948c534580630cb50a
-  RNFBAuth: 7d2d8b68ef2dbeed0844532e9b65df09af627bf9
+  RNFBApp: 18468d88f518831e4d34a77e1c076a80e40929a2
+  RNFBAuth: f68c1dbe70bdce33b7bdac9d1bad89753b4e7bd0
+  RNFBDatabase: 3f0697eada9c2cbc1dee3e493d1896f7ce552a4b
   RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
   RNSVG: ecd661f380a07ba690c9c5929c475a44f432d674
+  RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   Yoga: 1f02ef4ce4469aefc36167138441b27d988282b1
 
 PODFILE CHECKSUM: 8984af813245cbad4e0b98c92c09534981797e04

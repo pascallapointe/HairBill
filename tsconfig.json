@@ -10,7 +10,8 @@
     "paths": {
       "@components/*": ["src/components/*"],
       "@views/*": ["src/views/*"],
-      "@type/*": ["src/types/*"]
+      "@type/*": ["src/types/*"],
+      "@lib/*": ["src/lib/*"]
     }
   }
 }

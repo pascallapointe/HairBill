@@ -1,6 +1,25 @@
 {
-  "home": "Accueil",
   "waitButton": "... un instant",
+  "add": "Ajouter",
+  "back": "Retour",
+  "save": "Enregistrer",
+  "delete": "Supprimer",
+  "cancel": "Annuler",
+  "validation": {
+    "required": "Obligatoire",
+    "invalidEmail": "Doit être un courriel valide",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "passwordConstraint": "Les mots de passe doivent contenir au minimum : 1 lettre majuscule, 1 lettre minuscule, 1 chiffre ou caractère spécial",
+    "min_one": "Doit contenir au moins 1 caractère",
+    "min_other": "Doit contenir au moins {{count}} caractères"
+  },
+  "modal": {
+    "defaultActionText": "Ok",
+    "defaultCloseText": "Fermer",
+    "defaultErrorMessage": "Oups, quelque chose d'inattendu s'est produit. Veuillez réessayer ultérieurement ou contactez l'assistance.",
+    "confirmDelete": "Confirmez la suppression",
+    "deleteMessage": "Vous êtes sur le point de supprimer"
+  },
   "auth": {
     "welcomeTo": "Bienvenue sur",
     "signIn": "Se connecter",
@@ -32,17 +51,28 @@
       "message2": "L'accès ne sera accordé qu'après vérification du courriel."
     }
   },
-  "validation": {
-    "required": "Obligatoire",
-    "invalidEmail": "Doit être un courriel valide",
-    "passwordMismatch": "Les mots de passe ne correspondent pas",
-    "passwordConstraint": "Les mots de passe doivent contenir au minimum : 1 lettre majuscule, 1 lettre minuscule, 1 chiffre ou caractère spécial",
-    "min_one": "Doit contenir au moins 1 caractère",
-    "min_other": "Doit contenir au moins {{count}} caractères"
+  "home": {
+    "title": "Accueil",
+    "newReceipt": "Nouvelle Facture",
+    "listsReports": "Listes & Rapports",
+    "services": "Services",
+    "options": "Options"
   },
-  "modal": {
-    "defaultActionText": "Ok",
-    "defaultCloseText": "Fermer",
-    "defaultErrorMessage": "Oups, quelque chose d'inattendu s'est produit. Veuillez réessayer ultérieurement ou contactez l'assistance."
+  "services": {
+    "title": "Gérer les services",
+    "categories": "Catégories",
+    "addCategory": "Ajouter une catégorie",
+    "noCategory": "Aucune catégorie",
+    "newCategory": "Nouvelle catégorie",
+    "categoryName": "Nom de la catégorie"
+  },
+  "exception": {
+    "unauthenticated": "Utilisateur non identifié",
+    "database": "Échec de l'opération en base de donnée",
+    "operationFailed": "Échec de l'opération",
+    "db": {
+      "change-fail": "Échec de l'application du changement",
+      "fetch-fail": "Échec de la récupération des données"
+    }
   }
 }

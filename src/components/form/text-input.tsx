@@ -17,9 +17,9 @@ import { NativeSyntheticEvent, TextInputFocusEventData } from 'react-native';
 import type { ThemeComponentSizeType } from 'native-base/lib/typescript/components/types';
 
 interface Props extends IFormControlProps {
+  bindValue: (val: string) => void;
   label?: string;
   value?: string;
-  bindValue: (val: string) => void;
   placeholder?: string;
   size?: ThemeComponentSizeType<'Input'>;
   color?: string;
@@ -39,6 +39,7 @@ interface Props extends IFormControlProps {
 export type InputRef = {
   validate: (val?: string) => void;
   clearValue: () => void;
+  updateSchema: (newSchema: ZodType) => void;
 };
 
 const InputLabel: React.FC<{
@@ -93,18 +94,19 @@ const TextInput = forwardRef<InputRef, Props>(
     const [_value, setValue] = useState(value);
     const [error, setError] = useState(false);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
-    const [_schema, setSchema] = useState<ZodType>(schema);
+    const [_schema, setSchema] = useState<ZodType>(
+      schema ??
+        z.string({
+          required_error: 'Required',
+          invalid_type_error: 'Must be a string',
+        }),
+    );
 
     // Re-render component if prop 'value' change
     useEffect(() => {
       setValue(value);
       bindValue(value);
     }, [value]);
-
-    // Re-render component if prop 'schema' change
-    useEffect(() => {
-      setSchema(schema);
-    }, [schema]);
 
     function initAndValidate(
       e: NativeSyntheticEvent<TextInputFocusEventData>,
@@ -134,7 +136,7 @@ const TextInput = forwardRef<InputRef, Props>(
       return result.success;
     }
 
-    useImperativeHandle(ref, () => ({ validate, clearValue }));
+    useImperativeHandle(ref, () => ({ validate, clearValue, updateSchema }));
 
     function handleChange(val: string) {
       setValue(val);
@@ -147,6 +149,10 @@ const TextInput = forwardRef<InputRef, Props>(
     function clearValue() {
       setValue('');
       bindValue('');
+    }
+
+    function updateSchema(newSchema: ZodType) {
+      setSchema(newSchema);
     }
 
     return (
@@ -165,6 +171,7 @@ const TextInput = forwardRef<InputRef, Props>(
           autoCapitalize={autoCapitalize}
           keyboardType={keyboardType}
           secureTextEntry={secureTextEntry}
+          clearTextOnFocus={secureTextEntry}
           InputLeftElement={<InputIcon icon={icon} />}
           value={_value}
           placeholder={placeholder ? placeholder : ''}
