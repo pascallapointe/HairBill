@@ -10,9 +10,10 @@ import {
 } from 'native-base';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import {
+  CategoryType,
   getCategories,
   removeCategory,
-} from '@views/app/services/category/category';
+} from '@views/app/services/category/category.repository';
 import Modal, { ModalRef } from '@components/modal';
 import { useTranslation } from 'react-i18next';
 
@@ -28,7 +29,7 @@ const NoCategories = () => {
 };
 
 const CategoryItem: React.FC<{
-  item: { key: string; name: string };
+  item: CategoryType;
   onDelete: (key: string) => void;
 }> = ({ item, onDelete }) => (
   <Box
@@ -37,10 +38,10 @@ const CategoryItem: React.FC<{
     borderBottomWidth={1}
     py={3}>
     <HStack justifyContent="space-between">
-      <Text fontSize="xl" fontWeight="bold" color="light.700">
+      <Text top={1} fontSize="xl" fontWeight="bold" color="light.700">
         {item.name}
       </Text>
-      <Button variant="unstyled" onPress={() => onDelete(item.key)}>
+      <Button ml={2} variant="outline" onPress={() => onDelete(item.key!)}>
         <Icon as={FontAwesome5Icon} name="trash" />
       </Button>
     </HStack>
@@ -49,14 +50,9 @@ const CategoryItem: React.FC<{
 
 const CategoryList = () => {
   const { t } = useTranslation();
-  const [categories, setCategories] = useState<{ key: string; name: string }[]>(
-    [],
-  );
+  const [categories, setCategories] = useState<CategoryType[]>([]);
   const confirmModal = useRef<ModalRef>(null);
-  const [deleteTarget, setDeleteTarget] = useState<{
-    key: string;
-    name: string;
-  } | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<CategoryType | null>(null);
 
   const errorModal = useRef<ModalRef>(null);
   const [errorMessage, setErrorMessage] = useState('');
@@ -111,7 +107,7 @@ const CategoryList = () => {
 
   return (
     <>
-      <ScrollView maxHeight="400px">
+      <ScrollView maxHeight={{ md: '380px', lg: '500px' }}>
         {categories.map(item => (
           <CategoryItem key={item.key} item={item} onDelete={confirmDelete} />
         ))}

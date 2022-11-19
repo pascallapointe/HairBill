@@ -5,8 +5,14 @@
   "save": "Save",
   "delete": "Delete",
   "cancel": "Cancel",
+  "change": "Change",
+  "none": "None",
+  "price": "${{price}}",
   "validation": {
     "required": "Required",
+    "stringType": "Required",
+    "numberType": "Must be a number",
+    "positive": "The value must be positive",
     "invalidEmail": "Must be a valid email",
     "passwordMismatch": "Passwords don't match",
     "passwordConstraint": "Passwords must contain at least: 1 upper case letter, 1 lower case letter, 1 number or special character",
@@ -60,11 +66,18 @@
   },
   "services": {
     "title": "Manage services",
+    "category": "Category",
     "categories": "Categories",
     "addCategory": "Add a category",
     "noCategory": "No category",
     "newCategory": "New category",
-    "categoryName": "Category name"
+    "categoryName": "Category name",
+    "products": "Products",
+    "addProduct": "Add a product",
+    "noProduct": "No product",
+    "newProduct": "New product",
+    "productName": "Product name",
+    "price": "Price"
   },
   "exception": {
     "unauthenticated": "Unauthenticated user",

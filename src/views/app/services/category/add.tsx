@@ -3,7 +3,7 @@ import { Text, VStack } from 'native-base';
 import TextInput, { InputRef } from '@components/form/text-input';
 import Modal, { ModalRef } from '@components/modal';
 import ActionButton from '@components/action-button';
-import { addCategory } from '@views/app/services/category/category';
+import { addCategory } from '@views/app/services/category/category.repository';
 import { useTranslation } from 'react-i18next';
 import { ErrorType } from '@type/error.type';
 import { z } from 'zod';
@@ -24,7 +24,7 @@ const AddView: React.FC<Props> = ({ setParentView }) => {
     const fields = [nameField.current && nameField.current.validate()];
     if (fields.every(field => field)) {
       setWait(true);
-      addCategory(value)
+      addCategory(value.trim())
         .then(() => setParentView('list'))
         .catch((e: ErrorType) => {
           setErrorMessage(t<string>(e.message ?? 'exception.database'));
@@ -35,12 +35,18 @@ const AddView: React.FC<Props> = ({ setParentView }) => {
 
   return (
     <>
-      <VStack px={5} pb={5} space={4} alignItems="center">
+      <VStack
+        maxHeight={{ md: '380px', lg: '497px' }}
+        px={5}
+        pb={5}
+        space={4}
+        alignItems="center">
         <TextInput
           ref={nameField}
           bindValue={setValue}
           label={t('services.newCategory')}
           placeholder={t('services.categoryName')}
+          clear="while-editing"
           schema={z
             .string({
               required_error: t('validation.required'),

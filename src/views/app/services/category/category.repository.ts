@@ -3,9 +3,12 @@ import database from '@react-native-firebase/database';
 import UnauthenticatedException from '@lib/unauthenticated.exception';
 import DatabaseException from '@lib/database.exception';
 
-export async function getCategories(): Promise<
-  { key: string; name: string }[]
-> {
+export type CategoryType = {
+  key: string;
+  name: string;
+};
+
+export async function getCategories(): Promise<CategoryType[]> {
   const user = auth().currentUser;
 
   if (!user) {
@@ -17,10 +20,12 @@ export async function getCategories(): Promise<
     .orderByValue()
     .once('value');
 
-  const categories: { key: string; name: string }[] = [];
+  const categories: CategoryType[] = [];
 
   result.forEach(snap => {
-    categories.push({ key: snap.key!, name: snap.val() });
+    if (snap.key) {
+      categories.push({ key: snap.key!, name: snap.val() });
+    }
     return undefined;
   });
 

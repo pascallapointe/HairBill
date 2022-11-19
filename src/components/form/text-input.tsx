@@ -17,7 +17,7 @@ import { NativeSyntheticEvent, TextInputFocusEventData } from 'react-native';
 import type { ThemeComponentSizeType } from 'native-base/lib/typescript/components/types';
 
 interface Props extends IFormControlProps {
-  bindValue: (val: string) => void;
+  bindValue: (val: any) => void;
   label?: string;
   value?: string;
   placeholder?: string;

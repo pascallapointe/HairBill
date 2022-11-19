@@ -5,8 +5,14 @@
   "save": "Enregistrer",
   "delete": "Supprimer",
   "cancel": "Annuler",
+  "change": "Changer",
+  "none": "Aucun",
+  "price": "${{price}}",
   "validation": {
     "required": "Obligatoire",
+    "stringType": "Obligatoire",
+    "numberType": "Doit être un nombre",
+    "positive": "La valeur doit être positive",
     "invalidEmail": "Doit être un courriel valide",
     "passwordMismatch": "Les mots de passe ne correspondent pas",
     "passwordConstraint": "Les mots de passe doivent contenir au minimum : 1 lettre majuscule, 1 lettre minuscule, 1 chiffre ou caractère spécial",
@@ -60,11 +66,18 @@
   },
   "services": {
     "title": "Gérer les services",
+    "category": "Catégorie",
     "categories": "Catégories",
     "addCategory": "Ajouter une catégorie",
     "noCategory": "Aucune catégorie",
     "newCategory": "Nouvelle catégorie",
-    "categoryName": "Nom de la catégorie"
+    "categoryName": "Nom de la catégorie",
+    "products": "Produits",
+    "addProduct": "Ajouter un produit",
+    "noProduct": "Aucun produit",
+    "newProduct": "Nouveau produit",
+    "productName": "Nom du produit",
+    "price": "Prix"
   },
   "exception": {
     "unauthenticated": "Utilisateur non identifié",
