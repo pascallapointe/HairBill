@@ -41,7 +41,7 @@ const CategoryItem: React.FC<{
       <Text top={1} fontSize="xl" fontWeight="bold" color="light.700">
         {item.name}
       </Text>
-      <Button ml={2} variant="outline" onPress={() => onDelete(item.key!)}>
+      <Button ml={2} variant="outline" onPress={() => onDelete(item.id!)}>
         <Icon as={FontAwesome5Icon} name="trash" />
       </Button>
     </HStack>
@@ -67,7 +67,7 @@ const CategoryList = () => {
   }, []);
 
   function confirmDelete(key: string) {
-    setDeleteTarget(categories.find(item => item.key === key) ?? null);
+    setDeleteTarget(categories.find(item => item.id === key) ?? null);
     confirmModal.current && confirmModal.current.open();
   }
 
@@ -79,7 +79,7 @@ const CategoryList = () => {
     try {
       await removeCategory(key);
       const list = [...categories];
-      const index = list.findIndex(item => item.key === key);
+      const index = list.findIndex(item => item.id === key);
       list.splice(index, 1);
       setCategories(list);
     } catch (e: any) {
@@ -109,15 +109,15 @@ const CategoryList = () => {
     <>
       <ScrollView maxHeight={{ md: '380px', lg: '500px' }}>
         {categories.map(item => (
-          <CategoryItem key={item.key} item={item} onDelete={confirmDelete} />
+          <CategoryItem key={item.id} item={item} onDelete={confirmDelete} />
         ))}
       </ScrollView>
       <Modal
         ref={confirmModal}
-        action={() => deleteItem(deleteTarget?.key)}
+        action={() => deleteItem(deleteTarget?.id)}
         title={t('modal.confirmDelete')}
-        actionBtnText={t('delete')}
-        closeBtnText={t('cancel')}
+        actionBtnText={t<string>('delete')}
+        closeBtnText={t<string>('cancel')}
         modalType="warning">
         <Text fontSize="md" textAlign="center">
           {t('modal.deleteMessage')}{' '}

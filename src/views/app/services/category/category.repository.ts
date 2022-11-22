@@ -1,31 +1,35 @@
 import auth from '@react-native-firebase/auth';
-import database from '@react-native-firebase/database';
 import UnauthenticatedException from '@lib/unauthenticated.exception';
 import DatabaseException from '@lib/database.exception';
+import firestore from '@react-native-firebase/firestore';
+import { CollectionReference } from '@type/firestore.type';
 
 export type CategoryType = {
-  key: string;
+  id: string;
   name: string;
 };
 
-export async function getCategories(): Promise<CategoryType[]> {
+function getCategoryCollection(): CollectionReference {
   const user = auth().currentUser;
 
   if (!user) {
     throw new UnauthenticatedException();
   }
 
-  let result = await database()
-    .ref(`/users/${user.uid}/service-categories`)
-    .orderByValue()
-    .once('value');
+  return firestore()
+    .collection('users')
+    .doc(user.uid)
+    .collection('service-categories');
+}
+
+export async function getCategories(): Promise<CategoryType[]> {
+  let result = await getCategoryCollection().orderBy('name').get();
 
   const categories: CategoryType[] = [];
 
   result.forEach(snap => {
-    if (snap.key) {
-      categories.push({ key: snap.key!, name: snap.val() });
-    }
+    categories.push({ id: snap.id, name: snap.get('name') });
+
     return undefined;
   });
 
@@ -33,16 +37,8 @@ export async function getCategories(): Promise<CategoryType[]> {
 }
 
 export async function addCategory(name: string): Promise<boolean> {
-  const user = auth().currentUser;
-
-  if (!user) {
-    throw new UnauthenticatedException();
-  }
-
-  const ref = database().ref(`/users/${user.uid}/service-categories`).push();
-
   try {
-    await ref.set(name);
+    await getCategoryCollection().add({ name: name });
   } catch (e) {
     throw new DatabaseException('exception.db.change-fail');
   }
@@ -50,17 +46,11 @@ export async function addCategory(name: string): Promise<boolean> {
   return true;
 }
 
-export async function removeCategory(key: string): Promise<boolean> {
-  const user = auth().currentUser;
-
-  if (!user) {
-    throw new UnauthenticatedException();
-  }
-
-  const ref = database().ref(`/users/${user.uid}/service-categories/${key}`);
+export async function removeCategory(id: string): Promise<boolean> {
+  const doc = getCategoryCollection().doc(id);
 
   try {
-    await ref.set(null);
+    await doc.delete();
   } catch (e) {
     throw new DatabaseException('exception.db.change-fail');
   }

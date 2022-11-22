@@ -65,7 +65,7 @@ const EditView: React.FC<Props> = ({ product, setParentView }) => {
       setWait(true);
       if (product) {
         updateProduct({
-          key: product.key,
+          id: product.id,
           name: name.trim(),
           price: roundTo(price, 2),
           category: category,

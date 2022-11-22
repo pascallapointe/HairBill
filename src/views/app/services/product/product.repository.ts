@@ -1,11 +1,12 @@
 import auth from '@react-native-firebase/auth';
-import database from '@react-native-firebase/database';
 import UnauthenticatedException from '@lib/unauthenticated.exception';
 import DatabaseException from '@lib/database.exception';
 import { CategoryType } from '@views/app/services/category/category.repository';
+import firestore from '@react-native-firebase/firestore';
+import { CollectionReference } from '@type/firestore.type';
 
 export type ProductType = {
-  key: string;
+  id: string;
   name: string;
   price: number;
   category: CategoryType | null;
@@ -17,25 +18,29 @@ export type NewProductType = {
   category: CategoryType | null;
 };
 
-export async function getProducts(): Promise<ProductType[]> {
+function getProductCollection(): CollectionReference {
   const user = auth().currentUser;
 
   if (!user) {
     throw new UnauthenticatedException();
   }
 
-  let result = await database()
-    .ref(`/users/${user.uid}/service-products`)
-    .orderByValue()
-    .once('value');
+  return firestore()
+    .collection('users')
+    .doc(user.uid)
+    .collection('service-products');
+}
+
+export async function getProducts(): Promise<ProductType[]> {
+  let result = await getProductCollection().orderBy('name').get();
 
   const products: ProductType[] = [];
 
   result.forEach(snap => {
-    if (snap.key) {
-      const value: ProductType = snap.val();
+    if (snap.id) {
+      const value = snap.data();
       products.push({
-        key: snap.key,
+        id: snap.id,
         name: value.name,
         category: value.category,
         price: value.price,
@@ -48,16 +53,8 @@ export async function getProducts(): Promise<ProductType[]> {
 }
 
 export async function addProduct(product: NewProductType): Promise<boolean> {
-  const user = auth().currentUser;
-
-  if (!user) {
-    throw new UnauthenticatedException();
-  }
-
-  const ref = database().ref(`/users/${user.uid}/service-products`).push();
-
   try {
-    await ref.set(product);
+    await getProductCollection().add(product);
   } catch (e) {
     throw new DatabaseException('exception.db.change-fail');
   }
@@ -66,18 +63,10 @@ export async function addProduct(product: NewProductType): Promise<boolean> {
 }
 
 export async function updateProduct(product: ProductType): Promise<boolean> {
-  const user = auth().currentUser;
-
-  if (!user) {
-    throw new UnauthenticatedException();
-  }
-
-  const ref = database().ref(
-    `/users/${user.uid}/service-products/${product.key}`,
-  );
+  const doc = getProductCollection().doc(product.id);
 
   try {
-    await ref.update(product);
+    await doc.update(product);
   } catch (e) {
     throw new DatabaseException('exception.db.change-fail');
   }
@@ -85,17 +74,11 @@ export async function updateProduct(product: ProductType): Promise<boolean> {
   return true;
 }
 
-export async function removeProduct(key: string): Promise<boolean> {
-  const user = auth().currentUser;
-
-  if (!user) {
-    throw new UnauthenticatedException();
-  }
-
-  const ref = database().ref(`/users/${user.uid}/service-products/${key}`);
+export async function removeProduct(id: string): Promise<boolean> {
+  const doc = getProductCollection().doc(id);
 
   try {
-    await ref.set(null);
+    await doc.delete();
   } catch (e) {
     throw new DatabaseException('exception.db.change-fail');
   }

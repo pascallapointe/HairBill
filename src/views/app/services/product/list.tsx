@@ -8,6 +8,7 @@ import {
   Icon,
   ScrollView,
   Text,
+  View,
 } from 'native-base';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import Modal, { ModalRef } from '@components/modal';
@@ -60,7 +61,7 @@ const ProductItem: React.FC<{
           <Button ml={2} variant="outline" onPress={() => onEdit(item)}>
             <Icon as={FontAwesome5Icon} name="pen" color="yellow.500" />
           </Button>
-          <Button ml={2} variant="outline" onPress={() => onDelete(item.key!)}>
+          <Button ml={2} variant="outline" onPress={() => onDelete(item.id!)}>
             <Icon as={FontAwesome5Icon} name="trash" />
           </Button>
         </Flex>
@@ -113,17 +114,17 @@ const ProductList: React.FC<{ onEdit: (p: ProductType) => void }> = ({
 
     // Insert categories
     for (const category of categories) {
-      list[category.key] = { name: category.name, products: [] };
+      list[category.id] = { name: category.name, products: [] };
     }
     // Insert products
     for (const product of products) {
-      if (product.category && !list[product.category.key]) {
-        list[product.category.key] = {
+      if (product.category && !list[product.category.id]) {
+        list[product.category.id] = {
           name: product.category.name,
           products: [],
         };
       }
-      list[product.category ? product.category.key : 'none'].products.push(
+      list[product.category ? product.category.id : 'none'].products.push(
         product,
       );
     }
@@ -132,7 +133,7 @@ const ProductList: React.FC<{ onEdit: (p: ProductType) => void }> = ({
   }, [products, categories]);
 
   function confirmDelete(key: string) {
-    setDeleteTarget(products.find(item => item.key === key) ?? null);
+    setDeleteTarget(products.find(item => item.id === key) ?? null);
     confirmModal.current && confirmModal.current.open();
   }
 
@@ -144,7 +145,7 @@ const ProductList: React.FC<{ onEdit: (p: ProductType) => void }> = ({
     try {
       await removeProduct(key);
       const list = [...products];
-      const index = list.findIndex(item => item.key === key);
+      const index = list.findIndex(item => item.id === key);
       list.splice(index, 1);
       setProducts(list);
     } catch (e: any) {
@@ -174,7 +175,7 @@ const ProductList: React.FC<{ onEdit: (p: ProductType) => void }> = ({
     <>
       <ScrollView maxHeight={{ md: '380px', lg: '500px' }}>
         {Object.keys(sectionList).map(key => (
-          <>
+          <View key={key}>
             {sectionList[key].products.length ? (
               <Text
                 fontSize="lg"
@@ -188,21 +189,21 @@ const ProductList: React.FC<{ onEdit: (p: ProductType) => void }> = ({
             )}
             {sectionList[key].products.map(item => (
               <ProductItem
-                key={item.key}
+                key={item.id}
                 item={item}
                 onDelete={confirmDelete}
                 onEdit={onEdit}
               />
             ))}
-          </>
+          </View>
         ))}
       </ScrollView>
       <Modal
         ref={confirmModal}
-        action={() => deleteItem(deleteTarget?.key)}
+        action={() => deleteItem(deleteTarget?.id)}
         title={t('modal.confirmDelete')}
-        actionBtnText={t('delete')}
-        closeBtnText={t('cancel')}
+        actionBtnText={t<string>('delete')}
+        closeBtnText={t<string>('cancel')}
         modalType="warning">
         <Text fontSize="md" textAlign="center">
           {t('modal.deleteMessage')}{' '}

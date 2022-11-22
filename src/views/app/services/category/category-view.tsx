@@ -15,7 +15,9 @@ const CategoryView = () => {
       maxHeight={{ md: '380px', lg: '570px' }}
       width="lg"
       title={
-        view === 'list' ? t('services.categories') : t('services.addCategory')
+        view === 'list'
+          ? t<string>('services.categories')
+          : t<string>('services.addCategory')
       }
       options={
         view === 'list' ? (

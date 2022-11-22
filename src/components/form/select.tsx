@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import ValidationErrors from '@components/form/validation-errors';
 
-type OptionType = { key: string; name: string };
+type OptionType = { id: string; name: string };
 
 interface Props extends IFormControlProps {
   label: string;
@@ -59,12 +59,13 @@ const Options: React.FC<{
       <Flex direction="row" wrap="wrap">
         {options.map(option => (
           <Button
+            key={option.id}
             m={1}
             size="sm"
-            onPress={() => select(option.key === 'none' ? null : option)}
+            onPress={() => select(option.id === 'none' ? null : option)}
             rounded={15}
             _text={{ fontWeight: 'bold' }}
-            colorScheme="lime"
+            colorScheme={option.id === 'none' ? 'muted' : 'lime'}
             shadow={2}>
             {option.name}
           </Button>
@@ -103,16 +104,16 @@ const Select = forwardRef<SelectRef, Props>(
 
     function validate(option?: OptionType | null): boolean {
       const baseSchema = z.string({
-        required_error: t('validation.required'),
-        invalid_type_error: t('validation.stringType'),
+        required_error: t<string>('validation.required'),
+        invalid_type_error: t<string>('validation.stringType'),
       });
       const schema = required
-        ? baseSchema.min(1, { message: t('validation.required') })
+        ? baseSchema.min(1, { message: t<string>('validation.required') })
         : baseSchema.nullable();
 
       const value = option === undefined ? selected : option;
 
-      let result = schema.safeParse(value ? value.key : null);
+      let result = schema.safeParse(value ? value.id : null);
 
       setError(!result.success);
       setErrorMessages([]);
@@ -142,9 +143,7 @@ const Select = forwardRef<SelectRef, Props>(
         ) : (
           <Options
             options={
-              required
-                ? options
-                : [{ key: 'none', name: t('none') }, ...options]
+              required ? options : [{ id: 'none', name: t('none') }, ...options]
             }
             select={select}
           />

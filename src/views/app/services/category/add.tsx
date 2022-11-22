@@ -44,14 +44,14 @@ const AddView: React.FC<Props> = ({ setParentView }) => {
         <TextInput
           ref={nameField}
           bindValue={setValue}
-          label={t('services.newCategory')}
-          placeholder={t('services.categoryName')}
+          label={t<string>('services.newCategory')}
+          placeholder={t<string>('services.categoryName')}
           clear="while-editing"
           schema={z
             .string({
-              required_error: t('validation.required'),
+              required_error: t<string>('validation.required'),
             })
-            .min(1, { message: t('validation.min', { count: 1 }) })}
+            .min(1, { message: t<string>('validation.min', { count: 1 }) })}
         />
         <ActionButton
           size="lg"
