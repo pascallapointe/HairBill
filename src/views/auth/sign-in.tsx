@@ -88,10 +88,10 @@ const SignInView: React.FC<Props> = ({ navigation }) => {
           </Heading>
           <Card
             w="400px"
-            title={t('auth.signIn')}
+            title={t<string>('auth.signIn')}
             titleAlign="center"
             alignItems="center">
-            <VStack pb={2} space={2} alignItems="center">
+            <VStack pb={2} space={2} alignItems="center" minW="100%">
               <TextInput
                 value={defaultEmail}
                 bindValue={setEmailValue}
@@ -99,9 +99,9 @@ const SignInView: React.FC<Props> = ({ navigation }) => {
                 placeholder={t<string>('auth.emailPlaceholder')}
                 icon={<ZocialIcon name="email" />}
                 schema={z
-                  .string({ required_error: t('validation.required') })
+                  .string({ required_error: t<string>('validation.required') })
                   .email({
-                    message: t('validation.invalidEmail'),
+                    message: t<string>('validation.invalidEmail'),
                   })}
                 clear="while-editing"
                 keyboardType="email-address"
@@ -113,7 +113,7 @@ const SignInView: React.FC<Props> = ({ navigation }) => {
                 placeholder={t<string>('auth.password')}
                 icon={<FontAwesome5Icon name="key" />}
                 schema={z
-                  .string({ required_error: t('validation.required') })
+                  .string({ required_error: t<string>('validation.required') })
                   .min(8, t<string>('validation.min', { count: 8 }))}
                 clear="while-editing"
                 secureTextEntry={true}

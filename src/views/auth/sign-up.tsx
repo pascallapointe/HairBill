@@ -94,7 +94,7 @@ const RegisterView: React.FC<Props> = ({ navigation }) => {
             &nbsp;Nouveau compte&nbsp;
           </Heading>
           <Card w="400px" titleAlign="center" alignItems="center">
-            <VStack p={2} space={2} alignItems="center">
+            <VStack p={2} space={2} alignItems="center" minW="100%">
               <TextInput
                 ref={emailField}
                 bindValue={setEmailValue}
@@ -102,9 +102,9 @@ const RegisterView: React.FC<Props> = ({ navigation }) => {
                 placeholder={t<string>('auth.emailPlaceholder')}
                 icon={<ZocialIcon name="email" />}
                 schema={z
-                  .string({ required_error: t('validation.required') })
+                  .string({ required_error: t<string>('validation.required') })
                   .email({
-                    message: t('validation.invalidEmail'),
+                    message: t<string>('validation.invalidEmail'),
                   })}
                 clear="while-editing"
                 keyboardType="email-address"
@@ -151,7 +151,7 @@ const RegisterView: React.FC<Props> = ({ navigation }) => {
         <Modal
           ref={successModal}
           hideClose={true}
-          actionBtnText={t('auth.backToSignIn')}
+          actionBtnText={t<string>('auth.backToSignIn')}
           callback={() => navigation.navigate('signIn')}
           title={t('auth.registerSuccess.title')}>
           <Text fontSize="md" textAlign="center" mb={3}>

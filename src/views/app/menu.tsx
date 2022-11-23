@@ -42,7 +42,11 @@ const MenuView: React.FC<Props> = ({ navigation }) => {
             text={t('home.services')}
             icon="store"
           />
-          <NavButton action={() => null} text={t('home.options')} icon="cogs" />
+          <NavButton
+            action={() => navigation.navigate('options')}
+            text={t('home.options')}
+            icon="cogs"
+          />
         </Flex>
       </SafeAreaView>
     </Box>

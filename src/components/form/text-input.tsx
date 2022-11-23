@@ -156,11 +156,7 @@ const TextInput = forwardRef<InputRef, Props>(
     }
 
     return (
-      <FormControl
-        isInvalid={error}
-        isRequired={required}
-        minW="100%"
-        {...props}>
+      <FormControl isInvalid={error} isRequired={required} {...props}>
         <InputLabel label={label} />
         <Input
           onBlur={initAndValidate}

@@ -35,7 +35,9 @@ const ProductView = () => {
       maxHeight={{ md: '380px', lg: '570px' }}
       width="lg"
       title={
-        view === 'list' ? t('services.products') : t('services.addProduct')
+        view === 'list'
+          ? t<string>('services.products')
+          : t<string>('services.addProduct')
       }
       options={
         view === 'list' ? (

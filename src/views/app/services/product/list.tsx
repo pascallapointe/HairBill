@@ -3,12 +3,15 @@ import {
   Box,
   Button,
   Center,
+  Divider,
   Flex,
   HStack,
   Icon,
   ScrollView,
+  Skeleton,
   Text,
   View,
+  VStack,
 } from 'native-base';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import Modal, { ModalRef } from '@components/modal';
@@ -83,6 +86,7 @@ const ProductList: React.FC<{ onEdit: (p: ProductType) => void }> = ({
   onEdit,
 }) => {
   const { t } = useTranslation();
+  const [init, setInit] = useState(true);
   const [products, setProducts] = useState<ProductType[]>([]);
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [sectionList, setSectionList] = useState<SectionListType>({});
@@ -100,7 +104,12 @@ const ProductList: React.FC<{ onEdit: (p: ProductType) => void }> = ({
         errorModal.current && errorModal.current.open();
       });
     getProducts()
-      .then(setProducts)
+      .then(p => {
+        setProducts(p);
+        if (init) {
+          setInit(false);
+        }
+      })
       .catch((e: any) => {
         setErrorMessage(t<string>(e.message ?? 'exception.database'));
         errorModal.current && errorModal.current.open();
@@ -154,6 +163,22 @@ const ProductList: React.FC<{ onEdit: (p: ProductType) => void }> = ({
     }
   }
 
+  if (init) {
+    return (
+      <VStack divider={<Divider bgColor="muted.400" />}>
+        {[1, 2, 3].map(key => (
+          <Flex key={key} my={2} direction="row" justifyContent="space-between">
+            <Skeleton w="150px" top={1} h="30px" />
+            <HStack>
+              <Skeleton w="40px" h="40px" startColor="violet.200" />
+              <Skeleton ml={2} w="40px" h="40px" startColor="fuchsia.200" />
+            </HStack>
+          </Flex>
+        ))}
+      </VStack>
+    );
+  }
+
   if (!products.length) {
     return (
       <>
@@ -173,7 +198,7 @@ const ProductList: React.FC<{ onEdit: (p: ProductType) => void }> = ({
 
   return (
     <>
-      <ScrollView maxHeight={{ md: '380px', lg: '500px' }}>
+      <ScrollView maxHeight={{ md: '310', lg: '500px' }}>
         {Object.keys(sectionList).map(key => (
           <View key={key}>
             {sectionList[key].products.length ? (

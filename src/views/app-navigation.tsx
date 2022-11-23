@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { NavigationContainer } from '@react-navigation/native';
 import MenuView from '@views/app/menu';
 import ServicesView from '@views/app/services/services';
+import OptionsView from '@views/app/options/options-view';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +31,11 @@ const AppNavigation = () => {
             name="services"
             component={ServicesView}
             options={{ title: `HairBill - ${t('services.title')}` }}
+          />
+          <Stack.Screen
+            name="options"
+            component={OptionsView}
+            options={{ title: `HairBill - ${t('options.title')}` }}
           />
         </Stack.Navigator>
       </NavigationContainer>

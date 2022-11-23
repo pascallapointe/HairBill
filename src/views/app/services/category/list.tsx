@@ -3,10 +3,14 @@ import {
   Box,
   Button,
   Center,
+  Divider,
+  Flex,
   HStack,
   Icon,
   ScrollView,
+  Skeleton,
   Text,
+  VStack,
 } from 'native-base';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import {
@@ -50,6 +54,7 @@ const CategoryItem: React.FC<{
 
 const CategoryList = () => {
   const { t } = useTranslation();
+  const [init, setInit] = useState(true);
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const confirmModal = useRef<ModalRef>(null);
   const [deleteTarget, setDeleteTarget] = useState<CategoryType | null>(null);
@@ -59,7 +64,12 @@ const CategoryList = () => {
 
   useEffect(() => {
     getCategories()
-      .then(setCategories)
+      .then(cat => {
+        setCategories(cat);
+        if (init) {
+          setInit(false);
+        }
+      })
       .catch((e: any) => {
         setErrorMessage(t<string>(e.message ?? 'exception.database'));
         errorModal.current && errorModal.current.open();
@@ -88,6 +98,21 @@ const CategoryList = () => {
     }
   }
 
+  if (init) {
+    return (
+      <VStack divider={<Divider bgColor="muted.400" />}>
+        {[1, 2, 3].map(key => (
+          <Flex key={key} my={2} direction="row" justifyContent="space-between">
+            <Skeleton w="150px" top={1} h="30px" />
+            <HStack>
+              <Skeleton ml={2} w="40px" h="40px" startColor="fuchsia.200" />
+            </HStack>
+          </Flex>
+        ))}
+      </VStack>
+    );
+  }
+
   if (!categories.length) {
     return (
       <>
@@ -107,7 +132,7 @@ const CategoryList = () => {
 
   return (
     <>
-      <ScrollView maxHeight={{ md: '380px', lg: '500px' }}>
+      <ScrollView maxHeight={{ md: '310px', lg: '500px' }}>
         {categories.map(item => (
           <CategoryItem key={item.id} item={item} onDelete={confirmDelete} />
         ))}

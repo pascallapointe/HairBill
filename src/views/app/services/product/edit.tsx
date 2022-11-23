@@ -102,21 +102,21 @@ const EditView: React.FC<Props> = ({ product, setParentView }) => {
           ref={nameField}
           value={product?.name}
           bindValue={setName}
-          label={t('services.newProduct')}
-          placeholder={t('services.productName')}
+          label={t<string>('services.newProduct')}
+          placeholder={t<string>('services.productName')}
           clear="while-editing"
           schema={z
             .string({
-              required_error: t('validation.required'),
+              required_error: t<string>('validation.required'),
             })
-            .min(1, { message: t('validation.min', { count: 1 }) })}
+            .min(1, { message: t<string>('validation.min', { count: 1 }) })}
         />
         <TextInput
           ref={priceField}
           value={product?.price.toString()}
           bindValue={setPrice}
           keyboardType="decimal-pad"
-          label={t('services.price')}
+          label={t<string>('services.price')}
           placeholder="0.00"
           icon={<Icon as={FontAwesome5Icon} name="dollar-sign" />}
           clear="while-editing"
@@ -124,10 +124,10 @@ const EditView: React.FC<Props> = ({ product, setParentView }) => {
             val => parseFloat(val as string),
             z
               .number({
-                required_error: t('validation.required'),
-                invalid_type_error: t('validation.numberType'),
+                required_error: t<string>('validation.required'),
+                invalid_type_error: t<string>('validation.numberType'),
               })
-              .nonnegative({ message: t('validation.positive') }),
+              .nonnegative({ message: t<string>('validation.positive') }),
           )}
         />
         <Select

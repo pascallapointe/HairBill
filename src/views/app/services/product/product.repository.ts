@@ -66,7 +66,11 @@ export async function updateProduct(product: ProductType): Promise<boolean> {
   const doc = getProductCollection().doc(product.id);
 
   try {
-    await doc.update(product);
+    await doc.update({
+      name: product.name,
+      price: product.price,
+      category: product.category,
+    });
   } catch (e) {
     throw new DatabaseException('exception.db.change-fail');
   }

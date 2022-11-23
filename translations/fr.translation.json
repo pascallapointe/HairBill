@@ -8,6 +8,7 @@
   "change": "Changer",
   "none": "Aucun",
   "price": "${{price}}",
+  "percentage": "Pourcentage",
   "validation": {
     "required": "Obligatoire",
     "stringType": "Obligatoire",
@@ -23,6 +24,7 @@
     "defaultActionText": "Ok",
     "defaultCloseText": "Fermer",
     "defaultErrorMessage": "Oups, quelque chose d'inattendu s'est produit. Veuillez réessayer ultérieurement ou contactez l'assistance.",
+    "changeSaved": "Modification enregistrée",
     "confirmDelete": "Confirmez la suppression",
     "deleteMessage": "Vous êtes sur le point de supprimer"
   },
@@ -78,6 +80,18 @@
     "newProduct": "Nouveau produit",
     "productName": "Nom du produit",
     "price": "Prix"
+  },
+  "options": {
+    "title": "Options",
+    "appSettings": "Paramètres de l'application",
+    "applyTax": "Appliquer taxe",
+    "useBTax": "Utiliser 2 taxes",
+    "compoundTax": "Composées (B sur A)",
+    "taxNumber": "Numéro de taxe",
+    "taxAName": "Nom de la taxe A",
+    "taxBName": "Nom de la taxe B",
+    "gst5PCT": "TPS (5%)",
+    "pst9PCT": "TVP (9.975%)"
   },
   "exception": {
     "unauthenticated": "Utilisateur non identifié",

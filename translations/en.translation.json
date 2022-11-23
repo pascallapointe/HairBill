@@ -8,6 +8,7 @@
   "change": "Change",
   "none": "None",
   "price": "${{price}}",
+  "percentage": "Percentage",
   "validation": {
     "required": "Required",
     "stringType": "Required",
@@ -22,7 +23,9 @@
   "modal": {
     "defaultActionText": "Ok",
     "defaultCloseText": "Close",
+    "defaultErrorTitle": "Unexpected error",
     "defaultErrorMessage": "Oops, something unexpected happened. Please try again later or contact support.",
+    "changeSaved": "Change saved",
     "confirmDelete": "Confirm delete",
     "deleteMessage": "You are about to delete"
   },
@@ -78,6 +81,18 @@
     "newProduct": "New product",
     "productName": "Product name",
     "price": "Price"
+  },
+  "options": {
+    "title": "Options",
+    "appSettings": "App Settings",
+    "applyTax": "Apply tax",
+    "useBTax": "Use 2 taxes",
+    "compoundTax": "Compound (B on A)",
+    "taxNumber": "Tax number",
+    "taxAName": "Tax A name",
+    "taxBName": "Tax B name",
+    "gst5PCT": "GST (5%)",
+    "pst9PCT": "PST (9.975%)"
   },
   "exception": {
     "unauthenticated": "Unauthenticated user",
