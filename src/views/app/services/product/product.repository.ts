@@ -7,13 +7,13 @@ export type ProductType = {
   id: string;
   name: string;
   price: number;
-  category: CategoryType | null;
+  category: CategoryType;
 };
 
 export type NewProductType = {
   name: string;
   price: number;
-  category: CategoryType | null;
+  category: CategoryType;
 };
 
 function getProductCollection(): CollectionReference {
@@ -21,7 +21,10 @@ function getProductCollection(): CollectionReference {
 }
 
 export async function getProducts(): Promise<ProductType[]> {
-  let result = await getProductCollection().orderBy('name').get();
+  let result = await getProductCollection()
+    .orderBy('category.name', 'asc')
+    .orderBy('name', 'asc')
+    .get();
 
   const products: ProductType[] = [];
 

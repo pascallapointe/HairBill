@@ -68,7 +68,7 @@ const EditView: React.FC<Props> = ({ product, setParentView }) => {
           id: product.id,
           name: name.trim(),
           price: roundTo(price, 2),
-          category: category,
+          category: category ?? { id: 'none', name: '!none' },
         })
           .then(() => setParentView('list'))
           .catch((e: ErrorType) => {
@@ -79,7 +79,7 @@ const EditView: React.FC<Props> = ({ product, setParentView }) => {
         addProduct({
           name: name.trim(),
           price: roundTo(price, 2),
-          category: category,
+          category: category ?? { id: 'none', name: '!none' },
         })
           .then(() => setParentView('list'))
           .catch((e: ErrorType) => {
@@ -133,7 +133,11 @@ const EditView: React.FC<Props> = ({ product, setParentView }) => {
         <Select
           maxHeight="180px"
           ref={categoryField}
-          defaultSelection={product?.category ?? undefined}
+          defaultSelection={
+            product && product.category.id !== 'none'
+              ? product.category
+              : undefined
+          }
           bindValue={setCategory}
           label={t('services.category')}
           options={categories}

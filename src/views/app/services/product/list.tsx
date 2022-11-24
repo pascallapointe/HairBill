@@ -21,10 +21,6 @@ import {
   ProductType,
   removeProduct,
 } from '@views/app/services/product/product.repository';
-import {
-  CategoryType,
-  getCategories,
-} from '@views/app/services/category/category.repository';
 
 const NoProduct = () => {
   const { t } = useTranslation();
@@ -88,7 +84,6 @@ const ProductList: React.FC<{ onEdit: (p: ProductType) => void }> = ({
   const { t } = useTranslation();
   const [init, setInit] = useState(true);
   const [products, setProducts] = useState<ProductType[]>([]);
-  const [categories, setCategories] = useState<CategoryType[]>([]);
   const [sectionList, setSectionList] = useState<SectionListType>({});
   const confirmModal = useRef<ModalRef>(null);
   const [deleteTarget, setDeleteTarget] = useState<ProductType | null>(null);
@@ -97,15 +92,10 @@ const ProductList: React.FC<{ onEdit: (p: ProductType) => void }> = ({
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    getCategories()
-      .then(setCategories)
-      .catch((e: any) => {
-        setErrorMessage(t<string>(e.message ?? 'exception.database'));
-        errorModal.current && errorModal.current.open();
-      });
     getProducts()
       .then(p => {
         setProducts(p);
+        setSectionList(buildSectionList(p));
         if (init) {
           setInit(false);
         }
@@ -116,30 +106,24 @@ const ProductList: React.FC<{ onEdit: (p: ProductType) => void }> = ({
       });
   }, []);
 
-  useEffect(() => {
+  function buildSectionList(productsList: ProductType[]): SectionListType {
     const list: SectionListType = {
       none: { name: t('services.noCategory'), products: [] },
     };
 
-    // Insert categories
-    for (const category of categories) {
-      list[category.id] = { name: category.name, products: [] };
-    }
     // Insert products
-    for (const product of products) {
-      if (product.category && !list[product.category.id]) {
+    for (const product of productsList) {
+      if (!list[product.category.id]) {
         list[product.category.id] = {
           name: product.category.name,
           products: [],
         };
       }
-      list[product.category ? product.category.id : 'none'].products.push(
-        product,
-      );
+      list[product.category.id].products.push(product);
     }
 
-    setSectionList(list);
-  }, [products, categories]);
+    return list;
+  }
 
   function confirmDelete(key: string) {
     setDeleteTarget(products.find(item => item.id === key) ?? null);
