@@ -1,8 +1,6 @@
-import auth from '@react-native-firebase/auth';
-import UnauthenticatedException from '@lib/unauthenticated.exception';
 import DatabaseException from '@lib/database.exception';
-import firestore from '@react-native-firebase/firestore';
 import { CollectionReference } from '@type/firestore.type';
+import { getRootDocument } from '@lib/repository';
 
 export type CategoryType = {
   id: string;
@@ -10,16 +8,7 @@ export type CategoryType = {
 };
 
 function getCategoryCollection(): CollectionReference {
-  const user = auth().currentUser;
-
-  if (!user) {
-    throw new UnauthenticatedException();
-  }
-
-  return firestore()
-    .collection('users')
-    .doc(user.uid)
-    .collection('service-categories');
+  return getRootDocument().collection('service-categories');
 }
 
 export async function getCategories(): Promise<CategoryType[]> {

@@ -1,9 +1,7 @@
-import auth from '@react-native-firebase/auth';
-import UnauthenticatedException from '@lib/unauthenticated.exception';
 import DatabaseException from '@lib/database.exception';
 import { CategoryType } from '@views/app/services/category/category.repository';
-import firestore from '@react-native-firebase/firestore';
 import { CollectionReference } from '@type/firestore.type';
+import { getRootDocument } from '@lib/repository';
 
 export type ProductType = {
   id: string;
@@ -19,16 +17,7 @@ export type NewProductType = {
 };
 
 function getProductCollection(): CollectionReference {
-  const user = auth().currentUser;
-
-  if (!user) {
-    throw new UnauthenticatedException();
-  }
-
-  return firestore()
-    .collection('users')
-    .doc(user.uid)
-    .collection('service-products');
+  return getRootDocument().collection('service-products');
 }
 
 export async function getProducts(): Promise<ProductType[]> {

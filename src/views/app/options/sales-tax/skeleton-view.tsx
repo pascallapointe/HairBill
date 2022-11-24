@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Flex, HStack, Skeleton, VStack } from 'native-base';
+import { Box, Center, Flex, HStack, Skeleton, VStack } from 'native-base';
 
 const SkeletonView = () => (
   <Box>
@@ -18,9 +18,9 @@ const SkeletonView = () => (
       </HStack>
     </Flex>
 
-    <Box mt={2}>
+    <Box mt={2} alignItems="center">
       <Skeleton maxW="150px" h={5} mr={2} mb={2} />
-      <Skeleton maxW="300px" h={8} mr={2} rounded={4} />
+      <Skeleton maxW="455px" h={8} mr={2} rounded={4} />
 
       <HStack space={4} my={2}>
         <VStack w="300px">
@@ -28,9 +28,9 @@ const SkeletonView = () => (
           <Skeleton maxW="300px" h={8} mr={2} rounded={4} />
         </VStack>
 
-        <VStack w="300px">
+        <VStack w="140px">
           <Skeleton maxW="150px" h={5} mr={2} mb={2} />
-          <Skeleton maxW="300px" h={8} mr={2} rounded={4} />
+          <Skeleton maxW="140px" h={8} mr={2} rounded={4} />
         </VStack>
       </HStack>
 
@@ -40,12 +40,16 @@ const SkeletonView = () => (
           <Skeleton maxW="300px" h={8} mr={2} rounded={4} />
         </VStack>
 
-        <VStack w="300px">
+        <VStack w="140px">
           <Skeleton maxW="150px" h={5} mr={2} mb={2} />
-          <Skeleton maxW="300px" h={8} mr={2} rounded={4} />
+          <Skeleton maxW="140px" h={8} mr={2} rounded={4} />
         </VStack>
       </HStack>
     </Box>
+
+    <Center>
+      <Skeleton h={10} w="150px" rounded={4} />
+    </Center>
   </Box>
 );
 

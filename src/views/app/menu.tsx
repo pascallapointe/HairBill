@@ -28,8 +28,8 @@ const MenuView: React.FC<Props> = ({ navigation }) => {
         </Heading>
         <Flex direction="row" wrap="wrap" justify="center" maxWidth="500px">
           <NavButton
-            action={() => null}
-            text={t('home.newReceipt')}
+            action={() => navigation.navigate('invoice')}
+            text={t('home.newInvoice')}
             icon="receipt"
           />
           <NavButton

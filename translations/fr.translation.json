@@ -8,6 +8,8 @@
   "change": "Changer",
   "none": "Aucun",
   "price": "${{price}}",
+  "general": "Général",
+  "tax": "Taxe",
   "percentage": "Pourcentage",
   "validation": {
     "required": "Obligatoire",
@@ -61,10 +63,13 @@
   },
   "home": {
     "title": "Accueil",
-    "newReceipt": "Nouvelle Facture",
+    "newInvoice": "Nouvelle Facture",
     "listsReports": "Listes & Rapports",
     "services": "Services",
     "options": "Options"
+  },
+  "invoice": {
+    "title": "Nouvelle Facture"
   },
   "services": {
     "title": "Gérer les services",
@@ -91,7 +96,14 @@
     "taxAName": "Nom de la taxe A",
     "taxBName": "Nom de la taxe B",
     "gst5PCT": "TPS (5%)",
-    "pst9PCT": "TVP (9.975%)"
+    "pst9PCT": "TVP (9.975%)",
+    "shopName": "Nom du commerce",
+    "shopNamePlaceholder": "HairBill Inc",
+    "phoneNumber": "Numéro de téléphone",
+    "employeeName": "Nom de l'employé",
+    "employeeNamePlaceholder": "Bill H., Coiffeur",
+    "address": "Adresse",
+    "addressPlaceholder": "123, rue des cheveux\nCompté de Bill, Hairland"
   },
   "exception": {
     "unauthenticated": "Utilisateur non identifié",

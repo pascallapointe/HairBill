@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { NavigationContainer } from '@react-navigation/native';
 import MenuView from '@views/app/menu';
+import InvoiceView from '@views/app/invoice/invoice-view';
 import ServicesView from '@views/app/services/services';
 import OptionsView from '@views/app/options/options-view';
 
@@ -26,6 +27,11 @@ const AppNavigation = () => {
             name="menu"
             component={MenuView}
             options={{ title: `HairBill - ${t('home.title')}` }}
+          />
+          <Stack.Screen
+            name="invoice"
+            component={InvoiceView}
+            options={{ title: `HairBill - ${t('invoice.title')}` }}
           />
           <Stack.Screen
             name="services"

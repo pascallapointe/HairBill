@@ -8,6 +8,8 @@
   "change": "Change",
   "none": "None",
   "price": "${{price}}",
+  "general": "General",
+  "tax": "Tax",
   "percentage": "Percentage",
   "validation": {
     "required": "Required",
@@ -62,10 +64,13 @@
   },
   "home": {
     "title": "Home",
-    "newReceipt": "New Receipt",
+    "newInvoice": "New Invoice",
     "listsReports": "Lists & Reports",
     "services": "Services",
     "options": "Options"
+  },
+  "invoice": {
+    "title": "New Invoice"
   },
   "services": {
     "title": "Manage services",
@@ -92,7 +97,14 @@
     "taxAName": "Tax A name",
     "taxBName": "Tax B name",
     "gst5PCT": "GST (5%)",
-    "pst9PCT": "PST (9.975%)"
+    "pst9PCT": "PST (9.975%)",
+    "shopName": "Shop name",
+    "shopNamePlaceholder": "HairBill Inc",
+    "phoneNumber": "Phone number",
+    "employeeName": "Employee name",
+    "employeeNamePlaceholder": "Bill H., Hairdresser",
+    "address": "Address",
+    "addressPlaceholder": "123, Hair street\nBill County, Hairland"
   },
   "exception": {
     "unauthenticated": "Unauthenticated user",

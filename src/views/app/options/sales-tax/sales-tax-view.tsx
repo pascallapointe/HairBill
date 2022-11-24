@@ -153,7 +153,7 @@ const SalesTaxView = () => {
         </FormControl>
       </Flex>
 
-      <Box display={taxEnabled ? 'flex' : 'none'} mt={2}>
+      <Box display={taxEnabled ? 'flex' : 'none'} mt={2} alignItems="center">
         <TextInput
           ref={taxNumField}
           label={t<string>('options.taxNumber')}
@@ -167,7 +167,7 @@ const SalesTaxView = () => {
             invalid_type_error: t<string>('validation.stringType'),
           })}
           my={2}
-          maxW="300px"
+          maxW="455px"
         />
 
         <HStack space={4} my={2}>
