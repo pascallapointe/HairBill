@@ -98,6 +98,7 @@
     "taxBName": "Tax B name",
     "gst5PCT": "GST (5%)",
     "pst9PCT": "PST (9.975%)",
+    "includeInPrice": "Include in price",
     "shopName": "Shop name",
     "shopNamePlaceholder": "HairBill Inc",
     "phoneNumber": "Phone number",

@@ -5,6 +5,7 @@ export type TaxSettingsType = {
   enabled: boolean;
   useBTax: boolean;
   compounded: boolean;
+  includeTax: boolean;
   taxNumber: string;
   taxAName: string;
   taxA: number;

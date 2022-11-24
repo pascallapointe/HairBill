@@ -28,6 +28,7 @@ const SalesTaxView = () => {
   const [taxEnabled, setTaxEnabled] = useState<boolean>(false);
   const [useBTax, setUseBTax] = useState<boolean>(false);
   const [compoundTax, setCompoundTax] = useState<boolean>(false);
+  const [includeTax, setIncludeTax] = useState<boolean>(false);
   const taxNumField = useRef<InputRef>(null);
   const [taxNumber, setTaxNumber] = useState('');
   const taxAField = useRef<InputRef>(null);
@@ -70,6 +71,7 @@ const SalesTaxView = () => {
       enabled: taxEnabled,
       useBTax: useBTax,
       compounded: compoundTax,
+      includeTax: includeTax,
       taxNumber: taxNumber,
       taxAName: taxAName,
       taxA: parseFloat(taxA.toString()),
@@ -81,6 +83,7 @@ const SalesTaxView = () => {
   function setSettingsObj(settings: TaxSettingsType): void {
     setUseBTax(settings.useBTax);
     setCompoundTax(settings.compounded);
+    setIncludeTax(settings.includeTax);
     setTaxNumber(settings.taxNumber);
     setTaxAName(settings.taxAName);
     setTaxA(settings.taxA);
@@ -154,21 +157,34 @@ const SalesTaxView = () => {
       </Flex>
 
       <Box display={taxEnabled ? 'flex' : 'none'} mt={2} alignItems="center">
-        <TextInput
-          ref={taxNumField}
-          label={t<string>('options.taxNumber')}
-          placeholder="0123456789"
-          bindValue={setTaxNumber}
-          value={taxNumber}
-          required={false}
-          clear="while-editing"
-          schema={z.string({
-            required_error: t<string>('validation.required'),
-            invalid_type_error: t<string>('validation.stringType'),
-          })}
-          my={2}
-          maxW="455px"
-        />
+        <HStack space={4} my={2}>
+          <TextInput
+            flex={1}
+            ref={taxNumField}
+            label={t<string>('options.taxNumber')}
+            placeholder="0123456789"
+            bindValue={setTaxNumber}
+            value={taxNumber}
+            required={false}
+            clear="while-editing"
+            schema={z.string({
+              required_error: t<string>('validation.required'),
+              invalid_type_error: t<string>('validation.stringType'),
+            })}
+            my={2}
+            maxW="220px"
+          />
+          <FormControl flex={1} maxW="220px" mt={10}>
+            <HStack>
+              <FormControl.Label
+                mr={2}
+                _text={{ fontSize: 'md', fontWeight: 'bold' }}>
+                {t<string>('options.includeInPrice')}
+              </FormControl.Label>
+              <SwitchBtn value={includeTax} bindValue={setIncludeTax} />
+            </HStack>
+          </FormControl>
+        </HStack>
 
         <HStack space={4} my={2}>
           <TextInput

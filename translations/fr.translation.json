@@ -97,6 +97,7 @@
     "taxBName": "Nom de la taxe B",
     "gst5PCT": "TPS (5%)",
     "pst9PCT": "TVP (9.975%)",
+    "includeInPrice": "Inclure dans le prix",
     "shopName": "Nom du commerce",
     "shopNamePlaceholder": "HairBill Inc",
     "phoneNumber": "Numéro de téléphone",
