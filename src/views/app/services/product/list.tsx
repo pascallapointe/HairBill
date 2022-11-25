@@ -17,7 +17,9 @@ import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import Modal, { ModalRef } from '@components/modal';
 import { useTranslation } from 'react-i18next';
 import {
+  buildSectionMap,
   getProducts,
+  ProductSectionMapType,
   ProductType,
   removeProduct,
 } from '@views/app/services/product/product.repository';
@@ -77,22 +79,13 @@ const ProductItem: React.FC<{
   );
 };
 
-type SectionType = {
-  name: string;
-  products: ProductType[];
-};
-
-type SectionListType = {
-  [key: string]: SectionType;
-};
-
 const ProductList: React.FC<{ onEdit: (p: ProductType) => void }> = ({
   onEdit,
 }) => {
   const { t } = useTranslation();
   const [init, setInit] = useState(true);
   const [products, setProducts] = useState<ProductType[]>([]);
-  const [sectionList, setSectionList] = useState<SectionListType>({});
+  const [sectionList, setSectionList] = useState<ProductSectionMapType>({});
   const confirmModal = useRef<ModalRef>(null);
   const [deleteTarget, setDeleteTarget] = useState<ProductType | null>(null);
 
@@ -103,7 +96,7 @@ const ProductList: React.FC<{ onEdit: (p: ProductType) => void }> = ({
     getProducts()
       .then(p => {
         setProducts(p);
-        setSectionList(buildSectionList(p));
+        setSectionList(buildSectionMap(p, t<string>('services.noCategory')));
         if (init) {
           setInit(false);
         }
@@ -113,25 +106,6 @@ const ProductList: React.FC<{ onEdit: (p: ProductType) => void }> = ({
         errorModal.current && errorModal.current.open();
       });
   }, []);
-
-  function buildSectionList(productsList: ProductType[]): SectionListType {
-    const list: SectionListType = {
-      none: { name: t('services.noCategory'), products: [] },
-    };
-
-    // Insert products
-    for (const product of productsList) {
-      if (!list[product.category.id]) {
-        list[product.category.id] = {
-          name: product.category.name,
-          products: [],
-        };
-      }
-      list[product.category.id].products.push(product);
-    }
-
-    return list;
-  }
 
   function confirmDelete(key: string) {
     setDeleteTarget(products.find(item => item.id === key) ?? null);

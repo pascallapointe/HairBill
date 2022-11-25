@@ -16,6 +16,15 @@ export type NewProductType = {
   category: CategoryType;
 };
 
+export type ProductsSectionType = {
+  name: string;
+  products: ProductType[];
+};
+
+export type ProductSectionMapType = {
+  [key: string]: ProductsSectionType;
+};
+
 function getProductCollection(): CollectionReference {
   return getRootDocument().collection('service-products');
 }
@@ -42,6 +51,28 @@ export async function getProducts(): Promise<ProductType[]> {
   });
 
   return products;
+}
+
+export function buildSectionMap(
+  productsList: ProductType[],
+  noCategoryText = 'No category',
+): ProductSectionMapType {
+  const list: ProductSectionMapType = {
+    none: { name: noCategoryText, products: [] },
+  };
+
+  // Insert products
+  for (const product of productsList) {
+    if (!list[product.category.id]) {
+      list[product.category.id] = {
+        name: product.category.name,
+        products: [],
+      };
+    }
+    list[product.category.id].products.push(product);
+  }
+
+  return list;
 }
 
 export async function addProduct(product: NewProductType): Promise<boolean> {
