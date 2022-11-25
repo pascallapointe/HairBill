@@ -37,7 +37,7 @@ const ListItem: React.FC<{
       <HStack justifyContent="space-between">
         <Text
           isTruncated={true}
-          maxW="250px"
+          maxW={{ md: '250px', lg: '400px' }}
           top="5px"
           fontSize="lg"
           fontWeight="bold"
@@ -47,7 +47,7 @@ const ListItem: React.FC<{
         <HStack>
           <Text
             isTruncated={true}
-            maxW="140px"
+            maxW={{ md: '140px', lg: '180px' }}
             top="5px"
             fontSize="lg"
             color="muted.500">

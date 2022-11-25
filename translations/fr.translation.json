@@ -7,7 +7,7 @@
   "cancel": "Annuler",
   "change": "Changer",
   "none": "Aucun",
-  "price": "${{price}}",
+  "price": "{{price}}$",
   "general": "Général",
   "tax": "Taxe",
   "percentage": "Pourcentage",
@@ -70,10 +70,15 @@
   },
   "invoice": {
     "title": "Nouvelle Facture",
+    "clientInfo": "Information client",
     "clientName": "Nom du client",
     "clientPhone": "Numéro de téléphone",
     "noMatch": "Aucune correspondance trouvée",
-    "addClient": "Ajouter un client"
+    "addClient": "Ajouter un client",
+    "noProduct": "Aucun produit sélectionné",
+    "productsAndServices": "Produits et services",
+    "selectedP&S": "Produits & services sélectionnés",
+    "total": "Total"
   },
   "services": {
     "title": "Gérer les services",

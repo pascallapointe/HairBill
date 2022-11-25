@@ -13,6 +13,18 @@ export type TaxSettingsType = {
   taxB: number;
 };
 
+export const defaultTaxSettings: TaxSettingsType = {
+  enabled: false,
+  useBTax: false,
+  compounded: false,
+  includeTax: false,
+  taxNumber: '',
+  taxAName: '',
+  taxA: 0,
+  taxBName: '',
+  taxB: 0,
+};
+
 export async function getTaxSettings(): Promise<TaxSettingsType | undefined> {
   const doc = getRootDocument();
 

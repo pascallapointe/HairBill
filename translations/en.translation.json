@@ -71,10 +71,15 @@
   },
   "invoice": {
     "title": "New Invoice",
+    "clientInfo": "Client information",
     "clientName": "Client name",
     "clientPhone": "Client phone number",
     "noMatch": "No matches found",
-    "addClient": "Add client"
+    "addClient": "Add client",
+    "noProduct": "No product selected",
+    "productsAndServices": "Products and services",
+    "selectedP&S": "Selected Products & services",
+    "total": "Total"
   },
   "services": {
     "title": "Manage services",

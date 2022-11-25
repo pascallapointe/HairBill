@@ -42,7 +42,7 @@ interface Props extends IFormControlProps {
   icon?: JSX.Element;
 }
 
-export type InputRef = {
+export type ClientInputRef = {
   validate: (val?: string) => void;
 };
 
@@ -67,7 +67,7 @@ const InputIcon: React.FC<{ icon?: JSX.Element }> = ({ icon }) => {
   return null;
 };
 
-const TextInput = forwardRef<InputRef, Props>(
+const TextInput = forwardRef<ClientInputRef, Props>(
   (
     {
       label,
@@ -186,31 +186,14 @@ const TextInput = forwardRef<InputRef, Props>(
         />
         <Box width="100%" display={isOpen ? 'flex' : 'none'}>
           <Box
+            position="absolute"
             zIndex={10}
             bgColor="white"
             rounded={4}
             shadow={5}
-            position="absolute"
             width="100%"
             borderWidth={1}
             borderColor="violet.700">
-            <Button
-              onPress={() => {
-                setIsOpen(false);
-                setView('list');
-              }}
-              variant="unstyled"
-              position="absolute"
-              zIndex={20}
-              right={0}
-              top={0}>
-              <Icon
-                size="md"
-                as={FontAwesomeIcon}
-                name="close"
-                color="violet.700"
-              />
-            </Button>
             {view === 'list' ? (
               <ClientList
                 setView={setView}
@@ -224,6 +207,23 @@ const TextInput = forwardRef<InputRef, Props>(
                 bindClient={selectClient}
               />
             )}
+            <Button
+              onPress={() => {
+                setIsOpen(false);
+                setView('list');
+              }}
+              variant="unstyled"
+              position="absolute"
+              zIndex={100}
+              right={0}
+              top={0}>
+              <Icon
+                size="md"
+                as={FontAwesomeIcon}
+                name="close"
+                color="violet.700"
+              />
+            </Button>
           </Box>
         </Box>
       </FormControl>

@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
-import { Box, Button, Heading, HStack } from 'native-base';
-import { SafeAreaView } from 'react-native';
+import {
+  Box,
+  Button,
+  Heading,
+  HStack,
+  KeyboardAvoidingView,
+} from 'native-base';
+import { Platform, SafeAreaView } from 'react-native';
 import Card from '@components/card';
 import { useTranslation } from 'react-i18next';
 
@@ -43,27 +49,30 @@ const OptionsView = () => {
       }}>
       <SafeAreaView
         style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Heading color="white" size="4xl" mb={4} fontFamily="SignPainter">
-          &nbsp;Options&nbsp;
-        </Heading>
-        <Card
-          width={{ md: '700px', lg: '1000px' }}
-          title={t<string>('options.appSettings')}
-          pb={4}>
-          <HStack justifyContent="center" space={4} pb={4}>
-            <TabBtn
-              text={t<string>('general')}
-              action={() => setView('general')}
-              selected={view === 'general'}
-            />
-            <TabBtn
-              text={t<string>('tax')}
-              action={() => setView('tax')}
-              selected={view === 'tax'}
-            />
-          </HStack>
-          {view === 'general' ? <GeneralView /> : <SalesTaxView />}
-        </Card>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
+          <Heading color="white" size="4xl" mb={4} fontFamily="SignPainter">
+            &nbsp;Options&nbsp;
+          </Heading>
+          <Card
+            width={{ md: '700px', lg: '1000px' }}
+            title={t<string>('options.appSettings')}
+            pb={4}>
+            <HStack justifyContent="center" space={4} pb={4}>
+              <TabBtn
+                text={t<string>('general')}
+                action={() => setView('general')}
+                selected={view === 'general'}
+              />
+              <TabBtn
+                text={t<string>('tax')}
+                action={() => setView('tax')}
+                selected={view === 'tax'}
+              />
+            </HStack>
+            {view === 'general' ? <GeneralView /> : <SalesTaxView />}
+          </Card>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </Box>
   );
