@@ -70,7 +70,11 @@
     "options": "Options"
   },
   "invoice": {
-    "title": "New Invoice"
+    "title": "New Invoice",
+    "clientName": "Client name",
+    "clientPhone": "Client phone number",
+    "noMatch": "No matches found",
+    "addClient": "Add client"
   },
   "services": {
     "title": "Manage services",

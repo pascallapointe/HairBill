@@ -45,7 +45,11 @@ const CategoryItem: React.FC<{
       <Text top={1} fontSize="xl" fontWeight="bold" color="light.700">
         {item.name}
       </Text>
-      <Button ml={2} variant="outline" onPress={() => onDelete(item.id!)}>
+      <Button
+        ml={2}
+        variant="outline"
+        colorScheme="danger"
+        onPress={() => onDelete(item.id!)}>
         <Icon as={FontAwesome5Icon} name="trash" />
       </Button>
     </HStack>
@@ -56,11 +60,12 @@ const CategoryList = () => {
   const { t } = useTranslation();
   const [init, setInit] = useState(true);
   const [categories, setCategories] = useState<CategoryType[]>([]);
-  const confirmModal = useRef<ModalRef>(null);
   const [deleteTarget, setDeleteTarget] = useState<CategoryType | null>(null);
 
+  // Modals
   const errorModal = useRef<ModalRef>(null);
   const [errorMessage, setErrorMessage] = useState('');
+  const confirmModal = useRef<ModalRef>(null);
 
   useEffect(() => {
     getCategories()

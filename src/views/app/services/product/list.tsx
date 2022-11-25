@@ -57,10 +57,18 @@ const ProductItem: React.FC<{
         </Flex>
 
         <Flex direction="row">
-          <Button ml={2} variant="outline" onPress={() => onEdit(item)}>
+          <Button
+            ml={2}
+            variant="outline"
+            colorScheme="amber"
+            onPress={() => onEdit(item)}>
             <Icon as={FontAwesome5Icon} name="pen" color="yellow.500" />
           </Button>
-          <Button ml={2} variant="outline" onPress={() => onDelete(item.id!)}>
+          <Button
+            ml={2}
+            variant="outline"
+            colorScheme="danger"
+            onPress={() => onDelete(item.id!)}>
             <Icon as={FontAwesome5Icon} name="trash" />
           </Button>
         </Flex>

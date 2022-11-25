@@ -69,7 +69,11 @@
     "options": "Options"
   },
   "invoice": {
-    "title": "Nouvelle Facture"
+    "title": "Nouvelle Facture",
+    "clientName": "Nom du client",
+    "clientPhone": "Numéro de téléphone",
+    "noMatch": "Aucune correspondance trouvée",
+    "addClient": "Ajouter un client"
   },
   "services": {
     "title": "Gérer les services",

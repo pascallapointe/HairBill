@@ -1,24 +1,39 @@
 import React from 'react';
-import { FormControl, WarningOutlineIcon } from 'native-base';
+import {
+  FormControl,
+  IFormControlErrorMessageProps,
+  WarningOutlineIcon,
+} from 'native-base';
 import { FlatList } from 'react-native';
 
-const ErrorMessage: React.FC<{ item: string }> = ({ item }) => (
+interface errorProps extends IFormControlErrorMessageProps {
+  item: string;
+}
+
+const ErrorMessage: React.FC<errorProps> = ({ item, ...props }) => (
   <FormControl.ErrorMessage
+    {...props}
     _text={{ fontSize: 'sm' }}
     leftIcon={<WarningOutlineIcon size="xs" />}>
     {item}
   </FormControl.ErrorMessage>
 );
 
-const ValidationErrors: React.FC<{
+interface Props extends IFormControlErrorMessageProps {
   error: boolean;
   errorMessages: string[];
-}> = ({ error, errorMessages }) => {
+}
+
+const ValidationErrors: React.FC<Props> = ({
+  error,
+  errorMessages,
+  ...props
+}) => {
   if (error && errorMessages.length > 1) {
     return <FlatList data={errorMessages} renderItem={ErrorMessage} />;
   }
   if (error && errorMessages.length === 1) {
-    return <ErrorMessage item={errorMessages[0]} />;
+    return <ErrorMessage item={errorMessages[0]} {...props} />;
   }
 
   return null;

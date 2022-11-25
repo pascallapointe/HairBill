@@ -104,7 +104,7 @@ const GeneralView = () => {
         <TextInput
           ref={phoneField}
           label={t<string>('options.phoneNumber')}
-          placeholder="+1 (999) 999-9999"
+          placeholder="(999) 999-9999"
           bindValue={setPhone}
           value={phone}
           keyboardType="number-pad"
