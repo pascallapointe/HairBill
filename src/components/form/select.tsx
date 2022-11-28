@@ -55,7 +55,7 @@ const Options: React.FC<{
   select: (category: OptionType | null) => void;
 }> = ({ options, select }) => {
   return (
-    <ScrollView>
+    <ScrollView keyboardShouldPersistTaps="handled">
       <Flex direction="row" wrap="wrap">
         {options.map(option => (
           <Button

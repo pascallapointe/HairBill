@@ -20,9 +20,15 @@ const ServicesView = () => {
         style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
-          <Heading color="white" size="4xl" mb={4} fontFamily="SignPainter">
+          <Heading
+            color="white"
+            size="4xl"
+            mb={4}
+            fontFamily="SignPainter"
+            textAlign="center">
             &nbsp;Services&nbsp;
           </Heading>
+
           <Stack direction={{ md: 'column', lg: 'row' }} space={3}>
             <Box>
               <CategoryView />

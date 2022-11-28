@@ -123,6 +123,7 @@ const ProductList: React.FC<{ onEdit: (p: ProductType) => void }> = ({
       const index = list.findIndex(item => item.id === key);
       list.splice(index, 1);
       setProducts(list);
+      setSectionList(buildSectionMap(list, t<string>('services.noCategory')));
     } catch (e: any) {
       setErrorMessage(t<string>(e.message ?? 'exception.database'));
       errorModal.current && errorModal.current.open();
