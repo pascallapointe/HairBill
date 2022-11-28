@@ -51,7 +51,12 @@ const OptionsView = () => {
         style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
-          <Heading color="white" size="4xl" mb={4} fontFamily="SignPainter">
+          <Heading
+            color="white"
+            size="4xl"
+            mb={4}
+            fontFamily="SignPainter"
+            textAlign="center">
             &nbsp;Options&nbsp;
           </Heading>
           <Card

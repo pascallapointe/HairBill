@@ -6,9 +6,10 @@ export type TaxSettingsType = {
   useBTax: boolean;
   compounded: boolean;
   includeTax: boolean;
-  taxNumber: string;
+  taxANumber: string;
   taxAName: string;
   taxA: number;
+  taxBNumber: string;
   taxBName: string;
   taxB: number;
 };
@@ -18,9 +19,10 @@ export const defaultTaxSettings: TaxSettingsType = {
   useBTax: false,
   compounded: false,
   includeTax: false,
-  taxNumber: '',
+  taxANumber: '',
   taxAName: '',
   taxA: 0,
+  taxBNumber: '',
   taxBName: '',
   taxB: 0,
 };

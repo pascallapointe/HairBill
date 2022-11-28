@@ -29,8 +29,10 @@ const SalesTaxView = () => {
   const [useBTax, setUseBTax] = useState<boolean>(false);
   const [compoundTax, setCompoundTax] = useState<boolean>(false);
   const [includeTax, setIncludeTax] = useState<boolean>(false);
-  const taxNumField = useRef<InputRef>(null);
-  const [taxNumber, setTaxNumber] = useState('');
+  const taxANumField = useRef<InputRef>(null);
+  const [taxANum, setTaxANum] = useState('');
+  const taxBNumField = useRef<InputRef>(null);
+  const [taxBNum, setTaxBNum] = useState('');
   const taxAField = useRef<InputRef>(null);
   const [taxA, setTaxA] = useState<number>(0);
   const taxANameField = useRef<InputRef>(null);
@@ -72,9 +74,10 @@ const SalesTaxView = () => {
       useBTax: useBTax,
       compounded: compoundTax,
       includeTax: includeTax,
-      taxNumber: taxNumber,
+      taxANumber: taxANum,
       taxAName: taxAName,
       taxA: parseFloat(taxA.toString()),
+      taxBNumber: taxBNum,
       taxBName: taxBName,
       taxB: parseFloat(taxB.toString()),
     };
@@ -84,9 +87,10 @@ const SalesTaxView = () => {
     setUseBTax(settings.useBTax);
     setCompoundTax(settings.compounded);
     setIncludeTax(settings.includeTax);
-    setTaxNumber(settings.taxNumber);
+    setTaxANum(settings.taxANumber);
     setTaxAName(settings.taxAName);
     setTaxA(settings.taxA);
+    setTaxBNum(settings.taxBNumber);
     setTaxBName(settings.taxBName);
     setTaxB(settings.taxB);
     // Last to get value (autosave on off)
@@ -95,9 +99,10 @@ const SalesTaxView = () => {
 
   function save() {
     const fields = [
-      taxNumField.current && taxNumField.current.validate(),
+      taxANumField.current && taxANumField.current.validate(),
       taxANameField.current && taxANameField.current.validate(),
       taxAField.current && taxAField.current.validate(),
+      !useBTax || (taxBNumField.current && taxBNumField.current.validate()),
       !useBTax || (taxBNameField.current && taxBNameField.current.validate()),
       !useBTax || (taxBField.current && taxBField.current.validate()),
     ];
@@ -158,22 +163,6 @@ const SalesTaxView = () => {
 
       <Box display={taxEnabled ? 'flex' : 'none'} mt={2} alignItems="center">
         <HStack space={4} my={2}>
-          <TextInput
-            flex={1}
-            ref={taxNumField}
-            label={t<string>('options.taxNumber')}
-            placeholder="0123456789"
-            bindValue={setTaxNumber}
-            value={taxNumber}
-            required={false}
-            clear="while-editing"
-            schema={z.string({
-              required_error: t<string>('validation.required'),
-              invalid_type_error: t<string>('validation.stringType'),
-            })}
-            my={2}
-            maxW="220px"
-          />
           <FormControl flex={1} maxW="220px" mt={10}>
             <HStack>
               <FormControl.Label
@@ -189,6 +178,21 @@ const SalesTaxView = () => {
         <HStack space={4} my={2}>
           <TextInput
             flex={1}
+            ref={taxANumField}
+            label={t<string>('options.taxANumber')}
+            placeholder="0123456789"
+            bindValue={setTaxANum}
+            value={taxANum}
+            required={false}
+            clear="while-editing"
+            schema={z.string({
+              required_error: t<string>('validation.required'),
+              invalid_type_error: t<string>('validation.stringType'),
+            })}
+            maxW="200px"
+          />
+          <TextInput
+            flex={1}
             ref={taxANameField}
             label={t<string>('options.taxAName')}
             placeholder={t<string>('options.gst5PCT')}
@@ -201,7 +205,7 @@ const SalesTaxView = () => {
                 invalid_type_error: t<string>('validation.stringType'),
               })
               .min(1, t<string>('validation.required'))}
-            maxW="300px"
+            maxW="200px"
           />
           <TextInput
             flex={1}
@@ -232,6 +236,21 @@ const SalesTaxView = () => {
           my={2}>
           <TextInput
             flex={1}
+            ref={taxBNumField}
+            label={t<string>('options.taxBNumber')}
+            placeholder="0123456789"
+            bindValue={setTaxBNum}
+            value={taxBNum}
+            required={false}
+            clear="while-editing"
+            schema={z.string({
+              required_error: t<string>('validation.required'),
+              invalid_type_error: t<string>('validation.stringType'),
+            })}
+            maxW="200px"
+          />
+          <TextInput
+            flex={1}
             ref={taxBNameField}
             label={t<string>('options.taxBName')}
             placeholder={t<string>('options.pst9PCT')}
@@ -244,7 +263,7 @@ const SalesTaxView = () => {
                 invalid_type_error: t<string>('validation.stringType'),
               })
               .min(1, t<string>('validation.required'))}
-            maxW="300px"
+            maxW="200px"
           />
           <TextInput
             flex={1}
