@@ -79,7 +79,9 @@
     "noProduct": "No product selected",
     "productsAndServices": "Products and services",
     "selectedP&S": "Selected Products & services",
-    "total": "Total"
+    "total": "Total",
+    "subtotal": "Subtotal",
+    "taxIncluded": "Taxes included in the price"
   },
   "services": {
     "title": "Manage services",

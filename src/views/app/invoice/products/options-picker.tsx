@@ -23,19 +23,23 @@ const OptionsPicker: React.FC<{
     return (
       <ScrollView maxHeight="150px">
         <Flex mb={4} direction="row" wrap="wrap" justifyContent="center">
-          {Object.keys(options).map(key => (
-            <Button
-              key={key}
-              m={1}
-              size="md"
-              onPress={() => selectCategory(options[key].products)}
-              rounded={15}
-              _text={{ fontWeight: 'bold' }}
-              colorScheme="fuchsia"
-              shadow={2}>
-              {options[key].name}
-            </Button>
-          ))}
+          {Object.keys(options).map(key =>
+            options[key].products.length ? (
+              <Button
+                key={key}
+                m={1}
+                size="md"
+                onPress={() => selectCategory(options[key].products)}
+                rounded={15}
+                _text={{ fontWeight: 'bold' }}
+                colorScheme="fuchsia"
+                shadow={2}>
+                {options[key].name}
+              </Button>
+            ) : (
+              ''
+            ),
+          )}
         </Flex>
       </ScrollView>
     );

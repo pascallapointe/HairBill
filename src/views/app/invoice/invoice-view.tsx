@@ -27,6 +27,7 @@ import {
   TaxSettingsType,
 } from '@views/app/options/sales-tax/sales-tax.repository';
 import Modal, { ModalRef } from '@components/modal';
+import { roundTo } from '@lib/utils';
 
 type AmountType = {
   subtotal: number;
@@ -88,8 +89,31 @@ const InvoiceView = () => {
       return setAmount(a);
     }
 
+    // Tax calculation
+
     if (taxSettings.includeTax) {
-      // todo
+      a.subtotal =
+        a.total /
+        (1 +
+          taxSettings.taxA +
+          (taxSettings.useBTax
+            ? taxSettings.compounded
+              ? taxSettings.taxB * (1 + taxSettings.taxA)
+              : taxSettings.taxB
+            : 0));
+
+      a.taxA = taxSettings.taxA * a.subtotal;
+      a.taxB =
+        taxSettings.taxB *
+        (taxSettings.compounded
+          ? (1 + taxSettings.taxA) * a.subtotal
+          : a.subtotal);
+
+      a.subtotal = roundTo(a.subtotal, 2);
+      a.taxA = roundTo(a.taxA, 2);
+      a.taxB = roundTo(a.taxB, 2);
+
+      return setAmount(a);
     } else {
       a.subtotal = a.total;
       a.taxA = a.subtotal * taxSettings.taxA;
@@ -102,6 +126,11 @@ const InvoiceView = () => {
         }
         a.total += a.taxB;
       }
+
+      a.taxA = roundTo(a.taxA, 2);
+      a.taxB = roundTo(a.taxB, 2);
+      a.total = roundTo(a.total, 2);
+
       return setAmount(a);
     }
   }, [products]);
@@ -152,6 +181,11 @@ const InvoiceView = () => {
                 </View>
                 <Heading mt={5} color="violet.700">
                   {t<string>('invoice.productsAndServices')}
+                  <Box display={taxSettings.includeTax ? 'flex' : 'none'}>
+                    <Text bottom={1} ml={4} fontSize="md" color="muted.500">
+                      (Tax included in price)
+                    </Text>
+                  </Box>
                 </Heading>
                 <Divider mb={2} bg="violet.700" />
                 <ProductsSelect
@@ -164,22 +198,56 @@ const InvoiceView = () => {
                 </Heading>
                 <Divider mb={2} bg="violet.700" />
                 {taxSettings.enabled ? (
-                  <HStack justifyContent="space-between">
-                    <Text fontSize="md" fontWeight="bold" color="muted.500">
-                      {taxSettings.taxAName}
-                    </Text>
-                    <Text fontSize="md" fontWeight="bold" color="muted.600">
-                      {t('price', { price: amount.taxA.toFixed(2) })}
-                    </Text>
-                  </HStack>
+                  <>
+                    <HStack justifyContent="space-between">
+                      <Text fontSize="md" fontWeight="bold" color="muted.500">
+                        {t<string>('invoice.subtotal')}
+                      </Text>
+                      <Text fontSize="md" fontWeight="bold" color="muted.600">
+                        {t('price', { price: amount.subtotal.toFixed(2) })}
+                      </Text>
+                    </HStack>
+                    <HStack justifyContent="space-between">
+                      <HStack space={2}>
+                        <Text fontSize="md" fontWeight="bold" color="muted.500">
+                          {taxSettings.taxAName}
+                        </Text>
+                        <Text
+                          top={1}
+                          fontSize="2xs"
+                          fontWeight="bold"
+                          color="muted.500">
+                          {taxSettings.taxANumber.length
+                            ? `(${taxSettings.taxANumber})`
+                            : ''}
+                        </Text>
+                      </HStack>
+
+                      <Text fontSize="md" fontWeight="bold" color="muted.600">
+                        {t('price', { price: amount.taxA.toFixed(2) })}
+                      </Text>
+                    </HStack>
+                  </>
                 ) : (
                   ''
                 )}
                 {taxSettings.enabled && taxSettings.useBTax ? (
                   <HStack justifyContent="space-between">
-                    <Text fontSize="md" fontWeight="bold" color="muted.500">
-                      {taxSettings.taxBName}
-                    </Text>
+                    <HStack space={2}>
+                      <Text fontSize="md" fontWeight="bold" color="muted.500">
+                        {taxSettings.taxBName}
+                      </Text>
+                      <Text
+                        top={1}
+                        fontSize="2xs"
+                        fontWeight="bold"
+                        color="muted.500">
+                        {taxSettings.taxBNumber.length
+                          ? `(${taxSettings.taxBNumber})`
+                          : ''}
+                      </Text>
+                    </HStack>
+
                     <Text fontSize="md" fontWeight="bold" color="muted.600">
                       {t('price', { price: amount.taxB.toFixed(2) })}
                     </Text>
