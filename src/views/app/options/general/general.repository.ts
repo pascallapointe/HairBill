@@ -1,4 +1,3 @@
-import DatabaseException from '@lib/database.exception';
 import { getRootDocument } from '@lib/repository';
 
 export type GeneralSettingsType = {
@@ -18,17 +17,10 @@ export async function getGeneralSettings(): Promise<
   return documentSnapshot.get<GeneralSettingsType>('generalSettings');
 }
 
-export async function updateGeneralSettings(
+export function updateGeneralSettings(
   generalSettings: GeneralSettingsType,
-): Promise<boolean> {
+): void {
   const doc = getRootDocument();
 
-  try {
-    await doc.update({ generalSettings });
-  } catch (e) {
-    console.error(e);
-    throw new DatabaseException('exception.db.change-fail');
-  }
-
-  return true;
+  doc.update({ generalSettings }).catch(console.error);
 }

@@ -1,4 +1,3 @@
-import DatabaseException from '@lib/database.exception';
 import { CategoryType } from '@views/app/services/category/category.repository';
 import { CollectionReference } from '@type/firestore.type';
 import { getRootDocument } from '@lib/repository';
@@ -75,40 +74,23 @@ export function buildSectionMap(
   return list;
 }
 
-export async function addProduct(product: NewProductType): Promise<boolean> {
-  try {
-    await getProductCollection().add(product);
-  } catch (e) {
-    throw new DatabaseException('exception.db.change-fail');
-  }
-
-  return true;
+export function addProduct(product: NewProductType): void {
+  getProductCollection().add(product).catch(console.error);
 }
 
-export async function updateProduct(product: ProductType): Promise<boolean> {
+export function updateProduct(product: ProductType): void {
   const doc = getProductCollection().doc(product.id);
 
-  try {
-    await doc.update({
+  doc
+    .update({
       name: product.name,
       price: product.price,
       category: product.category,
-    });
-  } catch (e) {
-    throw new DatabaseException('exception.db.change-fail');
-  }
-
-  return true;
+    })
+    .catch(console.error);
 }
 
-export async function removeProduct(id: string): Promise<boolean> {
+export function removeProduct(id: string): void {
   const doc = getProductCollection().doc(id);
-
-  try {
-    await doc.delete();
-  } catch (e) {
-    throw new DatabaseException('exception.db.change-fail');
-  }
-
-  return true;
+  doc.delete().catch(console.error);
 }

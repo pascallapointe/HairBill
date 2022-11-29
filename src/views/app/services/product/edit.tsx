@@ -10,7 +10,6 @@ import TextInput, { InputRef } from '@components/form/text-input';
 import Modal, { ModalRef } from '@components/modal';
 import ActionButton from '@components/action-button';
 import { useTranslation } from 'react-i18next';
-import { ErrorType } from '@type/error.type';
 import { z } from 'zod';
 import {
   addProduct,
@@ -69,23 +68,15 @@ const EditView: React.FC<Props> = ({ product, setParentView }) => {
           name: name.trim(),
           price: roundTo(price, 2),
           category: category ?? { id: 'none', name: '!none' },
-        })
-          .then(() => setParentView('list'))
-          .catch((e: ErrorType) => {
-            setErrorMessage(t<string>(e.message ?? 'exception.database'));
-            errorModal.current && errorModal.current.open();
-          });
+        });
+        setParentView('list');
       } else {
         addProduct({
           name: name.trim(),
           price: roundTo(price, 2),
           category: category ?? { id: 'none', name: '!none' },
-        })
-          .then(() => setParentView('list'))
-          .catch((e: ErrorType) => {
-            setErrorMessage(t<string>(e.message ?? 'exception.database'));
-            errorModal.current && errorModal.current.open();
-          });
+        });
+        setParentView('list');
       }
     }
   }

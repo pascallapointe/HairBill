@@ -32,13 +32,10 @@ const AddClient: React.FC<{
     ];
     if (fields.every(field => field)) {
       setWait(true);
-      addClient({ name, phone })
-        .then((client: ClientType) => {
-          bindClient(client);
-          setView('list');
-          setWait(false);
-        })
-        .catch(() => errorModal.current && errorModal.current.open());
+      const client = addClient({ name, phone });
+      bindClient(client);
+      setView('list');
+      setWait(false);
     }
   }
 

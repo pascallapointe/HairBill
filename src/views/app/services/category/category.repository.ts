@@ -1,4 +1,3 @@
-import DatabaseException from '@lib/database.exception';
 import { CollectionReference } from '@type/firestore.type';
 import { getRootDocument } from '@lib/repository';
 
@@ -25,24 +24,11 @@ export async function getCategories(): Promise<CategoryType[]> {
   return categories;
 }
 
-export async function addCategory(name: string): Promise<boolean> {
-  try {
-    await getCategoryCollection().add({ name: name });
-  } catch (e) {
-    throw new DatabaseException('exception.db.change-fail');
-  }
-
-  return true;
+export function addCategory(name: string): void {
+  getCategoryCollection().add({ name: name }).catch(console.error);
 }
 
-export async function removeCategory(id: string): Promise<boolean> {
+export function removeCategory(id: string): void {
   const doc = getCategoryCollection().doc(id);
-
-  try {
-    await doc.delete();
-  } catch (e) {
-    throw new DatabaseException('exception.db.change-fail');
-  }
-
-  return true;
+  doc.delete().catch(console.error);
 }

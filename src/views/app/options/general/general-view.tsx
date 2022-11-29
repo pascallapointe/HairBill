@@ -69,9 +69,8 @@ const GeneralView = () => {
     ];
     if (fields.every(field => field)) {
       setWait(true);
-      updateGeneralSettings(getSettingsObj())
-        .then(() => successModal.current && successModal.current.open())
-        .catch(() => errorModal.current && errorModal.current.open());
+      updateGeneralSettings(getSettingsObj());
+      successModal.current && successModal.current.open();
     }
   }
 

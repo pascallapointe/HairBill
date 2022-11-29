@@ -115,7 +115,7 @@ const ClientList: React.FC<{
     }
 
     try {
-      await removeClient(id);
+      removeClient(id);
       const list = [...clients];
       const index = list.findIndex(item => item.id === id);
       list.splice(index, 1);

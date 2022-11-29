@@ -118,7 +118,7 @@ const ProductList: React.FC<{ onEdit: (p: ProductType) => void }> = ({
     }
 
     try {
-      await removeProduct(key);
+      removeProduct(key);
       const list = [...products];
       const index = list.findIndex(item => item.id === key);
       list.splice(index, 1);

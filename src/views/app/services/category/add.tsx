@@ -1,11 +1,9 @@
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react';
-import { Text, VStack } from 'native-base';
+import { VStack } from 'native-base';
 import TextInput, { InputRef } from '@components/form/text-input';
-import Modal, { ModalRef } from '@components/modal';
 import ActionButton from '@components/action-button';
 import { addCategory } from '@views/app/services/category/category.repository';
 import { useTranslation } from 'react-i18next';
-import { ErrorType } from '@type/error.type';
 import { z } from 'zod';
 
 interface Props {
@@ -17,19 +15,13 @@ const AddView: React.FC<Props> = ({ setParentView }) => {
   const nameField = useRef<InputRef>(null);
   const [value, setValue] = useState('');
   const [wait, setWait] = useState(false);
-  const errorModal = useRef<ModalRef>(null);
-  const [errorMessage, setErrorMessage] = useState('');
 
   function add() {
     const fields = [nameField.current && nameField.current.validate()];
     if (fields.every(field => field)) {
       setWait(true);
-      addCategory(value.trim())
-        .then(() => setParentView('list'))
-        .catch((e: ErrorType) => {
-          setErrorMessage(t<string>(e.message ?? 'exception.database'));
-          errorModal.current && errorModal.current.open();
-        });
+      addCategory(value.trim());
+      setParentView('list');
     }
   }
 
@@ -61,16 +53,6 @@ const AddView: React.FC<Props> = ({ setParentView }) => {
           colorScheme="violet"
         />
       </VStack>
-      <Modal
-        ref={errorModal}
-        hideAction={true}
-        callback={() => setWait(false)}
-        title={t('exception.operationFailed')}
-        modalType="error">
-        <Text fontSize="md" textAlign="center">
-          {errorMessage}
-        </Text>
-      </Modal>
     </>
   );
 };

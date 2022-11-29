@@ -64,7 +64,7 @@ const SalesTaxView = () => {
   useEffect(() => {
     // Auto-save on tax disabled
     if (!taxEnabled && !init) {
-      updateTaxSettings(getSettingsObj()).then().catch(console.error);
+      updateTaxSettings(getSettingsObj());
     }
   }, [taxEnabled]);
 
@@ -108,9 +108,8 @@ const SalesTaxView = () => {
     ];
     if (fields.every(field => field)) {
       setWait(true);
-      updateTaxSettings(getSettingsObj())
-        .then(() => successModal.current && successModal.current.open())
-        .catch(() => errorModal.current && errorModal.current.open());
+      updateTaxSettings(getSettingsObj());
+      successModal.current && successModal.current.open();
     }
   }
 

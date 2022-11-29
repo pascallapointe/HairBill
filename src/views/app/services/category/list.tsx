@@ -92,7 +92,7 @@ const CategoryList = () => {
     }
 
     try {
-      await removeCategory(key);
+      removeCategory(key);
       const list = [...categories];
       const index = list.findIndex(item => item.id === key);
       list.splice(index, 1);

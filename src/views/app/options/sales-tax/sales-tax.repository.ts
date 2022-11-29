@@ -1,4 +1,3 @@
-import DatabaseException from '@lib/database.exception';
 import { getRootDocument } from '@lib/repository';
 
 export type TaxSettingsType = {
@@ -35,17 +34,7 @@ export async function getTaxSettings(): Promise<TaxSettingsType | undefined> {
   return documentSnapshot.get<TaxSettingsType>('taxSettings');
 }
 
-export async function updateTaxSettings(
-  taxSettings: TaxSettingsType,
-): Promise<boolean> {
+export function updateTaxSettings(taxSettings: TaxSettingsType): void {
   const doc = getRootDocument();
-
-  try {
-    await doc.update({ taxSettings });
-  } catch (e) {
-    console.error(e);
-    throw new DatabaseException('exception.db.change-fail');
-  }
-
-  return true;
+  doc.update({ taxSettings }).then(console.log);
 }

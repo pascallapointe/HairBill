@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   Box,
   Button,
+  Center,
   Divider,
   Heading,
   HStack,
@@ -32,6 +33,7 @@ import Modal, { ModalRef } from '@components/modal';
 import { roundTo } from '@lib/utils';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import TipInput from '@views/app/invoice/tip/tip-input';
+import ActionButton from '@components/action-button';
 
 type AmountType = {
   subtotal: number;
@@ -192,7 +194,7 @@ const InvoiceView = () => {
                   {t<string>('invoice.productsAndServices')}
                   <Box display={taxSettings.includeTax ? 'flex' : 'none'}>
                     <Text bottom={1} ml={4} fontSize="md" color="muted.500">
-                      (Tax included in price)
+                      ({t<string>('invoice.taxIncluded')})
                     </Text>
                   </Box>
                 </Heading>
@@ -319,6 +321,13 @@ const InvoiceView = () => {
                   </Text>
                 </HStack>
               </Box>
+              <Center>
+                <ActionButton
+                  colorScheme="violet"
+                  text={t<string>('save')}
+                  action={() => null}
+                />
+              </Center>
             </Card>
           </ScrollView>
           <Modal

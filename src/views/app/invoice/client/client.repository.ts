@@ -1,4 +1,3 @@
-import DatabaseException from '@lib/database.exception';
 import { CollectionReference } from '@type/firestore.type';
 import { getRootDocument } from '@lib/repository';
 
@@ -14,7 +13,7 @@ export type NewClientType = {
 };
 
 function getClientCollection(): CollectionReference {
-  return getRootDocument().collection('client');
+  return getRootDocument().collection('clients');
 }
 
 export async function getClients(): Promise<ClientType[]> {
@@ -33,23 +32,13 @@ export async function getClients(): Promise<ClientType[]> {
   return clients;
 }
 
-export async function addClient(client: NewClientType): Promise<ClientType> {
-  try {
-    const doc = await getClientCollection().add(client);
-    return { id: doc.id, name: client.name, phone: client.phone };
-  } catch (e) {
-    throw new DatabaseException('exception.db.change-fail');
-  }
+export function addClient(client: NewClientType): ClientType {
+  const doc = getClientCollection().doc();
+  doc.set(client).catch(console.error);
+  return { id: doc.id, name: client.name, phone: client.phone };
 }
 
-export async function removeClient(id: string): Promise<boolean> {
+export function removeClient(id: string): void {
   const doc = getClientCollection().doc(id);
-
-  try {
-    await doc.delete();
-  } catch (e) {
-    throw new DatabaseException('exception.db.change-fail');
-  }
-
-  return true;
+  doc.delete().catch(console.error);
 }
