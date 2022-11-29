@@ -29,6 +29,8 @@ interface Props extends IFormControlProps {
   autoComplete?: AndroidAutoCompleteType;
   autoCorrect?: boolean;
   autoCapitalize?: AutoCapitalizeType;
+  // selectTextOnFocus not working as of react-native 0.70.4
+  selectTextOnFocus?: boolean;
   keyboardType?: KeyboardType;
   secureTextEntry?: boolean;
   validation?: boolean;
@@ -77,6 +79,7 @@ const TextInput = forwardRef<InputRef, Props>(
       autoComplete = 'off',
       autoCorrect = false,
       autoCapitalize = 'none',
+      selectTextOnFocus = false,
       keyboardType = 'default',
       secureTextEntry = false,
       required = true,
@@ -165,6 +168,7 @@ const TextInput = forwardRef<InputRef, Props>(
           autoComplete={autoComplete}
           autoCorrect={autoCorrect}
           autoCapitalize={autoCapitalize}
+          selectTextOnFocus={selectTextOnFocus}
           keyboardType={keyboardType}
           secureTextEntry={secureTextEntry}
           clearTextOnFocus={secureTextEntry}

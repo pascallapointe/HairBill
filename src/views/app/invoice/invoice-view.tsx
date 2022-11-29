@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Box,
+  Button,
   Divider,
   Heading,
   HStack,
+  Icon,
   KeyboardAvoidingView,
   ScrollView,
   Text,
@@ -28,6 +30,8 @@ import {
 } from '@views/app/options/sales-tax/sales-tax.repository';
 import Modal, { ModalRef } from '@components/modal';
 import { roundTo } from '@lib/utils';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import TipInput from '@views/app/invoice/tip/tip-input';
 
 type AmountType = {
   subtotal: number;
@@ -58,6 +62,10 @@ const InvoiceView = () => {
   const [client, setClient] = useState<ClientType>(defaultClient);
   const productsField = useRef<ProductSelectRef>(null);
   const [products, setProducts] = useState<ProductType[]>([]);
+  const [tip, setTip] = useState(0);
+  const [paymentFormat, setPaymentFormat] = useState<'cash' | 'check' | null>(
+    null,
+  );
   const [amount, setAmount] = useState<AmountType>(defaultAmount);
 
   // Modals
@@ -169,6 +177,7 @@ const InvoiceView = () => {
                     ref={clientField}
                     label="Nom du client"
                     bindValue={setClient}
+                    placeholder={t<string>('invoice.type3Chars')}
                     clear="while-editing"
                     schema={z
                       .string({
@@ -193,6 +202,52 @@ const InvoiceView = () => {
                   label={t<string>('invoice.selectedP&S')}
                   bindValue={setProducts}
                 />
+                <Heading mt={5} color="violet.700">
+                  {t<string>('invoice.tip')}
+                </Heading>
+                <Divider mb={2} bg="violet.700" />
+                <View zIndex={10}>
+                  <TipInput bindValue={setTip} value="0" />
+                </View>
+                <Heading mt={5} color="violet.700">
+                  {t<string>('invoice.payment')}
+                </Heading>
+                <Divider mb={2} bg="violet.700" />
+                <HStack py={2} space={2} justifyContent="center">
+                  <Button
+                    leftIcon={
+                      paymentFormat === 'cash' ? (
+                        <Icon as={FontAwesomeIcon} name="check" />
+                      ) : undefined
+                    }
+                    size="lg"
+                    minW="120px"
+                    colorScheme={paymentFormat === 'cash' ? 'lime' : 'muted'}
+                    shadow={4}
+                    onPress={() =>
+                      setPaymentFormat(paymentFormat === 'cash' ? null : 'cash')
+                    }>
+                    Cash
+                  </Button>
+                  <Button
+                    leftIcon={
+                      paymentFormat === 'check' ? (
+                        <Icon as={FontAwesomeIcon} name="check" />
+                      ) : undefined
+                    }
+                    size="lg"
+                    minW="120px"
+                    colorScheme={paymentFormat === 'check' ? 'lime' : 'muted'}
+                    shadow={4}
+                    onPress={() =>
+                      setPaymentFormat(
+                        paymentFormat === 'check' ? null : 'check',
+                      )
+                    }>
+                    Check
+                  </Button>
+                </HStack>
+
                 <Heading mt={5} color="violet.700">
                   {t<string>('invoice.total')}
                 </Heading>

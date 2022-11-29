@@ -30,9 +30,9 @@ const SignInView: React.FC<Props> = ({ navigation }) => {
 
   // Check the last signed-in email in localstorage
   useEffect(() => {
-    AsyncStorage.getItem('signInEmail', (e, value) => {
-      setDefaultEmail(value ? value : '');
-    });
+    AsyncStorage.getItem('signInEmail')
+      .then(value => setDefaultEmail(value ? value : ''))
+      .catch(console.error);
   }, []);
 
   function signIn() {

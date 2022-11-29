@@ -4,7 +4,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { z, ZodType } from 'zod';
+import { z } from 'zod';
 import {
   Box,
   Button,
@@ -26,12 +26,12 @@ import {
 } from 'react-native';
 import type { ThemeComponentSizeType } from 'native-base/lib/typescript/components/types';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import ClientList from '@views/app/invoice/client/list';
-import AddClient from '@views/app/invoice/client/add';
-import { ClientType } from '@views/app/invoice/client/client.repository';
+import AmountList from '@views/app/invoice/tip/list';
+import { useTranslation } from 'react-i18next';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
 interface Props extends IFormControlProps {
-  bindValue: (val: ClientType) => void;
+  bindValue: (val: number) => void;
   label?: string;
   value?: string;
   placeholder?: string;
@@ -44,11 +44,9 @@ interface Props extends IFormControlProps {
   autoCorrect?: boolean;
   autoCapitalize?: AutoCapitalizeType;
   validation?: boolean;
-  schema?: ZodType;
-  icon?: JSX.Element;
 }
 
-export type ClientInputRef = {
+export type TipInputRef = {
   validate: (val?: string) => void;
 };
 
@@ -66,14 +64,7 @@ const InputLabel: React.FC<{
   return null;
 };
 
-const InputIcon: React.FC<{ icon?: JSX.Element }> = ({ icon }) => {
-  if (icon) {
-    return <Icon as={icon} top="1px" size={5} ml="2" color="muted.400" />;
-  }
-  return null;
-};
-
-const ClientInput = forwardRef<ClientInputRef, Props>(
+const TipInput = forwardRef<TipInputRef, Props>(
   (
     {
       label,
@@ -89,15 +80,11 @@ const ClientInput = forwardRef<ClientInputRef, Props>(
       autoCapitalize = 'words',
       required = true,
       validation = true,
-      schema = z.string({
-        required_error: 'Required',
-        invalid_type_error: 'Must be a string',
-      }),
-      icon,
       ...props
     },
     ref,
   ) => {
+    const { t } = useTranslation();
     // Input properties
     const [init, setInit] = useState(false);
     const [_value, setValue] = useState(value);
@@ -107,7 +94,6 @@ const ClientInput = forwardRef<ClientInputRef, Props>(
 
     // Popover properties
     const [isOpen, setIsOpen] = useState(false);
-    const [view, setView] = useState<'list' | 'add'>('list');
 
     function initAndValidate(
       e: NativeSyntheticEvent<TextInputFocusEventData>,
@@ -125,6 +111,16 @@ const ClientInput = forwardRef<ClientInputRef, Props>(
         setInit(true);
       }
 
+      const schema = z.preprocess(
+        v => parseFloat(v as string),
+        z
+          .number({
+            required_error: t<string>('validation.required'),
+            invalid_type_error: t<string>('validation.numberType'),
+          })
+          .nonnegative({ message: t<string>('validation.positive') }),
+      );
+
       let result = schema.safeParse(val ?? _value);
 
       setError(!result.success);
@@ -140,19 +136,18 @@ const ClientInput = forwardRef<ClientInputRef, Props>(
     useImperativeHandle(ref, () => ({ validate }));
 
     function handleChange(val: string) {
-      if (val.length >= 3) {
-        setIsOpen(true);
-      }
+      setIsOpen(true);
+
       setValue(val);
-      bindValue({ id: '', name: val, phone: '' });
+      bindValue(parseFloat(val));
       if (init && validation) {
         validate(val);
       }
     }
 
-    function selectClient(client: ClientType) {
-      setValue(client.name);
-      bindValue(client);
+    function selectAmount(amount: number) {
+      setValue(amount.toString());
+      bindValue(amount);
       setIsOpen(false);
       inputField.current && inputField.current.blur();
     }
@@ -169,10 +164,7 @@ const ClientInput = forwardRef<ClientInputRef, Props>(
         <Input
           ref={inputField}
           onFocus={e => {
-            setView('list');
-            if (_value.length >= 3) {
-              setIsOpen(true);
-            }
+            setIsOpen(true);
             // Workaround for selectTextOnFocus={true} not working
             e.currentTarget.setNativeProps({
               selection: { start: 0, end: _value?.length },
@@ -186,7 +178,17 @@ const ClientInput = forwardRef<ClientInputRef, Props>(
           autoComplete={autoComplete}
           autoCorrect={autoCorrect}
           autoCapitalize={autoCapitalize}
-          InputLeftElement={<InputIcon icon={icon} />}
+          keyboardType="number-pad"
+          InputLeftElement={
+            <Icon
+              as={FontAwesome5Icon}
+              name="coins"
+              top="1px"
+              size={5}
+              ml="2"
+              color="muted.400"
+            />
+          }
           value={_value}
           placeholder={placeholder ? placeholder : ''}
           _focus={{
@@ -207,23 +209,10 @@ const ClientInput = forwardRef<ClientInputRef, Props>(
             width="100%"
             borderWidth={1}
             borderColor="violet.700">
-            {view === 'list' ? (
-              <ClientList
-                setView={setView}
-                query={_value}
-                bindClient={selectClient}
-              />
-            ) : (
-              <AddClient
-                setView={setView}
-                value={_value}
-                bindClient={selectClient}
-              />
-            )}
+            <AmountList query={_value} bindAmount={selectAmount} />
             <Button
               onPress={() => {
                 setIsOpen(false);
-                setView('list');
                 inputField.current && inputField.current.blur();
               }}
               variant="ghost"
@@ -248,4 +237,4 @@ const ClientInput = forwardRef<ClientInputRef, Props>(
   },
 );
 
-export default ClientInput;
+export default TipInput;

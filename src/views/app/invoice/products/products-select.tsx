@@ -166,7 +166,8 @@ const ProductsSelect = forwardRef<ProductSelectRef, Props>(
               mt={2}
               leftIcon={<Icon as={FontAwesome5Icon} name="plus" />}
               onPress={() => setView('options')}
-              colorScheme="lime">
+              colorScheme="lime"
+              shadow={4}>
               {t('add')}
             </Button>
           ) : (

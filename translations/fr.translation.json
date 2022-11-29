@@ -80,7 +80,11 @@
     "selectedP&S": "Produits & services sélectionnés",
     "total": "Total",
     "subtotal": "Sous-total",
-    "taxIncluded": "Taxes incluses dans le prix"
+    "taxIncluded": "Taxes incluses dans le prix",
+    "payment": "Paiement",
+    "tip": "Pourboire",
+    "addTip": "Ajouter pourboire",
+    "type3Chars": "Tapez au moins 3 caractères"
   },
   "services": {
     "title": "Gérer les services",

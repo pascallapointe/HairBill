@@ -43,7 +43,7 @@ const AddClient: React.FC<{
   }
 
   return (
-    <VStack p={2} alignItems="center" height="250px">
+    <VStack p={2} alignItems="center" justifyContent="center" height="250px">
       <TextInput
         maxW="300px"
         ref={nameField}

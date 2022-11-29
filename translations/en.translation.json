@@ -81,7 +81,11 @@
     "selectedP&S": "Selected Products & services",
     "total": "Total",
     "subtotal": "Subtotal",
-    "taxIncluded": "Taxes included in the price"
+    "taxIncluded": "Taxes included in the price",
+    "payment": "Payment",
+    "tip": "Tip",
+    "addTip": "Add tip",
+    "type3Chars": "Type at least 3 characters"
   },
   "services": {
     "title": "Manage services",

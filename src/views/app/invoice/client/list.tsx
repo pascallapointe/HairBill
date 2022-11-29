@@ -27,7 +27,8 @@ const ListItem: React.FC<{
 }> = ({ item, bindClient, onDelete }) => {
   return (
     <Pressable
-      px={4}
+      pl={4}
+      pr={1}
       rounded={5}
       colorScheme="fuchsia"
       _pressed={{
@@ -166,7 +167,7 @@ const ClientList: React.FC<{
   }
 
   return (
-    <VStack px={12} py={5} height="250px">
+    <VStack pl={8} pr={12} pt={2} height="250px">
       <ScrollView keyboardShouldPersistTaps="always">
         {filtered.map(client => (
           <ListItem
@@ -181,7 +182,7 @@ const ClientList: React.FC<{
       <Center>
         <Button
           onPress={() => setView('add')}
-          my={1}
+          my={2}
           colorScheme="lime"
           shadow={4}>
           {t<string>('invoice.addClient')}
