@@ -21,17 +21,18 @@ const OptionsPicker: React.FC<{
 
   if (view === 'category') {
     return (
-      <ScrollView maxHeight="150px">
-        <Flex mb={4} direction="row" wrap="wrap" justifyContent="center">
+      <ScrollView maxHeight={{ md: '310px', lg: '330px' }}>
+        <Flex my={2} direction="row" wrap="wrap" justifyContent="center">
           {Object.keys(options).map(key =>
             options[key].products.length ? (
               <Button
                 key={key}
                 m={1}
-                size="md"
+                py={1}
+                size="sm"
                 onPress={() => selectCategory(options[key].products)}
                 rounded={15}
-                _text={{ fontWeight: 'bold' }}
+                _text={{ fontWeight: 'bold', fontSize: 'sm' }}
                 colorScheme="fuchsia"
                 shadow={2}>
                 {options[key].name}
@@ -46,19 +47,20 @@ const OptionsPicker: React.FC<{
   }
 
   return (
-    <ScrollView maxHeight="150px">
-      <Flex mb={4} direction="row" wrap="wrap" justifyContent="center">
+    <ScrollView maxHeight={{ md: '310px', lg: '330px' }}>
+      <Flex my={2} direction="row" wrap="wrap" justifyContent="center">
         {subset.map(option => (
           <Button
             key={option.id}
             m={1}
-            size="md"
+            py={1}
+            size="sm"
             onPress={() => select(option)}
             rounded={15}
             colorScheme={option.id === 'none' ? 'muted' : 'lime'}
             shadow={2}>
             <Center>
-              <Text fontSize="md" fontWeight="bold" color="white">
+              <Text fontSize="sm" fontWeight="bold" color="white">
                 {option.name}
               </Text>
               <Text fontSize="sm" color="white">

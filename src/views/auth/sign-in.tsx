@@ -1,7 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { z } from 'zod';
-import { Box, Button, Heading, Text, VStack } from 'native-base';
-import { SafeAreaView } from 'react-native';
+import {
+  Box,
+  Button,
+  Heading,
+  KeyboardAvoidingView,
+  Text,
+  VStack,
+} from 'native-base';
+import { Platform, SafeAreaView } from 'react-native';
 import Card from '@components/card';
 import { useTranslation } from 'react-i18next';
 import ZocialIcon from 'react-native-vector-icons/Zocial';
@@ -82,88 +89,95 @@ const SignInView: React.FC<Props> = ({ navigation }) => {
       }}>
       <SafeAreaView
         style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <VStack space={4} alignItems="center">
-          <Heading color="white" size="4xl" mb={4} fontFamily="SignPainter">
-            &nbsp;HairBill&nbsp;
-          </Heading>
-          <Card
-            w="400px"
-            title={t<string>('auth.signIn')}
-            titleAlign="center"
-            alignItems="center">
-            <VStack pb={2} space={2} alignItems="center" minW="100%">
-              <TextInput
-                value={defaultEmail}
-                bindValue={setEmailValue}
-                label={t<string>('auth.email')}
-                placeholder={t<string>('auth.emailPlaceholder')}
-                icon={<ZocialIcon name="email" />}
-                schema={z
-                  .string({ required_error: t<string>('validation.required') })
-                  .email({
-                    message: t<string>('validation.invalidEmail'),
-                  })}
-                clear="while-editing"
-                keyboardType="email-address"
-                ref={emailField}
-              />
-              <TextInput
-                bindValue={setPasswordValue}
-                label={t<string>('auth.password')}
-                placeholder={t<string>('auth.password')}
-                icon={<FontAwesome5Icon name="key" />}
-                schema={z
-                  .string({ required_error: t<string>('validation.required') })
-                  .min(8, t<string>('validation.min', { count: 8 }))}
-                clear="while-editing"
-                secureTextEntry={true}
-                ref={passwordField}
-              />
-              <ActionButton
-                m={2}
-                size="lg"
-                wait={wait}
-                text={t('auth.signIn')}
-                colorScheme="violet"
-                action={signIn}
-              />
-            </VStack>
-          </Card>
-          <Text color="white" fontSize="md" fontWeight="bold">
-            {t('auth.noAccountYet')}?
-          </Text>
-          <Button
-            onPress={() => navigation.navigate('signUp')}
-            colorScheme="fuchsia"
-            size="lg"
-            shadow={5}>
-            {t('auth.createAccount')}
-          </Button>
-        </VStack>
-        <Modal
-          ref={errorModal}
-          hideAction={true}
-          title={t('auth.authFailure.title')}
-          callback={() => setWait(false)}>
-          <Text fontSize="md" mb={3} textAlign="center">
-            {t('auth.authFailure.message1')}
-          </Text>
-          <Text fontSize="md" textAlign="center">
-            {t('auth.authFailure.message2')}
-          </Text>
-        </Modal>
-        <Modal
-          ref={emailCheckModal}
-          hideAction={true}
-          title={t('auth.authFailure.title')}
-          callback={signOut}>
-          <Text fontSize="md" mb={3} textAlign="center">
-            {t('auth.emailCheck.message1')}
-          </Text>
-          <Text fontSize="md" textAlign="center">
-            {t('auth.emailCheck.message2')}
-          </Text>
-        </Modal>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
+          <VStack space={4} alignItems="center">
+            <Heading color="white" size="4xl" mb={4} fontFamily="SignPainter">
+              &nbsp;HairBill&nbsp;
+            </Heading>
+            <Card
+              w="400px"
+              title={t<string>('auth.signIn')}
+              titleAlign="center"
+              alignItems="center">
+              <VStack pb={2} space={2} alignItems="center" minW="100%">
+                <TextInput
+                  value={defaultEmail}
+                  bindValue={setEmailValue}
+                  label={t<string>('auth.email')}
+                  placeholder={t<string>('auth.emailPlaceholder')}
+                  icon={<ZocialIcon name="email" />}
+                  schema={z
+                    .string({
+                      required_error: t<string>('validation.required'),
+                    })
+                    .email({
+                      message: t<string>('validation.invalidEmail'),
+                    })}
+                  clear="while-editing"
+                  keyboardType="email-address"
+                  ref={emailField}
+                />
+                <TextInput
+                  bindValue={setPasswordValue}
+                  label={t<string>('auth.password')}
+                  placeholder={t<string>('auth.password')}
+                  icon={<FontAwesome5Icon name="key" />}
+                  schema={z
+                    .string({
+                      required_error: t<string>('validation.required'),
+                    })
+                    .min(8, t<string>('validation.min', { count: 8 }))}
+                  clear="while-editing"
+                  secureTextEntry={true}
+                  ref={passwordField}
+                />
+                <ActionButton
+                  m={2}
+                  size="lg"
+                  wait={wait}
+                  text={t('auth.signIn')}
+                  colorScheme="violet"
+                  action={signIn}
+                />
+              </VStack>
+            </Card>
+            <Text color="white" fontSize="md" fontWeight="bold">
+              {t('auth.noAccountYet')}?
+            </Text>
+            <Button
+              onPress={() => navigation.navigate('signUp')}
+              colorScheme="fuchsia"
+              size="lg"
+              shadow={5}>
+              {t('auth.createAccount')}
+            </Button>
+          </VStack>
+          <Modal
+            ref={errorModal}
+            hideAction={true}
+            title={t('auth.authFailure.title')}
+            callback={() => setWait(false)}>
+            <Text fontSize="md" mb={3} textAlign="center">
+              {t('auth.authFailure.message1')}
+            </Text>
+            <Text fontSize="md" textAlign="center">
+              {t('auth.authFailure.message2')}
+            </Text>
+          </Modal>
+          <Modal
+            ref={emailCheckModal}
+            hideAction={true}
+            title={t('auth.authFailure.title')}
+            callback={signOut}>
+            <Text fontSize="md" mb={3} textAlign="center">
+              {t('auth.emailCheck.message1')}
+            </Text>
+            <Text fontSize="md" textAlign="center">
+              {t('auth.emailCheck.message2')}
+            </Text>
+          </Modal>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </Box>
   );

@@ -36,5 +36,5 @@ export async function getTaxSettings(): Promise<TaxSettingsType | undefined> {
 
 export function updateTaxSettings(taxSettings: TaxSettingsType): void {
   const doc = getRootDocument();
-  doc.update({ taxSettings }).then(console.log);
+  doc.update({ taxSettings }).catch(console.error);
 }

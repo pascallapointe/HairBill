@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { z, ZodLiteral } from 'zod';
-import { Box, Heading, Text, VStack } from 'native-base';
-import { SafeAreaView } from 'react-native';
+import { Box, Heading, KeyboardAvoidingView, Text, VStack } from 'native-base';
+import { Platform, SafeAreaView } from 'react-native';
 import Card from '@components/card';
 import { useTranslation } from 'react-i18next';
 import TextInput, { InputRef } from '@components/form/text-input';
@@ -89,96 +89,101 @@ const RegisterView: React.FC<Props> = ({ navigation }) => {
       }}>
       <SafeAreaView
         style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <VStack space={4} alignItems="center">
-          <Heading color="white" size="4xl" mb={4} fontFamily="SignPainter">
-            &nbsp;Nouveau compte&nbsp;
-          </Heading>
-          <Card w="400px" titleAlign="center" alignItems="center">
-            <VStack p={2} space={2} alignItems="center" minW="100%">
-              <TextInput
-                ref={emailField}
-                bindValue={setEmailValue}
-                label={t<string>('auth.email')}
-                placeholder={t<string>('auth.emailPlaceholder')}
-                icon={<ZocialIcon name="email" />}
-                schema={z
-                  .string({ required_error: t<string>('validation.required') })
-                  .email({
-                    message: t<string>('validation.invalidEmail'),
-                  })}
-                clear="while-editing"
-                keyboardType="email-address"
-              />
-              <TextInput
-                ref={passwordField}
-                bindValue={setPasswordValue}
-                label={t<string>('auth.newPassword')}
-                placeholder={t<string>('auth.newPassword')}
-                icon={<FontAwesome5Icon name="key" />}
-                schema={z
-                  .string()
-                  .regex(
-                    new RegExp(
-                      '((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$',
-                    ),
-                    t<string>('validation.passwordConstraint'),
-                  )
-                  .min(8, t<string>('validation.min', { count: 8 }))}
-                clear="while-editing"
-                secureTextEntry={true}
-              />
-              <TextInput
-                ref={confirmField}
-                bindValue={setConfirmValue}
-                label={t<string>('auth.confirmPassword')}
-                placeholder={t<string>('auth.confirmPassword')}
-                icon={<FontAwesome5Icon name="key" />}
-                schema={getConfirmSchema('')}
-                clear="while-editing"
-                secureTextEntry={true}
-              />
-              <ActionButton
-                m={2}
-                size="lg"
-                wait={wait}
-                text={t('auth.createAccount')}
-                colorScheme="violet"
-                action={signUp}
-              />
-            </VStack>
-          </Card>
-        </VStack>
-        <Modal
-          ref={successModal}
-          hideClose={true}
-          actionBtnText={t<string>('auth.backToSignIn')}
-          callback={() => navigation.navigate('signIn')}
-          title={t('auth.registerSuccess.title')}>
-          <Text fontSize="md" textAlign="center" mb={3}>
-            {t('auth.registerSuccess.message1', { email: emailValue })}
-          </Text>
-          <Text fontSize="md" textAlign="center">
-            {t('auth.registerSuccess.message2')}
-          </Text>
-        </Modal>
-        <Modal
-          ref={usedEmailModal}
-          hideAction={true}
-          callback={() => setWait(false)}
-          title={t('auth.registerFailure.title')}>
-          <Text fontSize="md" textAlign="center">
-            {t('auth.registerFailure.usedEmail')}
-          </Text>
-        </Modal>
-        <Modal
-          ref={errorModal}
-          hideAction={true}
-          callback={() => setWait(false)}
-          title={t('auth.registerFailure.title')}>
-          <Text fontSize="md" textAlign="center">
-            {t('modal.defaultErrorMessage')}
-          </Text>
-        </Modal>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
+          <VStack space={4} alignItems="center">
+            <Heading color="white" size="4xl" mb={4} fontFamily="SignPainter">
+              &nbsp;Nouveau compte&nbsp;
+            </Heading>
+            <Card w="400px" titleAlign="center" alignItems="center">
+              <VStack p={2} space={2} alignItems="center" minW="100%">
+                <TextInput
+                  ref={emailField}
+                  bindValue={setEmailValue}
+                  label={t<string>('auth.email')}
+                  placeholder={t<string>('auth.emailPlaceholder')}
+                  icon={<ZocialIcon name="email" />}
+                  schema={z
+                    .string({
+                      required_error: t<string>('validation.required'),
+                    })
+                    .email({
+                      message: t<string>('validation.invalidEmail'),
+                    })}
+                  clear="while-editing"
+                  keyboardType="email-address"
+                />
+                <TextInput
+                  ref={passwordField}
+                  bindValue={setPasswordValue}
+                  label={t<string>('auth.newPassword')}
+                  placeholder={t<string>('auth.newPassword')}
+                  icon={<FontAwesome5Icon name="key" />}
+                  schema={z
+                    .string()
+                    .regex(
+                      new RegExp(
+                        '((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$',
+                      ),
+                      t<string>('validation.passwordConstraint'),
+                    )
+                    .min(8, t<string>('validation.min', { count: 8 }))}
+                  clear="while-editing"
+                  secureTextEntry={true}
+                />
+                <TextInput
+                  ref={confirmField}
+                  bindValue={setConfirmValue}
+                  label={t<string>('auth.confirmPassword')}
+                  placeholder={t<string>('auth.confirmPassword')}
+                  icon={<FontAwesome5Icon name="key" />}
+                  schema={getConfirmSchema('')}
+                  clear="while-editing"
+                  secureTextEntry={true}
+                />
+                <ActionButton
+                  m={2}
+                  size="lg"
+                  wait={wait}
+                  text={t('auth.createAccount')}
+                  colorScheme="violet"
+                  action={signUp}
+                />
+              </VStack>
+            </Card>
+          </VStack>
+          <Modal
+            ref={successModal}
+            hideClose={true}
+            actionBtnText={t<string>('auth.backToSignIn')}
+            callback={() => navigation.navigate('signIn')}
+            title={t('auth.registerSuccess.title')}>
+            <Text fontSize="md" textAlign="center" mb={3}>
+              {t('auth.registerSuccess.message1', { email: emailValue })}
+            </Text>
+            <Text fontSize="md" textAlign="center">
+              {t('auth.registerSuccess.message2')}
+            </Text>
+          </Modal>
+          <Modal
+            ref={usedEmailModal}
+            hideAction={true}
+            callback={() => setWait(false)}
+            title={t('auth.registerFailure.title')}>
+            <Text fontSize="md" textAlign="center">
+              {t('auth.registerFailure.usedEmail')}
+            </Text>
+          </Modal>
+          <Modal
+            ref={errorModal}
+            hideAction={true}
+            callback={() => setWait(false)}
+            title={t('auth.registerFailure.title')}>
+            <Text fontSize="md" textAlign="center">
+              {t('modal.defaultErrorMessage')}
+            </Text>
+          </Modal>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </Box>
   );

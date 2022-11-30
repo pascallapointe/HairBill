@@ -155,12 +155,40 @@ const TipInput = forwardRef<TipInputRef, Props>(
     return (
       <FormControl isInvalid={error} isRequired={required} {...props}>
         <InputLabel label={label} />
-        <ValidationErrors
-          m={0}
-          mb={1}
-          error={error}
-          errorMessages={errorMessages}
-        />
+        <Box width="100%" display={isOpen ? 'flex' : 'none'}>
+          <Box
+            bottom={0}
+            position="absolute"
+            zIndex={10}
+            bgColor="white"
+            rounded={4}
+            shadow={5}
+            width="100%"
+            borderWidth={1}
+            borderColor="violet.700">
+            <AmountList query={_value} bindAmount={selectAmount} />
+            <Button
+              onPress={() => {
+                setIsOpen(false);
+                inputField.current && inputField.current.blur();
+              }}
+              variant="ghost"
+              colorScheme="danger"
+              position="absolute"
+              zIndex={100}
+              right={0}
+              top={0}>
+              <Icon
+                bottom="1px"
+                left="2px"
+                size="md"
+                as={FontAwesomeIcon}
+                name="close"
+                color="violet.700"
+              />
+            </Button>
+          </Box>
+        </Box>
         <Input
           ref={inputField}
           onFocus={e => {
@@ -199,39 +227,7 @@ const TipInput = forwardRef<TipInputRef, Props>(
           fontWeight={fontWeight}
           size={size}
         />
-        <Box width="100%" display={isOpen ? 'flex' : 'none'}>
-          <Box
-            position="absolute"
-            zIndex={10}
-            bgColor="white"
-            rounded={4}
-            shadow={5}
-            width="100%"
-            borderWidth={1}
-            borderColor="violet.700">
-            <AmountList query={_value} bindAmount={selectAmount} />
-            <Button
-              onPress={() => {
-                setIsOpen(false);
-                inputField.current && inputField.current.blur();
-              }}
-              variant="ghost"
-              colorScheme="danger"
-              position="absolute"
-              zIndex={100}
-              right={0}
-              top={0}>
-              <Icon
-                bottom="1px"
-                left="2px"
-                size="md"
-                as={FontAwesomeIcon}
-                name="close"
-                color="violet.700"
-              />
-            </Button>
-          </Box>
-        </Box>
+        <ValidationErrors error={error} errorMessages={errorMessages} />
       </FormControl>
     );
   },

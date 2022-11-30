@@ -154,11 +154,11 @@ const ProductsSelect = forwardRef<ProductSelectRef, Props>(
           error={error}
           errorMessages={errorMessages}
         />
-        <SelectedList selected={selected} remove={remove} />
+
         {view === 'options' ? (
           <OptionsPicker options={sectionList} select={select} />
         ) : (
-          ''
+          <SelectedList selected={selected} remove={remove} />
         )}
         <Center>
           {view === 'selection' ? (

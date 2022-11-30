@@ -8,7 +8,7 @@ import {
   HStack,
   Icon,
   KeyboardAvoidingView,
-  ScrollView,
+  Stack,
   Text,
   View,
 } from 'native-base';
@@ -156,21 +156,23 @@ const InvoiceView = () => {
           end: [1, 0],
         },
       }}>
-      <SafeAreaView>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
-          <ScrollView
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Heading color="white" size="4xl" mb={4} fontFamily="SignPainter">
-              &nbsp;{t<string>('invoice.title')}&nbsp;
-            </Heading>
-            <Card width={{ md: '700px', lg: '1000px' }} py={4}>
-              <Box py={5} px={10}>
-                <View zIndex={10}>
+      <SafeAreaView
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Card
+          width={{ md: '700px', lg: '1000px' }}
+          height={{ md: '1050px', lg: '700px' }}
+          py={4}>
+          <Box py={5} px={10}>
+            <Stack
+              height={{ md: '940px', lg: '590px' }}
+              direction={{ md: 'column', lg: 'row' }}
+              space={{ md: 2, lg: 4 }}>
+              <Box flex={{ md: 1.6, lg: 1 }}>
+                <KeyboardAvoidingView
+                  contentContainerStyle={{ backgroundColor: 'white' }}
+                  zIndex={10}
+                  keyboardVerticalOffset={380}
+                  behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
                   <Heading color="violet.700">
                     {t<string>('invoice.clientInfo')}
                   </Heading>
@@ -189,8 +191,8 @@ const InvoiceView = () => {
                         message: t<string>('validation.min', { count: 3 }),
                       })}
                   />
-                </View>
-                <Heading mt={5} color="violet.700">
+                </KeyboardAvoidingView>
+                <Heading mt={4} color="violet.700">
                   {t<string>('invoice.productsAndServices')}
                   <Box display={taxSettings.includeTax ? 'flex' : 'none'}>
                     <Text bottom={1} ml={4} fontSize="md" color="muted.500">
@@ -204,14 +206,9 @@ const InvoiceView = () => {
                   label={t<string>('invoice.selectedP&S')}
                   bindValue={setProducts}
                 />
-                <Heading mt={5} color="violet.700">
-                  {t<string>('invoice.tip')}
-                </Heading>
-                <Divider mb={2} bg="violet.700" />
-                <View zIndex={10}>
-                  <TipInput bindValue={setTip} value="0" />
-                </View>
-                <Heading mt={5} color="violet.700">
+              </Box>
+              <Box flex={1}>
+                <Heading color="violet.700">
                   {t<string>('invoice.payment')}
                 </Heading>
                 <Divider mb={2} bg="violet.700" />
@@ -249,8 +246,14 @@ const InvoiceView = () => {
                     Check
                   </Button>
                 </HStack>
-
-                <Heading mt={5} color="violet.700">
+                <Heading mt={4} color="violet.700">
+                  {t<string>('invoice.tip')}
+                </Heading>
+                <Divider mb={2} bg="violet.700" />
+                <View zIndex={10}>
+                  <TipInput bindValue={setTip} value="0" />
+                </View>
+                <Heading mt={4} color="violet.700">
                   {t<string>('invoice.total')}
                 </Heading>
                 <Divider mb={2} bg="violet.700" />
@@ -321,25 +324,25 @@ const InvoiceView = () => {
                   </Text>
                 </HStack>
               </Box>
-              <Center>
-                <ActionButton
-                  colorScheme="violet"
-                  text={t<string>('save')}
-                  action={() => null}
-                />
-              </Center>
-            </Card>
-          </ScrollView>
-          <Modal
-            ref={errorModal}
-            hideAction={true}
-            title={t('exception.operationFailed')}
-            modalType="error">
-            <Text fontSize="md" textAlign="center">
-              {errorMessage}
-            </Text>
-          </Modal>
-        </KeyboardAvoidingView>
+            </Stack>
+          </Box>
+          <Center>
+            <ActionButton
+              colorScheme="violet"
+              text={t<string>('save')}
+              action={() => null}
+            />
+          </Center>
+        </Card>
+        <Modal
+          ref={errorModal}
+          hideAction={true}
+          title={t('exception.operationFailed')}
+          modalType="error">
+          <Text fontSize="md" textAlign="center">
+            {errorMessage}
+          </Text>
+        </Modal>
       </SafeAreaView>
     </Box>
   );

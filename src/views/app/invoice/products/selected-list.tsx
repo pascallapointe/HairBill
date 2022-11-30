@@ -4,7 +4,16 @@ import {
   ProductType,
 } from '@views/app/services/product/product.repository';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, HStack, Icon, Text, View, VStack } from 'native-base';
+import {
+  Box,
+  Button,
+  HStack,
+  Icon,
+  ScrollView,
+  Text,
+  View,
+  VStack,
+} from 'native-base';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import OctIcon from 'react-native-vector-icons/Octicons';
 
@@ -62,8 +71,8 @@ const SelectedList: React.FC<{
 
   if (!selected.length) {
     return (
-      <Box height="100px" justifyContent="center" alignItems="center">
-        <Text fontSize="lg" color="muted.500">
+      <Box height="60px" justifyContent="center" alignItems="center">
+        <Text pt={2} fontSize="lg" color="muted.500">
           {t<string>('invoice.noProduct')}
         </Text>
       </Box>
@@ -71,27 +80,31 @@ const SelectedList: React.FC<{
   }
 
   return (
-    <VStack>
-      {Object.keys(sectionMap).map((key, index) => (
-        <View key={key}>
-          <Text
-            fontSize="lg"
-            fontWeight="bold"
-            mt={index > 0 ? 4 : 0}
-            color={key === 'none' ? 'muted.400' : 'pink.500'}>
-            {sectionMap[key].name}
-          </Text>
+    <ScrollView
+      keyboardShouldPersistTaps="handled"
+      maxHeight={{ md: '310px', lg: '330px' }}>
+      <VStack>
+        {Object.keys(sectionMap).map((key, index) => (
+          <View key={key}>
+            <Text
+              fontSize="lg"
+              fontWeight="bold"
+              mt={index > 0 ? 4 : 0}
+              color={key === 'none' ? 'muted.400' : 'pink.500'}>
+              {sectionMap[key].name}
+            </Text>
 
-          {sectionMap[key].products.map((item, itemIndex) => (
-            <SelectedItem
-              key={item.id + itemIndex}
-              item={item}
-              remove={remove}
-            />
-          ))}
-        </View>
-      ))}
-    </VStack>
+            {sectionMap[key].products.map((item, itemIndex) => (
+              <SelectedItem
+                key={item.id + itemIndex}
+                item={item}
+                remove={remove}
+              />
+            ))}
+          </View>
+        ))}
+      </VStack>
+    </ScrollView>
   );
 };
 

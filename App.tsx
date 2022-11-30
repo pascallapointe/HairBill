@@ -4,6 +4,8 @@ import AppNavigation from '@views/app-navigation';
 import { useTranslation } from 'react-i18next';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { Platform, NativeModules } from 'react-native';
+import NetInfo from '@react-native-community/netinfo';
+import firestore from '@react-native-firebase/firestore';
 
 const App = () => {
   const { i18n } = useTranslation();
@@ -40,6 +42,7 @@ const App = () => {
 
   useEffect(() => {
     handleLocale().catch(console.error);
+
     /********************
        BEGIN TEST CODE
      *******************/
@@ -48,8 +51,28 @@ const App = () => {
     /********************
         END TEST CODE
      *******************/
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
+
+    // Monitor auth status
+    const authSubscriber = auth().onAuthStateChanged(onAuthStateChanged);
+
+    // Monitor internet status
+    const netInfoSubscriber = NetInfo.addEventListener(state => {
+      console.log(state.isConnected, state.isInternetReachable);
+      if (state.isConnected && state.isInternetReachable) {
+        firestore()
+          .enableNetwork()
+          .then(() => console.warn('Firestore reading from server.'));
+      } else {
+        firestore()
+          .disableNetwork()
+          .then(() => console.warn('Firestore reading from cache.'));
+      }
+    });
+
+    return () => {
+      authSubscriber();
+      netInfoSubscriber();
+    };
   }, []);
 
   if (initializing) {

@@ -11,6 +11,7 @@ interface Props {
 
 const MenuView: React.FC<Props> = ({ navigation }) => {
   const { t } = useTranslation();
+
   return (
     <Box
       flex={1}
