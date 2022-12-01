@@ -84,7 +84,9 @@
     "payment": "Paiement",
     "tip": "Pourboire",
     "addTip": "Ajouter pourboire",
-    "type3Chars": "Tapez au moins 3 caractères"
+    "type3Chars": "Tapez au moins 3 caractères",
+    "check": "Chèque",
+    "cash": "Comptant"
   },
   "services": {
     "title": "Gérer les services",

@@ -49,7 +49,7 @@ const AmountList: React.FC<{
   if (!filtered.length) {
     return (
       <Box height="150px" justifyContent="center" alignItems="center">
-        <Text mb={5} fontSize="lg" color="muted.500">
+        <Text m={5} fontSize="lg" color="muted.500">
           {t<string>('invoice.noMatch')}
         </Text>
       </Box>
@@ -57,7 +57,7 @@ const AmountList: React.FC<{
   }
 
   return (
-    <VStack px={12} py={5} height="150px">
+    <VStack pl={1} pr={7} py={1} height="150px">
       <ScrollView keyboardShouldPersistTaps="always">
         <Flex direction="row" wrap="wrap">
           {filtered.map(amount => (

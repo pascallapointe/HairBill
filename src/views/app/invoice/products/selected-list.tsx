@@ -26,24 +26,25 @@ const SelectedItem: React.FC<{
     <HStack justifyContent="space-between">
       <HStack>
         <Icon
-          top="5px"
+          top="2px"
           color="violet.700"
           size="md"
           ml={5}
           as={OctIcon}
           name="dot"
         />
-        <Text fontSize="xl" fontWeight="bold" color="light.700">
+        <Text fontSize="md" fontWeight="bold" color="light.700">
           {item.name}
         </Text>
       </HStack>
 
       <HStack>
-        <Text ml={4} fontSize="lg" fontWeight="bold" color="muted.500">
+        <Text ml={4} fontSize="md" fontWeight="bold" color="muted.500">
           {t('price', { price: item.price.toFixed(2) })}
         </Text>
         <Button
           ml={4}
+          size="xs"
           bottom={1}
           variant="ghost"
           colorScheme="danger"
@@ -82,14 +83,13 @@ const SelectedList: React.FC<{
   return (
     <ScrollView
       keyboardShouldPersistTaps="handled"
-      maxHeight={{ md: '310px', lg: '330px' }}>
+      maxHeight={{ md: '270px', lg: '360px' }}>
       <VStack>
-        {Object.keys(sectionMap).map((key, index) => (
+        {Object.keys(sectionMap).map(key => (
           <View key={key}>
             <Text
-              fontSize="lg"
+              fontSize="sm"
               fontWeight="bold"
-              mt={index > 0 ? 4 : 0}
               color={key === 'none' ? 'muted.400' : 'pink.500'}>
               {sectionMap[key].name}
             </Text>

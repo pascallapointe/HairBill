@@ -85,7 +85,9 @@
     "payment": "Payment",
     "tip": "Tip",
     "addTip": "Add tip",
-    "type3Chars": "Type at least 3 characters"
+    "type3Chars": "Type at least 3 characters",
+    "check": "Check",
+    "cash": "Cash"
   },
   "services": {
     "title": "Manage services",

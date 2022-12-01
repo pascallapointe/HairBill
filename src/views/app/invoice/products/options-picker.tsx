@@ -21,7 +21,7 @@ const OptionsPicker: React.FC<{
 
   if (view === 'category') {
     return (
-      <ScrollView maxHeight={{ md: '310px', lg: '330px' }}>
+      <ScrollView maxHeight={{ md: '270px', lg: '360px' }}>
         <Flex my={2} direction="row" wrap="wrap" justifyContent="center">
           {Object.keys(options).map(key =>
             options[key].products.length ? (
@@ -47,7 +47,7 @@ const OptionsPicker: React.FC<{
   }
 
   return (
-    <ScrollView maxHeight={{ md: '310px', lg: '330px' }}>
+    <ScrollView maxHeight={{ md: '270px', lg: '360px' }}>
       <Flex my={2} direction="row" wrap="wrap" justifyContent="center">
         {subset.map(option => (
           <Button

@@ -155,9 +155,16 @@ const TipInput = forwardRef<TipInputRef, Props>(
     return (
       <FormControl isInvalid={error} isRequired={required} {...props}>
         <InputLabel label={label} />
+        <ValidationErrors
+          m={0}
+          mb={1}
+          display={{ md: 'none', lg: 'flex' }}
+          error={error}
+          errorMessages={errorMessages}
+        />
         <Box width="100%" display={isOpen ? 'flex' : 'none'}>
           <Box
-            bottom={0}
+            bottom={{ md: 0, lg: '-187px' }}
             position="absolute"
             zIndex={10}
             bgColor="white"
@@ -227,7 +234,11 @@ const TipInput = forwardRef<TipInputRef, Props>(
           fontWeight={fontWeight}
           size={size}
         />
-        <ValidationErrors error={error} errorMessages={errorMessages} />
+        <ValidationErrors
+          display={{ md: 'flex', lg: 'none' }}
+          error={error}
+          errorMessages={errorMessages}
+        />
       </FormControl>
     );
   },

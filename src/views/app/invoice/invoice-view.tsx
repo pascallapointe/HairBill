@@ -147,7 +147,6 @@ const InvoiceView = () => {
 
   return (
     <Box
-      p={5}
       flex={1}
       bg={{
         linearGradient: {
@@ -159,21 +158,27 @@ const InvoiceView = () => {
       <SafeAreaView
         style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Card
-          width={{ md: '700px', lg: '1000px' }}
-          height={{ md: '1050px', lg: '700px' }}
-          py={4}>
-          <Box py={5} px={10}>
+          width={{ md: '680px', lg: '1000px' }}
+          height={{ md: '920px', lg: '680px' }}>
+          <Box py={{ md: 2, lg: 2 }} px={{ md: 5, lg: 2 }}>
             <Stack
-              height={{ md: '940px', lg: '590px' }}
+              height={{ md: '850px', lg: '610px' }}
               direction={{ md: 'column', lg: 'row' }}
-              space={{ md: 2, lg: 4 }}>
-              <Box flex={{ md: 1.6, lg: 1 }}>
+              space={{ md: 0, lg: 6 }}
+              divider={
+                <Divider
+                  display={{ md: 'none', lg: 'flex' }}
+                  orientation="vertical"
+                  bgColor="muted.400"
+                />
+              }>
+              <Box flex={{ md: 1.5, lg: 1 }}>
                 <KeyboardAvoidingView
                   contentContainerStyle={{ backgroundColor: 'white' }}
                   zIndex={10}
                   keyboardVerticalOffset={380}
                   behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
-                  <Heading color="violet.700">
+                  <Heading size="md" color="violet.700">
                     {t<string>('invoice.clientInfo')}
                   </Heading>
                   <Divider mb={2} bg="violet.700" />
@@ -192,7 +197,7 @@ const InvoiceView = () => {
                       })}
                   />
                 </KeyboardAvoidingView>
-                <Heading mt={4} color="violet.700">
+                <Heading size="md" mt={2} color="violet.700">
                   {t<string>('invoice.productsAndServices')}
                   <Box display={taxSettings.includeTax ? 'flex' : 'none'}>
                     <Text bottom={1} ml={4} fontSize="md" color="muted.500">
@@ -208,7 +213,14 @@ const InvoiceView = () => {
                 />
               </Box>
               <Box flex={1}>
-                <Heading color="violet.700">
+                <Heading size="md" color="violet.700">
+                  {t<string>('invoice.tip')}
+                </Heading>
+                <Divider mb={2} bg="violet.700" />
+                <View zIndex={10}>
+                  <TipInput bindValue={setTip} value="0" />
+                </View>
+                <Heading size="md" mt={2} color="violet.700">
                   {t<string>('invoice.payment')}
                 </Heading>
                 <Divider mb={2} bg="violet.700" />
@@ -219,14 +231,14 @@ const InvoiceView = () => {
                         <Icon as={FontAwesomeIcon} name="check" />
                       ) : undefined
                     }
-                    size="lg"
+                    size="md"
                     minW="120px"
                     colorScheme={paymentFormat === 'cash' ? 'lime' : 'muted'}
                     shadow={4}
                     onPress={() =>
                       setPaymentFormat(paymentFormat === 'cash' ? null : 'cash')
                     }>
-                    Cash
+                    {t<string>('invoice.cash')}
                   </Button>
                   <Button
                     leftIcon={
@@ -234,7 +246,7 @@ const InvoiceView = () => {
                         <Icon as={FontAwesomeIcon} name="check" />
                       ) : undefined
                     }
-                    size="lg"
+                    size="md"
                     minW="120px"
                     colorScheme={paymentFormat === 'check' ? 'lime' : 'muted'}
                     shadow={4}
@@ -243,17 +255,10 @@ const InvoiceView = () => {
                         paymentFormat === 'check' ? null : 'check',
                       )
                     }>
-                    Check
+                    {t<string>('invoice.check')}
                   </Button>
                 </HStack>
-                <Heading mt={4} color="violet.700">
-                  {t<string>('invoice.tip')}
-                </Heading>
-                <Divider mb={2} bg="violet.700" />
-                <View zIndex={10}>
-                  <TipInput bindValue={setTip} value="0" />
-                </View>
-                <Heading mt={4} color="violet.700">
+                <Heading size="md" mt={2} color="violet.700">
                   {t<string>('invoice.total')}
                 </Heading>
                 <Divider mb={2} bg="violet.700" />
@@ -325,14 +330,15 @@ const InvoiceView = () => {
                 </HStack>
               </Box>
             </Stack>
+            <Center>
+              <ActionButton
+                mt={2}
+                colorScheme="violet"
+                text={t<string>('save')}
+                action={() => null}
+              />
+            </Center>
           </Box>
-          <Center>
-            <ActionButton
-              colorScheme="violet"
-              text={t<string>('save')}
-              action={() => null}
-            />
-          </Center>
         </Card>
         <Modal
           ref={errorModal}
