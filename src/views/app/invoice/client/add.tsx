@@ -40,10 +40,15 @@ const AddClient: React.FC<{
   }
 
   return (
-    <VStack p={2} alignItems="center" justifyContent="center" height="250px">
+    <VStack
+      p={2}
+      alignItems="center"
+      justifyContent="center"
+      height={{ md: '250px', lg: '210px' }}>
       <TextInput
         maxW="300px"
         ref={nameField}
+        size={{ md: 'md', lg: 'sm' }}
         value={value}
         bindValue={setName}
         label={t<string>('invoice.clientName')}
@@ -57,6 +62,7 @@ const AddClient: React.FC<{
       />
       <TextInput
         maxW="300px"
+        size={{ md: 'md', lg: 'sm' }}
         ref={phoneField}
         required={false}
         bindValue={setPhone}
@@ -68,7 +74,7 @@ const AddClient: React.FC<{
         })}
       />
 
-      <HStack my={4} justifyContent="center" space={2}>
+      <HStack my={{ md: 4, lg: 2 }} justifyContent="center" space={2}>
         <Button onPress={() => setView('list')} colorScheme="muted" shadow={4}>
           {t<string>('cancel')}
         </Button>

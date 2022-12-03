@@ -236,7 +236,7 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
                 <KeyboardAvoidingView
                   contentContainerStyle={{ backgroundColor: 'white' }}
                   zIndex={10}
-                  keyboardVerticalOffset={380}
+                  keyboardVerticalOffset={300}
                   behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
                   <Heading size="md" color="violet.700">
                     {t<string>('invoice.clientInfo')}

@@ -38,7 +38,7 @@ const ListItem: React.FC<{
       <HStack justifyContent="space-between">
         <Text
           isTruncated={true}
-          maxW={{ md: '250px', lg: '400px' }}
+          maxW={{ md: '250px', lg: '170px' }}
           top="5px"
           fontSize="lg"
           fontWeight="bold"
@@ -128,7 +128,7 @@ const ClientList: React.FC<{
 
   if (loading) {
     return (
-      <VStack px={12} py={5} space={2} height="250px">
+      <VStack px={12} py={5} space={2} height={{ md: '250px', lg: '210px' }}>
         <Skeleton w="100%" h={8} rounded={4} />
         <Skeleton w="100%" h={8} rounded={4} />
         <Skeleton w="100%" h={8} rounded={4} />
@@ -142,7 +142,10 @@ const ClientList: React.FC<{
 
   if (!filtered.length) {
     return (
-      <Box height="250px" justifyContent="center" alignItems="center">
+      <Box
+        height={{ md: '250px', lg: '210px' }}
+        justifyContent="center"
+        alignItems="center">
         <Text mb={5} fontSize="lg" color="muted.500">
           {t<string>('invoice.noMatch')}
         </Text>
@@ -167,7 +170,7 @@ const ClientList: React.FC<{
   }
 
   return (
-    <VStack pl={8} pr={12} pt={2} height="250px">
+    <VStack pl={8} pr={12} pt={2} height={{ md: '250px', lg: '210px' }}>
       <ScrollView keyboardShouldPersistTaps="always">
         {filtered.map(client => (
           <ListItem
