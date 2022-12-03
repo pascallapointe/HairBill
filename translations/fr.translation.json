@@ -10,6 +10,7 @@
   "price": "{{price}}$",
   "general": "Général",
   "tax": "Taxe",
+  "goToMenu": "Retour au menu",
   "percentage": "Pourcentage",
   "validation": {
     "required": "Obligatoire",
@@ -70,6 +71,8 @@
   },
   "invoice": {
     "title": "Nouvelle Facture",
+    "invoice": "Facture",
+    "client": "Client",
     "clientInfo": "Information client",
     "clientName": "Nom du client",
     "clientPhone": "Numéro de téléphone",
@@ -82,11 +85,15 @@
     "subtotal": "Sous-total",
     "taxIncluded": "Taxes incluses",
     "payment": "Paiement",
+    "paymentMethod": "Mode de paiement",
     "tip": "Pourboire",
     "addTip": "Ajouter pourboire",
     "type3Chars": "Tapez au moins 3 caractères",
     "check": "Chèque",
-    "cash": "Comptant"
+    "cash": "Comptant",
+    "newInvoice": "Nouvelle facture",
+    "saved": "Facture sauvegardé",
+    "thankYou": "Merci"
   },
   "services": {
     "title": "Gérer les services",

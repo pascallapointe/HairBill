@@ -11,6 +11,7 @@
   "general": "General",
   "tax": "Tax",
   "percentage": "Percentage",
+  "goToMenu": "Go to menu",
   "validation": {
     "required": "Required",
     "stringType": "Required",
@@ -71,6 +72,8 @@
   },
   "invoice": {
     "title": "New Invoice",
+    "invoice": "Invoice",
+    "client": "Client",
     "clientInfo": "Client information",
     "clientName": "Client name",
     "clientPhone": "Client phone number",
@@ -83,11 +86,15 @@
     "subtotal": "Subtotal",
     "taxIncluded": "Taxes included",
     "payment": "Payment",
+    "paymentMethod": "Payment method",
     "tip": "Tip",
     "addTip": "Add tip",
     "type3Chars": "Type at least 3 characters",
     "check": "Check",
-    "cash": "Cash"
+    "cash": "Cash",
+    "newInvoice": "New invoice",
+    "saved": "Invoice saved",
+    "thankYou": "Thank You"
   },
   "services": {
     "title": "Manage services",

@@ -34,13 +34,19 @@ import { roundTo } from '@lib/utils';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import TipInput from '@views/app/invoice/tip/tip-input';
 import ActionButton from '@components/action-button';
-
-type AmountType = {
-  subtotal: number;
-  total: number;
-  taxA: number;
-  taxB: number;
-};
+import {
+  addInvoice,
+  AmountType,
+  getNextInvoiceNumber,
+  InvoiceType,
+} from '@views/app/invoice/invoice.repository';
+import { InputRef } from '@components/form/text-input';
+import { NavigationProp, ParamListBase } from '@react-navigation/native';
+import ReceiptView from '@views/app/invoice/receipt-view';
+import {
+  GeneralSettingsType,
+  getGeneralSettings,
+} from '@views/app/options/general/general.repository';
 
 const defaultClient = {
   id: '',
@@ -55,27 +61,59 @@ const defaultAmount = {
   taxB: 0,
 };
 
-const InvoiceView = () => {
+const defaultReceipt = {
+  id: '',
+  invoiceNumber: '',
+  date: new Date().valueOf(),
+  client: defaultClient,
+  products: [],
+  tip: 0,
+  payment: null,
+  total: defaultAmount,
+};
+
+const defaultGeneralSettings = {
+  shopName: '',
+  phone: '',
+  employeeName: '',
+  address: '',
+};
+
+interface Props {
+  navigation: NavigationProp<ParamListBase>;
+}
+
+const InvoiceView: React.FC<Props> = ({ navigation }) => {
   const { t } = useTranslation();
   const [init, setInit] = useState(true);
   const [taxSettings, setTaxSettings] =
     useState<TaxSettingsType>(defaultTaxSettings);
+  const [generalSettings, setGeneralSettings] = useState<GeneralSettingsType>(
+    defaultGeneralSettings,
+  );
   const clientField = useRef<ClientInputRef>(null);
   const [client, setClient] = useState<ClientType>(defaultClient);
   const productsField = useRef<ProductSelectRef>(null);
   const [products, setProducts] = useState<ProductType[]>([]);
+  const tipField = useRef<InputRef>(null);
   const [tip, setTip] = useState(0);
+  const [wait, setWait] = useState(false);
   const [paymentFormat, setPaymentFormat] = useState<'cash' | 'check' | null>(
     null,
   );
   const [amount, setAmount] = useState<AmountType>(defaultAmount);
+  const [invoiceNum, setInvoiceNum] = useState<string>('');
+  const [receipt, setReceipt] = useState<InvoiceType>(defaultReceipt);
 
   // Modals
+  const successModal = useRef<ModalRef>(null);
   const errorModal = useRef<ModalRef>(null);
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     if (init) {
+      getGeneralSettings().then(val => val && setGeneralSettings(val));
+      getNextInvoiceNumber().then(setInvoiceNum);
       getTaxSettings()
         .then(val => {
           if (val) {
@@ -89,6 +127,28 @@ const InvoiceView = () => {
         });
     }
   }, []);
+
+  function save() {
+    const fields = [
+      clientField.current && clientField.current.validate(),
+      productsField.current && productsField.current.validate(),
+      tipField.current && tipField.current.validate(),
+    ];
+    if (fields.every(field => field)) {
+      setWait(true);
+      const r = addInvoice({
+        invoiceNumber: invoiceNum,
+        date: new Date().valueOf(),
+        client: client,
+        products: products,
+        tip: tip,
+        payment: paymentFormat,
+        total: amount,
+      });
+      setReceipt(r);
+      successModal.current && successModal.current.open();
+    }
+  }
 
   useEffect(() => {
     const a = { ...defaultAmount };
@@ -200,7 +260,7 @@ const InvoiceView = () => {
                 <Heading size="md" mt={2} color="violet.700">
                   {t<string>('invoice.productsAndServices')}
                   <Box display={taxSettings.includeTax ? 'flex' : 'none'}>
-                    <Text bottom={1} ml={4} fontSize="md" color="muted.500">
+                    <Text top="2px" ml={4} fontSize="sm" color="muted.500">
                       ({t<string>('invoice.taxIncluded')})
                     </Text>
                   </Box>
@@ -218,7 +278,7 @@ const InvoiceView = () => {
                 </Heading>
                 <Divider mb={2} bg="violet.700" />
                 <View zIndex={10}>
-                  <TipInput bindValue={setTip} value="0" />
+                  <TipInput ref={tipField} bindValue={setTip} value="0" />
                 </View>
                 <Heading size="md" mt={2} color="violet.700">
                   {t<string>('invoice.payment')}
@@ -333,23 +393,38 @@ const InvoiceView = () => {
             <Center>
               <ActionButton
                 mt={2}
+                wait={wait}
                 colorScheme="violet"
                 text={t<string>('save')}
-                action={() => null}
+                action={save}
               />
             </Center>
           </Box>
         </Card>
-        <Modal
-          ref={errorModal}
-          hideAction={true}
-          title={t('exception.operationFailed')}
-          modalType="error">
-          <Text fontSize="md" textAlign="center">
-            {errorMessage}
-          </Text>
-        </Modal>
       </SafeAreaView>
+      <Modal
+        ref={successModal}
+        outClick={false}
+        callback={async () => navigation.navigate('menu')}
+        hideAction={true}
+        closeBtnText={t<string>('goToMenu')}
+        title={t('invoice.saved')}
+        modalType="success">
+        <ReceiptView
+          receipt={receipt}
+          generalSettings={generalSettings}
+          taxSettings={taxSettings}
+        />
+      </Modal>
+      <Modal
+        ref={errorModal}
+        hideAction={true}
+        title={t('exception.operationFailed')}
+        modalType="error">
+        <Text fontSize="md" textAlign="center">
+          {errorMessage}
+        </Text>
+      </Modal>
     </Box>
   );
 };
