@@ -31,7 +31,6 @@ import { useTranslation } from 'react-i18next';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
 interface Props extends IFormControlProps {
-  bindValue: (val: string) => void;
   label?: string;
   value?: string;
   placeholder?: string;
@@ -48,6 +47,7 @@ interface Props extends IFormControlProps {
 
 export type TipInputRef = {
   validate: (val?: string) => void;
+  getValue: () => string;
 };
 
 const InputLabel: React.FC<{
@@ -69,7 +69,6 @@ const TipInput = forwardRef<TipInputRef, Props>(
     {
       label,
       value = '',
-      bindValue,
       placeholder,
       size = 'md',
       color = 'light.600',
@@ -133,13 +132,16 @@ const TipInput = forwardRef<TipInputRef, Props>(
       return result.success;
     }
 
-    useImperativeHandle(ref, () => ({ validate }));
+    function getValue(): string {
+      return _value;
+    }
+
+    useImperativeHandle(ref, () => ({ validate, getValue }));
 
     function handleChange(val: string) {
       setIsOpen(true);
 
       setValue(val);
-      bindValue(val);
       if (init && validation) {
         validate(val);
       }
@@ -147,7 +149,6 @@ const TipInput = forwardRef<TipInputRef, Props>(
 
     function selectAmount(amount: string) {
       setValue(amount.toString());
-      bindValue(amount);
       setIsOpen(false);
       inputField.current && inputField.current.blur();
     }

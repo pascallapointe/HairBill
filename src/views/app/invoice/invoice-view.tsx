@@ -1,13 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Box,
-  Button,
   Center,
   Divider,
-  Flex,
   Heading,
   HStack,
-  Icon,
   KeyboardAvoidingView,
   Stack,
   Text,
@@ -32,8 +29,7 @@ import {
 } from '@views/app/options/sales-tax/sales-tax.repository';
 import Modal, { ModalRef } from '@components/modal';
 import { roundTo } from '@lib/utils';
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import TipInput from '@views/app/invoice/tip/tip-input';
+import TipInput, { TipInputRef } from '@views/app/invoice/tip/tip-input';
 import ActionButton from '@components/action-button';
 import {
   addInvoice,
@@ -41,13 +37,13 @@ import {
   getNextInvoiceNumber,
   InvoiceType,
 } from '@views/app/invoice/invoice.repository';
-import { InputRef } from '@components/form/text-input';
 import { NavigationProp, ParamListBase } from '@react-navigation/native';
 import ReceiptView from '@views/app/invoice/receipt-view';
 import {
   GeneralSettingsType,
   getGeneralSettings,
 } from '@views/app/options/general/general.repository';
+import PayMethod, { PayMethodRef } from '@views/app/invoice/payment/pay-method';
 
 const defaultClient = {
   id: '',
@@ -96,12 +92,9 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
   const [client, setClient] = useState<ClientType>(defaultClient);
   const productsField = useRef<ProductSelectRef>(null);
   const [products, setProducts] = useState<ProductType[]>([]);
-  const tipField = useRef<InputRef>(null);
-  const [tip, setTip] = useState<string>('');
+  const tipField = useRef<TipInputRef>(null);
   const [wait, setWait] = useState(false);
-  const [paymentFormat, setPaymentFormat] = useState<
-    'pending' | 'cash' | 'transfer' | 'check'
-  >('pending');
+  const paymentField = useRef<PayMethodRef>(null);
   const [amount, setAmount] = useState<AmountType>(defaultAmount);
   const [invoiceNum, setInvoiceNum] = useState<string>('');
   const [receipt, setReceipt] = useState<InvoiceType>(defaultReceipt);
@@ -142,8 +135,17 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
         date: new Date().valueOf(),
         client: client,
         products: products,
-        tip: roundTo(parseFloat(tip.toString().replace(',', '.')), 2),
-        payment: paymentFormat,
+        tip: roundTo(
+          parseFloat(
+            (tipField.current &&
+              tipField.current.getValue().replace(',', '.')) ??
+              '0',
+          ),
+          2,
+        ),
+        payment:
+          (paymentField.current && paymentField.current.getValue()) ??
+          'pending',
         total: amount,
       });
       setReceipt(r);
@@ -279,78 +281,13 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
                 </Heading>
                 <Divider mb={2} bg="violet.700" />
                 <View zIndex={10}>
-                  <TipInput ref={tipField} bindValue={setTip} value="0" />
+                  <TipInput ref={tipField} value="0" />
                 </View>
                 <Heading size="md" mt={2} color="violet.700">
                   {t<string>('invoice.payment')}
                 </Heading>
                 <Divider mb={2} bg="violet.700" />
-                <Flex
-                  py={2}
-                  direction="row"
-                  wrap="wrap"
-                  justifyContent="center">
-                  <Button
-                    m={2}
-                    leftIcon={
-                      paymentFormat === 'cash' ? (
-                        <Icon as={FontAwesomeIcon} name="check" />
-                      ) : undefined
-                    }
-                    size="md"
-                    minW="120px"
-                    colorScheme={paymentFormat === 'cash' ? 'lime' : 'muted'}
-                    shadow={4}
-                    onPress={() => setPaymentFormat('cash')}>
-                    {t<string>('invoice.cash')}
-                  </Button>
-                  <Button
-                    m={2}
-                    leftIcon={
-                      paymentFormat === 'transfer' ? (
-                        <Icon as={FontAwesomeIcon} name="check" />
-                      ) : undefined
-                    }
-                    size="md"
-                    minW="120px"
-                    colorScheme={
-                      paymentFormat === 'transfer' ? 'lime' : 'muted'
-                    }
-                    shadow={4}
-                    onPress={() => setPaymentFormat('transfer')}>
-                    {t<string>('invoice.transfer')}
-                  </Button>
-                  <Button
-                    m={2}
-                    leftIcon={
-                      paymentFormat === 'check' ? (
-                        <Icon as={FontAwesomeIcon} name="check" />
-                      ) : undefined
-                    }
-                    size="md"
-                    minW="120px"
-                    colorScheme={paymentFormat === 'check' ? 'lime' : 'muted'}
-                    shadow={4}
-                    onPress={() => setPaymentFormat('check')}>
-                    {t<string>('invoice.check')}
-                  </Button>
-                  <Button
-                    m={2}
-                    leftIcon={
-                      paymentFormat === 'pending' ? (
-                        <Icon as={FontAwesomeIcon} name="check" />
-                      ) : undefined
-                    }
-                    size="md"
-                    minW="120px"
-                    colorScheme={
-                      paymentFormat === 'pending' ? 'amber' : 'muted'
-                    }
-                    shadow={4}
-                    onPress={() => setPaymentFormat('pending')}>
-                    {t<string>('invoice.pending')}
-                  </Button>
-                </Flex>
+                <PayMethod ref={paymentField} />
                 <Heading size="md" mt={2} color="violet.700">
                   {t<string>('invoice.total')}
                 </Heading>
