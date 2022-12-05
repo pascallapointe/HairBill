@@ -4,6 +4,7 @@ import {
   Button,
   Center,
   Divider,
+  Flex,
   Heading,
   HStack,
   Icon,
@@ -96,11 +97,11 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
   const productsField = useRef<ProductSelectRef>(null);
   const [products, setProducts] = useState<ProductType[]>([]);
   const tipField = useRef<InputRef>(null);
-  const [tip, setTip] = useState(0);
+  const [tip, setTip] = useState<string>('');
   const [wait, setWait] = useState(false);
-  const [paymentFormat, setPaymentFormat] = useState<'cash' | 'check' | null>(
-    null,
-  );
+  const [paymentFormat, setPaymentFormat] = useState<
+    'pending' | 'cash' | 'transfer' | 'check'
+  >('pending');
   const [amount, setAmount] = useState<AmountType>(defaultAmount);
   const [invoiceNum, setInvoiceNum] = useState<string>('');
   const [receipt, setReceipt] = useState<InvoiceType>(defaultReceipt);
@@ -141,7 +142,7 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
         date: new Date().valueOf(),
         client: client,
         products: products,
-        tip: tip,
+        tip: roundTo(parseFloat(tip.toString().replace(',', '.')), 2),
         payment: paymentFormat,
         total: amount,
       });
@@ -284,8 +285,13 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
                   {t<string>('invoice.payment')}
                 </Heading>
                 <Divider mb={2} bg="violet.700" />
-                <HStack py={2} space={2} justifyContent="center">
+                <Flex
+                  py={2}
+                  direction="row"
+                  wrap="wrap"
+                  justifyContent="center">
                   <Button
+                    m={2}
                     leftIcon={
                       paymentFormat === 'cash' ? (
                         <Icon as={FontAwesomeIcon} name="check" />
@@ -295,12 +301,27 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
                     minW="120px"
                     colorScheme={paymentFormat === 'cash' ? 'lime' : 'muted'}
                     shadow={4}
-                    onPress={() =>
-                      setPaymentFormat(paymentFormat === 'cash' ? null : 'cash')
-                    }>
+                    onPress={() => setPaymentFormat('cash')}>
                     {t<string>('invoice.cash')}
                   </Button>
                   <Button
+                    m={2}
+                    leftIcon={
+                      paymentFormat === 'transfer' ? (
+                        <Icon as={FontAwesomeIcon} name="check" />
+                      ) : undefined
+                    }
+                    size="md"
+                    minW="120px"
+                    colorScheme={
+                      paymentFormat === 'transfer' ? 'lime' : 'muted'
+                    }
+                    shadow={4}
+                    onPress={() => setPaymentFormat('transfer')}>
+                    {t<string>('invoice.transfer')}
+                  </Button>
+                  <Button
+                    m={2}
                     leftIcon={
                       paymentFormat === 'check' ? (
                         <Icon as={FontAwesomeIcon} name="check" />
@@ -310,14 +331,26 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
                     minW="120px"
                     colorScheme={paymentFormat === 'check' ? 'lime' : 'muted'}
                     shadow={4}
-                    onPress={() =>
-                      setPaymentFormat(
-                        paymentFormat === 'check' ? null : 'check',
-                      )
-                    }>
+                    onPress={() => setPaymentFormat('check')}>
                     {t<string>('invoice.check')}
                   </Button>
-                </HStack>
+                  <Button
+                    m={2}
+                    leftIcon={
+                      paymentFormat === 'pending' ? (
+                        <Icon as={FontAwesomeIcon} name="check" />
+                      ) : undefined
+                    }
+                    size="md"
+                    minW="120px"
+                    colorScheme={
+                      paymentFormat === 'pending' ? 'amber' : 'muted'
+                    }
+                    shadow={4}
+                    onPress={() => setPaymentFormat('pending')}>
+                    {t<string>('invoice.pending')}
+                  </Button>
+                </Flex>
                 <Heading size="md" mt={2} color="violet.700">
                   {t<string>('invoice.total')}
                 </Heading>

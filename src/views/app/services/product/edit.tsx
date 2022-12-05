@@ -66,14 +66,14 @@ const EditView: React.FC<Props> = ({ product, setParentView }) => {
         updateProduct({
           id: product.id,
           name: name.trim(),
-          price: roundTo(price, 2),
+          price: roundTo(parseFloat(price.toString().replace(',', '.')), 2),
           category: category ?? { id: 'none', name: '!none' },
         });
         setParentView('list');
       } else {
         addProduct({
           name: name.trim(),
-          price: roundTo(price, 2),
+          price: roundTo(parseFloat(price.toString().replace(',', '.')), 2),
           category: category ?? { id: 'none', name: '!none' },
         });
         setParentView('list');
@@ -112,7 +112,7 @@ const EditView: React.FC<Props> = ({ product, setParentView }) => {
           icon={<Icon as={FontAwesome5Icon} name="dollar-sign" />}
           clear="while-editing"
           schema={z.preprocess(
-            val => parseFloat(val as string),
+            val => parseFloat((val as string).toString().replace(',', '.')),
             z
               .number({
                 required_error: t<string>('validation.required'),

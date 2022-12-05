@@ -31,7 +31,7 @@ import { useTranslation } from 'react-i18next';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
 interface Props extends IFormControlProps {
-  bindValue: (val: number) => void;
+  bindValue: (val: string) => void;
   label?: string;
   value?: string;
   placeholder?: string;
@@ -112,7 +112,7 @@ const TipInput = forwardRef<TipInputRef, Props>(
       }
 
       const schema = z.preprocess(
-        v => parseFloat(v as string),
+        v => parseFloat((v as string).toString().replace(',', '.')),
         z
           .number({
             required_error: t<string>('validation.required'),
@@ -139,13 +139,13 @@ const TipInput = forwardRef<TipInputRef, Props>(
       setIsOpen(true);
 
       setValue(val);
-      bindValue(parseFloat(val));
+      bindValue(val);
       if (init && validation) {
         validate(val);
       }
     }
 
-    function selectAmount(amount: number) {
+    function selectAmount(amount: string) {
       setValue(amount.toString());
       bindValue(amount);
       setIsOpen(false);
@@ -173,7 +173,10 @@ const TipInput = forwardRef<TipInputRef, Props>(
             width="100%"
             borderWidth={1}
             borderColor="violet.700">
-            <AmountList query={_value} bindAmount={selectAmount} />
+            <AmountList
+              query={_value?.replace(',', '.')}
+              bindAmount={selectAmount}
+            />
             <Button
               onPress={() => {
                 setIsOpen(false);

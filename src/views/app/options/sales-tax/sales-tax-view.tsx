@@ -1,17 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  Box,
-  Center,
-  Flex,
-  FormControl,
-  HStack,
-  Icon,
-  Text,
-} from 'native-base';
+import { Box, Center, Flex, FormControl, HStack, Text } from 'native-base';
 import { useTranslation } from 'react-i18next';
 import SwitchBtn from '@components/form/switch';
 import TextInput, { InputRef } from '@components/form/text-input';
-import FeatherIcon from 'react-native-vector-icons/Feather';
 import {
   getTaxSettings,
   TaxSettingsType,
@@ -76,10 +67,10 @@ const SalesTaxView = () => {
       includeTax: includeTax,
       taxANumber: taxANum,
       taxAName: taxAName,
-      taxA: parseFloat(taxA.toString()),
+      taxA: parseFloat(taxA.toString().replace(',', '.')),
       taxBNumber: taxBNum,
       taxBName: taxBName,
-      taxB: parseFloat(taxB.toString()),
+      taxB: parseFloat(taxB.toString().replace(',', '.')),
     };
   }
 
@@ -209,10 +200,9 @@ const SalesTaxView = () => {
           <TextInput
             flex={1}
             ref={taxAField}
-            label={t<string>('percentage')}
+            label={t<string>('options.rateDecimal')}
             placeholder="0.05"
             keyboardType="decimal-pad"
-            icon={<Icon as={FeatherIcon} name="percent" />}
             value={taxA?.toString()}
             bindValue={setTaxA}
             clear="while-editing"
@@ -267,11 +257,10 @@ const SalesTaxView = () => {
           <TextInput
             flex={1}
             ref={taxBField}
-            label={t<string>('percentage')}
+            label={t<string>('options.rateDecimal')}
             placeholder="0.09975"
             keyboardType="decimal-pad"
             clear="while-editing"
-            icon={<Icon as={FeatherIcon} name="percent" />}
             value={taxB?.toString()}
             bindValue={setTaxB}
             schema={z.preprocess(

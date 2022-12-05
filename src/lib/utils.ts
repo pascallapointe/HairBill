@@ -10,3 +10,7 @@ export function createTimestamp(date: Date): string {
     date.getDate(),
   )} ${zeroLead(date.getHours())}:${zeroLead(date.getMinutes())}`;
 }
+
+export function escapeRegExp(string: string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
