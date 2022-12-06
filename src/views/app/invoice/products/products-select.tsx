@@ -31,16 +31,17 @@ import OptionsPicker from '@views/app/invoice/products/options-picker';
 
 export type ProductSelectRef = {
   validate: (val?: ProductType[]) => void;
+  getValue: () => ProductType[];
 };
 
 interface Props extends IFormControlProps {
   label: string;
-  bindValue: (selection: ProductType[]) => void;
   required?: boolean;
+  selectBind: (products: ProductType[]) => void;
 }
 
 const ProductsSelect = forwardRef<ProductSelectRef, Props>(
-  ({ label, bindValue, required = true, ...props }, ref) => {
+  ({ label, required = true, selectBind, ...props }, ref) => {
     const { t } = useTranslation();
     const [init, setInit] = useState(true);
     const [view, setView] = useState<'selection' | 'options'>('selection');
@@ -70,9 +71,8 @@ const ProductsSelect = forwardRef<ProductSelectRef, Props>(
     function select(p: ProductType) {
       const mergedList = [...selected, p];
       mergedList.sort((a, b) => (a.name > b.name ? 1 : -1));
-
+      selectBind(mergedList);
       setSelected(mergedList);
-      bindValue(mergedList);
       validate(mergedList);
       setView('selection');
     }
@@ -81,8 +81,8 @@ const ProductsSelect = forwardRef<ProductSelectRef, Props>(
       const list: ProductType[] = [...selected];
       const index = list.findIndex(p => p.id === productId);
       list.splice(index, 1);
+      selectBind(list);
       setSelected(list);
-      bindValue(list);
       validate(list);
     }
 
@@ -113,7 +113,11 @@ const ProductsSelect = forwardRef<ProductSelectRef, Props>(
       return result.success;
     }
 
-    useImperativeHandle(ref, () => ({ validate }));
+    function getValue(): ProductType[] {
+      return selected;
+    }
+
+    useImperativeHandle(ref, () => ({ validate, getValue }));
 
     if (init) {
       return (

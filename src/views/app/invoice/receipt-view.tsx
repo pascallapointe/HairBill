@@ -7,6 +7,7 @@ import {
   Divider,
   Heading,
   HStack,
+  Icon,
   ScrollView,
   Text,
   View,
@@ -21,6 +22,7 @@ import {
   buildSectionMap,
   ProductType,
 } from '@views/app/services/product/product.repository';
+import OctIcon from 'react-native-vector-icons/Octicons';
 
 const Items: React.FC<{
   item: ProductType;
@@ -28,10 +30,20 @@ const Items: React.FC<{
   const { t } = useTranslation();
   return (
     <HStack justifyContent="space-between">
-      <Text ml={4} fontSize="md" fontWeight="bold" color="light.700">
-        - {item.name}
-      </Text>
-      <Text ml={4} fontSize="md" fontWeight="bold" color="muted.500">
+      <HStack>
+        <Icon
+          top="3px"
+          color="violet.700"
+          size="md"
+          ml={5}
+          as={OctIcon}
+          name="dot"
+        />
+        <Text fontSize="md" fontWeight="bold" color="light.700">
+          {item.name}
+        </Text>
+      </HStack>
+      <Text ml={4} fontSize="md" fontWeight="bold" color="muted.600">
         {t('price', { price: item.price.toFixed(2) })}
       </Text>
     </HStack>
@@ -51,7 +63,10 @@ const ProductList: React.FC<{ products: ProductType[] }> = ({ products }) => {
     <View>
       {Object.keys(sectionMap).map(key => (
         <View key={key}>
-          <Text fontSize="sm" fontWeight="bold">
+          <Text
+            fontSize="sm"
+            fontWeight="bold"
+            color={key === 'none' ? 'muted.400' : 'pink.500'}>
             {sectionMap[key].name}
           </Text>
 
@@ -134,12 +149,12 @@ const ReceiptView: React.FC<{
               <Text fontSize="md" fontWeight="bold">
                 # {t<string>('invoice.invoice')} :
               </Text>
-              <Text ml={1} fontSize="md" fontWeight="bold" color="muted.600">
+              <Text ml={1} fontSize="md" fontWeight="bold" color="violet.700">
                 {receipt.invoiceNumber}
               </Text>
             </HStack>
 
-            <Text fontSize="md" fontWeight="bold">
+            <Text fontSize="md" fontWeight="bold" color="muted.600">
               {createTimestamp(new Date(receipt.date))}
             </Text>
           </HStack>
@@ -152,10 +167,10 @@ const ReceiptView: React.FC<{
             </Text>
           </HStack>
 
-          <Heading size="md" mt={5}>
+          <Heading size="md" mt={5} color="violet.700">
             {t<string>('invoice.productsAndServices')}
             <Box display={taxSettings.includeTax ? 'flex' : 'none'}>
-              <Text ml={4} fontSize="sm">
+              <Text ml={4} fontSize="sm" color="muted.500">
                 ({t<string>('invoice.taxIncluded')})
               </Text>
             </Box>
@@ -164,7 +179,7 @@ const ReceiptView: React.FC<{
 
           <ProductList products={receipt.products} />
 
-          <Heading size="md" mt={5}>
+          <Heading size="md" mt={5} color="violet.700">
             {t<string>('invoice.total')}
           </Heading>
           <Divider mb={2} bg="black" />
@@ -241,7 +256,7 @@ const ReceiptView: React.FC<{
             <Text fontSize="lg" fontWeight="bold" color="muted.700">
               {t<string>('invoice.total')}
             </Text>
-            <Text fontSize="lg" fontWeight="bold">
+            <Text fontSize="lg" fontWeight="bold" color="violet.700">
               {t('price', { price: amount.total.toFixed(2) })}
             </Text>
           </HStack>
@@ -256,7 +271,7 @@ const ReceiptView: React.FC<{
           </HStack>
 
           <Center>
-            <Text mt={5} fontSize="xl" fontWeight="bold">
+            <Text mt={5} fontSize="xl" fontWeight="bold" color="pink.500">
               {t<string>('invoice.thankYou')} !
             </Text>
           </Center>

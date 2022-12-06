@@ -1,27 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  Box,
-  Center,
-  Divider,
-  Heading,
-  HStack,
-  KeyboardAvoidingView,
-  Stack,
-  Text,
-  View,
-} from 'native-base';
+import { Box, Center, Divider, Heading, Stack, Text, View } from 'native-base';
 import { useTranslation } from 'react-i18next';
-import { Platform, SafeAreaView } from 'react-native';
+import { SafeAreaView } from 'react-native';
 import Card from '@components/card';
 import ClientInput, {
   ClientInputRef,
+  defaultClient,
 } from '@views/app/invoice/client/client-input';
-import { ClientType } from '@views/app/invoice/client/client.repository';
 import { z } from 'zod';
 import ProductsSelect, {
   ProductSelectRef,
 } from '@views/app/invoice/products/products-select';
-import { ProductType } from '@views/app/services/product/product.repository';
 import {
   defaultTaxSettings,
   getTaxSettings,
@@ -33,7 +22,6 @@ import TipInput, { TipInputRef } from '@views/app/invoice/tip/tip-input';
 import ActionButton from '@components/action-button';
 import {
   addInvoice,
-  AmountType,
   getNextInvoiceNumber,
   InvoiceType,
 } from '@views/app/invoice/invoice.repository';
@@ -44,29 +32,20 @@ import {
   getGeneralSettings,
 } from '@views/app/options/general/general.repository';
 import PayMethod, { PayMethodRef } from '@views/app/invoice/payment/pay-method';
-
-const defaultClient = {
-  id: '',
-  name: '',
-  phone: '',
-};
-
-const defaultAmount = {
-  subtotal: 0,
-  total: 0,
-  taxA: 0,
-  taxB: 0,
-};
+import Total, { defaultAmount, TotalRef } from '@views/app/invoice/total/total';
+import { ProductType } from '@views/app/services/product/product.repository';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { defaultTipValues } from '@views/app/invoice/tip/list';
 
 const defaultReceipt = {
   id: '',
   invoiceNumber: '',
   date: new Date().valueOf(),
-  client: defaultClient,
+  client: { ...defaultClient },
   products: [],
   tip: 0,
   payment: null,
-  total: defaultAmount,
+  total: { ...defaultAmount },
 };
 
 const defaultGeneralSettings = {
@@ -89,13 +68,11 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
     defaultGeneralSettings,
   );
   const clientField = useRef<ClientInputRef>(null);
-  const [client, setClient] = useState<ClientType>(defaultClient);
   const productsField = useRef<ProductSelectRef>(null);
-  const [products, setProducts] = useState<ProductType[]>([]);
   const tipField = useRef<TipInputRef>(null);
   const [wait, setWait] = useState(false);
   const paymentField = useRef<PayMethodRef>(null);
-  const [amount, setAmount] = useState<AmountType>(defaultAmount);
+  const totalRef = useRef<TotalRef>(null);
   const [invoiceNum, setInvoiceNum] = useState<string>('');
   const [receipt, setReceipt] = useState<InvoiceType>(defaultReceipt);
 
@@ -133,8 +110,11 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
       const r = addInvoice({
         invoiceNumber: invoiceNum,
         date: new Date().valueOf(),
-        client: client,
-        products: products,
+        client:
+          (clientField.current && clientField.current.getValue()) ??
+          defaultClient,
+        products:
+          (productsField.current && productsField.current.getValue()) ?? [],
         tip: roundTo(
           parseFloat(
             (tipField.current &&
@@ -146,67 +126,33 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
         payment:
           (paymentField.current && paymentField.current.getValue()) ??
           'pending',
-        total: amount,
+        total: (totalRef.current && totalRef.current.getValue()) ?? {
+          ...defaultAmount,
+        },
       });
       setReceipt(r);
       successModal.current && successModal.current.open();
+
+      // Save last 12 custom tip value
+      AsyncStorage.getItem('lastTips')
+        .then(value => {
+          const formattedTip = r.tip.toFixed(2).toString();
+          if (!defaultTipValues.includes(formattedTip)) {
+            const lastAmounts = value ? JSON.parse(value) : [];
+            const amountsSet = [...new Set([formattedTip, ...lastAmounts])];
+            AsyncStorage.setItem(
+              'lastTips',
+              JSON.stringify(amountsSet.slice(0, 4)),
+            ).catch(console.error);
+          }
+        })
+        .catch(console.error);
     }
   }
 
-  useEffect(() => {
-    const a = { ...defaultAmount };
-    for (const product of products) {
-      a.total += product.price;
-    }
-    if (!taxSettings.enabled) {
-      return setAmount(a);
-    }
-
-    // Tax calculation
-
-    if (taxSettings.includeTax) {
-      a.subtotal =
-        a.total /
-        (1 +
-          taxSettings.taxA +
-          (taxSettings.useBTax
-            ? taxSettings.compounded
-              ? taxSettings.taxB * (1 + taxSettings.taxA)
-              : taxSettings.taxB
-            : 0));
-
-      a.taxA = taxSettings.taxA * a.subtotal;
-      a.taxB =
-        taxSettings.taxB *
-        (taxSettings.compounded
-          ? (1 + taxSettings.taxA) * a.subtotal
-          : a.subtotal);
-
-      a.subtotal = roundTo(a.subtotal, 2);
-      a.taxA = roundTo(a.taxA, 2);
-      a.taxB = roundTo(a.taxB, 2);
-
-      return setAmount(a);
-    } else {
-      a.subtotal = a.total;
-      a.taxA = a.subtotal * taxSettings.taxA;
-      a.total += a.taxA;
-      if (taxSettings.useBTax) {
-        if (taxSettings.compounded) {
-          a.taxB = a.total * taxSettings.taxB;
-        } else {
-          a.taxB = a.subtotal * taxSettings.taxB;
-        }
-        a.total += a.taxB;
-      }
-
-      a.taxA = roundTo(a.taxA, 2);
-      a.taxB = roundTo(a.taxB, 2);
-      a.total = roundTo(a.total, 2);
-
-      return setAmount(a);
-    }
-  }, [products]);
+  function productsSelectHandler(products: ProductType[]) {
+    totalRef.current && totalRef.current.calculate(products);
+  }
 
   return (
     <Box
@@ -236,11 +182,7 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
                 />
               }>
               <Box flex={{ md: 1.5, lg: 1 }}>
-                <KeyboardAvoidingView
-                  contentContainerStyle={{ backgroundColor: 'white' }}
-                  zIndex={10}
-                  keyboardVerticalOffset={300}
-                  behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
+                <View zIndex={10}>
                   <Heading size="md" color="violet.700">
                     {t<string>('invoice.clientInfo')}
                   </Heading>
@@ -248,9 +190,7 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
                   <ClientInput
                     ref={clientField}
                     label="Nom du client"
-                    bindValue={setClient}
                     placeholder={t<string>('invoice.type3Chars')}
-                    clear="while-editing"
                     schema={z
                       .string({
                         required_error: t<string>('validation.required'),
@@ -259,7 +199,7 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
                         message: t<string>('validation.min', { count: 3 }),
                       })}
                   />
-                </KeyboardAvoidingView>
+                </View>
                 <Heading size="md" mt={2} color="violet.700">
                   {t<string>('invoice.productsAndServices')}
                   <Box display={taxSettings.includeTax ? 'flex' : 'none'}>
@@ -272,7 +212,7 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
                 <ProductsSelect
                   ref={productsField}
                   label={t<string>('invoice.selectedP&S')}
-                  bindValue={setProducts}
+                  selectBind={productsSelectHandler}
                 />
               </Box>
               <Box flex={1}>
@@ -292,72 +232,7 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
                   {t<string>('invoice.total')}
                 </Heading>
                 <Divider mb={2} bg="violet.700" />
-                {taxSettings.enabled ? (
-                  <>
-                    <HStack justifyContent="space-between">
-                      <Text fontSize="md" fontWeight="bold" color="muted.500">
-                        {t<string>('invoice.subtotal')}
-                      </Text>
-                      <Text fontSize="md" fontWeight="bold" color="muted.600">
-                        {t('price', { price: amount.subtotal.toFixed(2) })}
-                      </Text>
-                    </HStack>
-                    <HStack justifyContent="space-between">
-                      <HStack space={2}>
-                        <Text fontSize="md" fontWeight="bold" color="muted.500">
-                          {taxSettings.taxAName}
-                        </Text>
-                        <Text
-                          top={1}
-                          fontSize="2xs"
-                          fontWeight="bold"
-                          color="muted.500">
-                          {taxSettings.taxANumber.length
-                            ? `(${taxSettings.taxANumber})`
-                            : ''}
-                        </Text>
-                      </HStack>
-
-                      <Text fontSize="md" fontWeight="bold" color="muted.600">
-                        {t('price', { price: amount.taxA.toFixed(2) })}
-                      </Text>
-                    </HStack>
-                  </>
-                ) : (
-                  ''
-                )}
-                {taxSettings.enabled && taxSettings.useBTax ? (
-                  <HStack justifyContent="space-between">
-                    <HStack space={2}>
-                      <Text fontSize="md" fontWeight="bold" color="muted.500">
-                        {taxSettings.taxBName}
-                      </Text>
-                      <Text
-                        top={1}
-                        fontSize="2xs"
-                        fontWeight="bold"
-                        color="muted.500">
-                        {taxSettings.taxBNumber.length
-                          ? `(${taxSettings.taxBNumber})`
-                          : ''}
-                      </Text>
-                    </HStack>
-
-                    <Text fontSize="md" fontWeight="bold" color="muted.600">
-                      {t('price', { price: amount.taxB.toFixed(2) })}
-                    </Text>
-                  </HStack>
-                ) : (
-                  ''
-                )}
-                <HStack justifyContent="space-between">
-                  <Text fontSize="lg" fontWeight="bold" color="muted.700">
-                    {t<string>('invoice.total')}
-                  </Text>
-                  <Text fontSize="lg" fontWeight="bold" color="violet.700">
-                    {t('price', { price: amount.total.toFixed(2) })}
-                  </Text>
-                </HStack>
+                <Total ref={totalRef} init={init} taxSettings={taxSettings} />
               </Box>
             </Stack>
             <Center>

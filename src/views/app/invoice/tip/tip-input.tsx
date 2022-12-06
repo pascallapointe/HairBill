@@ -14,11 +14,6 @@ import {
   Input,
 } from 'native-base';
 import ValidationErrors from '@components/form/validation-errors';
-import type {
-  AutoCapitalizeType,
-  AndroidAutoCompleteType,
-  iOSClearButtonModeType,
-} from '@type/form.type';
 import {
   HostComponent,
   NativeSyntheticEvent,
@@ -38,10 +33,6 @@ interface Props extends IFormControlProps {
   color?: string;
   fontWeight?: string;
   required?: boolean;
-  clear?: iOSClearButtonModeType;
-  autoComplete?: AndroidAutoCompleteType;
-  autoCorrect?: boolean;
-  autoCapitalize?: AutoCapitalizeType;
   validation?: boolean;
 }
 
@@ -73,10 +64,6 @@ const TipInput = forwardRef<TipInputRef, Props>(
       size = 'md',
       color = 'light.600',
       fontWeight = 'bold',
-      clear = 'never',
-      autoComplete = 'off',
-      autoCorrect = false,
-      autoCapitalize = 'words',
       required = true,
       validation = true,
       ...props
@@ -212,12 +199,13 @@ const TipInput = forwardRef<TipInputRef, Props>(
           onBlur={e => {
             initAndValidate(e);
           }}
+          onSubmitEditing={() => setIsOpen(false)}
           onChangeText={handleChange}
-          clearButtonMode={clear}
-          autoComplete={autoComplete}
-          autoCorrect={autoCorrect}
-          autoCapitalize={autoCapitalize}
-          keyboardType="number-pad"
+          clearButtonMode="while-editing"
+          autoComplete="off"
+          autoCorrect={false}
+          autoCapitalize="none"
+          keyboardType="numeric"
           InputLeftElement={
             <Icon
               as={FontAwesome5Icon}

@@ -17,7 +17,7 @@ import { NativeSyntheticEvent, TextInputFocusEventData } from 'react-native';
 import type { ThemeComponentSizeType } from 'native-base/lib/typescript/components/types';
 
 interface Props extends IFormControlProps {
-  bindValue: (val: any) => void;
+  bindValue?: (val: any) => void;
   label?: string;
   value?: string;
   placeholder?: string;
@@ -42,6 +42,7 @@ export type InputRef = {
   validate: (val?: string) => void;
   clearValue: () => void;
   updateSchema: (newSchema: ZodType) => void;
+  getValue: () => string;
 };
 
 const InputLabel: React.FC<{
@@ -108,7 +109,7 @@ const TextInput = forwardRef<InputRef, Props>(
     // Re-render component if prop 'value' change
     useEffect(() => {
       setValue(value);
-      bindValue(value);
+      bindValue && bindValue(value);
     }, [value]);
 
     function initAndValidate(
@@ -139,11 +140,20 @@ const TextInput = forwardRef<InputRef, Props>(
       return result.success;
     }
 
-    useImperativeHandle(ref, () => ({ validate, clearValue, updateSchema }));
+    useImperativeHandle(ref, () => ({
+      validate,
+      clearValue,
+      updateSchema,
+      getValue,
+    }));
+
+    function getValue(): string {
+      return _value;
+    }
 
     function handleChange(val: string) {
       setValue(val);
-      bindValue(val);
+      bindValue && bindValue(val);
       if (init && validation) {
         validate(val);
       }
@@ -151,7 +161,7 @@ const TextInput = forwardRef<InputRef, Props>(
 
     function clearValue() {
       setValue('');
-      bindValue('');
+      bindValue && bindValue('');
     }
 
     function updateSchema(newSchema: ZodType) {

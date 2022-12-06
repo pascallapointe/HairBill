@@ -14,11 +14,6 @@ import {
   Input,
 } from 'native-base';
 import ValidationErrors from '@components/form/validation-errors';
-import type {
-  AutoCapitalizeType,
-  AndroidAutoCompleteType,
-  iOSClearButtonModeType,
-} from '@type/form.type';
 import {
   HostComponent,
   NativeSyntheticEvent,
@@ -30,8 +25,13 @@ import ClientList from '@views/app/invoice/client/list';
 import AddClient from '@views/app/invoice/client/add';
 import { ClientType } from '@views/app/invoice/client/client.repository';
 
+export const defaultClient = {
+  id: '',
+  name: '',
+  phone: '',
+};
+
 interface Props extends IFormControlProps {
-  bindValue: (val: ClientType) => void;
   label?: string;
   value?: string;
   placeholder?: string;
@@ -39,10 +39,6 @@ interface Props extends IFormControlProps {
   color?: string;
   fontWeight?: string;
   required?: boolean;
-  clear?: iOSClearButtonModeType;
-  autoComplete?: AndroidAutoCompleteType;
-  autoCorrect?: boolean;
-  autoCapitalize?: AutoCapitalizeType;
   validation?: boolean;
   schema?: ZodType;
   icon?: JSX.Element;
@@ -50,6 +46,7 @@ interface Props extends IFormControlProps {
 
 export type ClientInputRef = {
   validate: (val?: string) => void;
+  getValue: () => ClientType;
 };
 
 const InputLabel: React.FC<{
@@ -78,15 +75,10 @@ const ClientInput = forwardRef<ClientInputRef, Props>(
     {
       label,
       value = '',
-      bindValue,
       placeholder,
       size = 'md',
       color = 'light.600',
       fontWeight = 'bold',
-      clear = 'never',
-      autoComplete = 'off',
-      autoCorrect = false,
-      autoCapitalize = 'words',
       required = true,
       validation = true,
       schema = z.string({
@@ -100,7 +92,10 @@ const ClientInput = forwardRef<ClientInputRef, Props>(
   ) => {
     // Input properties
     const [init, setInit] = useState(false);
-    const [_value, setValue] = useState(value);
+    const [_value, setValue] = useState<ClientType>({
+      ...defaultClient,
+      name: value,
+    });
     const inputField = useRef<React.ElementRef<HostComponent<unknown>>>(null);
     const [error, setError] = useState(false);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
@@ -125,7 +120,7 @@ const ClientInput = forwardRef<ClientInputRef, Props>(
         setInit(true);
       }
 
-      let result = schema.safeParse(val ?? _value);
+      let result = schema.safeParse(val ?? _value.name);
 
       setError(!result.success);
       setErrorMessages([]);
@@ -137,22 +132,24 @@ const ClientInput = forwardRef<ClientInputRef, Props>(
       return result.success;
     }
 
-    useImperativeHandle(ref, () => ({ validate }));
+    function getValue(): ClientType {
+      return _value;
+    }
+
+    useImperativeHandle(ref, () => ({ validate, getValue }));
 
     function handleChange(val: string) {
       if (val.length >= 3) {
         setIsOpen(true);
       }
-      setValue(val);
-      bindValue({ id: '', name: val, phone: '' });
+      setValue({ ...defaultClient, name: val });
       if (init && validation) {
         validate(val);
       }
     }
 
     function selectClient(client: ClientType) {
-      setValue(client.name);
-      bindValue(client);
+      setValue(client);
       setIsOpen(false);
       inputField.current && inputField.current.blur();
     }
@@ -170,24 +167,25 @@ const ClientInput = forwardRef<ClientInputRef, Props>(
           ref={inputField}
           onFocus={e => {
             setView('list');
-            if (_value.length >= 3) {
+            if (_value.name.length >= 3) {
               setIsOpen(true);
             }
             // Workaround for selectTextOnFocus={true} not working
             e.currentTarget.setNativeProps({
-              selection: { start: 0, end: _value?.length },
+              selection: { start: 0, end: _value.name.length },
             });
           }}
           onBlur={e => {
             initAndValidate(e);
           }}
+          onSubmitEditing={() => setIsOpen(false)}
           onChangeText={handleChange}
-          clearButtonMode={clear}
-          autoComplete={autoComplete}
-          autoCorrect={autoCorrect}
-          autoCapitalize={autoCapitalize}
+          clearButtonMode="while-editing"
+          autoComplete="off"
+          autoCorrect={false}
+          autoCapitalize="words"
           InputLeftElement={<InputIcon icon={icon} />}
-          value={_value}
+          value={_value.name}
           placeholder={placeholder ? placeholder : ''}
           _focus={{
             borderColor: 'violet.700',
@@ -210,13 +208,13 @@ const ClientInput = forwardRef<ClientInputRef, Props>(
             {view === 'list' ? (
               <ClientList
                 setView={setView}
-                query={_value}
+                query={_value.name}
                 bindClient={selectClient}
               />
             ) : (
               <AddClient
                 setView={setView}
-                value={_value}
+                value={_value.name}
                 bindClient={selectClient}
               />
             )}

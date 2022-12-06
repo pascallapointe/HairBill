@@ -4,16 +4,45 @@ import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { escapeRegExp } from '@lib/utils';
 
+export const defaultTipValues = [
+  '0.00',
+  '1.00',
+  '2.00',
+  '3.00',
+  '4.00',
+  '5.00',
+  '6.00',
+  '7.00',
+  '8.00',
+  '9.00',
+  '10.00',
+];
+
 const ListItem: React.FC<{
   item: string;
   bindAmount: (amount: string) => void;
 }> = ({ item, bindAmount }) => {
   const { t } = useTranslation();
+  const mod = parseFloat(item) % 1;
+  let color = 'purple.600';
+
+  if (mod > 0.75) {
+    color = 'violet.900';
+  } else if (mod > 0.5) {
+    color = 'violet.800';
+  } else if (mod > 0.25) {
+    color = 'violet.700';
+  } else if (mod > 0) {
+    color = 'violet.600';
+  }
+
   return (
     <Button
       size="sm"
-      colorScheme="violet"
+      bgColor={color}
+      _pressed={{ opacity: 0.5 }}
       shadow={4}
+      _text={{ fontWeight: 'bold' }}
       onPress={() => bindAmount(item)}
       m={1}>
       {t('price', { price: item })}
@@ -26,19 +55,7 @@ const AmountList: React.FC<{
   query: string;
 }> = ({ query, bindAmount }) => {
   const { t } = useTranslation();
-  const [amounts, setAmounts] = useState<string[]>([
-    '0.00',
-    '1.00',
-    '2.00',
-    '3.00',
-    '4.00',
-    '5.00',
-    '6.00',
-    '7.00',
-    '8.00',
-    '9.00',
-    '10.00',
-  ]);
+  const [amounts, setAmounts] = useState<string[]>([...defaultTipValues]);
   const [filtered, setFiltered] = useState<string[]>([]);
 
   useEffect(() => {

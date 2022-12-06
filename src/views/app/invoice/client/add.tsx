@@ -17,9 +17,7 @@ const AddClient: React.FC<{
 }> = ({ setView, value, bindClient }) => {
   const { t } = useTranslation();
   const nameField = useRef<InputRef>(null);
-  const [name, setName] = useState(value);
   const phoneField = useRef<InputRef>(null);
-  const [phone, setPhone] = useState('');
   const [wait, setWait] = useState(false);
 
   // Modals
@@ -32,7 +30,10 @@ const AddClient: React.FC<{
     ];
     if (fields.every(field => field)) {
       setWait(true);
-      const client = addClient({ name, phone });
+      const client = addClient({
+        name: (nameField.current && nameField.current.getValue()) ?? '',
+        phone: (phoneField.current && phoneField.current.getValue()) ?? '',
+      });
       bindClient(client);
       setView('list');
       setWait(false);
@@ -50,7 +51,6 @@ const AddClient: React.FC<{
         ref={nameField}
         size={{ md: 'md', lg: 'sm' }}
         value={value}
-        bindValue={setName}
         label={t<string>('invoice.clientName')}
         placeholder={t<string>('invoice.clientName')}
         clear="while-editing"
@@ -65,7 +65,6 @@ const AddClient: React.FC<{
         size={{ md: 'md', lg: 'sm' }}
         ref={phoneField}
         required={false}
-        bindValue={setPhone}
         label={t<string>('invoice.clientPhone')}
         placeholder="(999) 999-9999"
         clear="while-editing"
