@@ -137,7 +137,7 @@ const CategoryList = () => {
 
   return (
     <>
-      <ScrollView maxHeight={{ md: '310px', lg: '500px' }}>
+      <ScrollView maxHeight={{ md: '760px', lg: '500px' }}>
         {categories.map(item => (
           <CategoryItem key={item.id} item={item} onDelete={confirmDelete} />
         ))}

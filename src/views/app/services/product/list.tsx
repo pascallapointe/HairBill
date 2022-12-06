@@ -165,7 +165,7 @@ const ProductList: React.FC<{ onEdit: (p: ProductType) => void }> = ({
 
   return (
     <>
-      <ScrollView maxHeight={{ md: '310', lg: '500px' }}>
+      <ScrollView maxHeight={{ md: '760px', lg: '500px' }}>
         {Object.keys(sectionList).map(key => (
           <View key={key}>
             {sectionList[key].products.length ? (

@@ -1,13 +1,16 @@
-import React from 'react';
-import { Box, Heading, KeyboardAvoidingView, Stack } from 'native-base';
+import React, { useState } from 'react';
+import { Box, HStack, KeyboardAvoidingView } from 'native-base';
 import { Platform, SafeAreaView } from 'react-native';
 import CategoryView from '@views/app/services/category/category-view';
 import ProductView from '@views/app/services/product/product-view';
+import TabButton from '@components/tab-button';
+import { useTranslation } from 'react-i18next';
 
 const ServicesView = () => {
+  const { t } = useTranslation();
+  const [view, setView] = useState<'category' | 'product'>('product');
   return (
     <Box
-      p={5}
       flex={1}
       bg={{
         linearGradient: {
@@ -20,23 +23,19 @@ const ServicesView = () => {
         style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
-          <Heading
-            color="white"
-            size="4xl"
-            mb={4}
-            fontFamily="SignPainter"
-            textAlign="center">
-            &nbsp;Services&nbsp;
-          </Heading>
-
-          <Stack direction={{ md: 'column', lg: 'row' }} space={3}>
-            <Box>
-              <CategoryView />
-            </Box>
-            <Box>
-              <ProductView />
-            </Box>
-          </Stack>
+          <HStack justifyContent="center" space={4} mb={5}>
+            <TabButton
+              text={t<string>('services.products')}
+              action={() => setView('product')}
+              selected={view === 'product'}
+            />
+            <TabButton
+              text={t<string>('services.categories')}
+              action={() => setView('category')}
+              selected={view === 'category'}
+            />
+          </HStack>
+          {view === 'product' ? <ProductView /> : <CategoryView />}
         </KeyboardAvoidingView>
       </SafeAreaView>
     </Box>

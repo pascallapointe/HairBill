@@ -32,8 +32,8 @@ const ProductView = () => {
 
   return (
     <Card
-      maxHeight={{ md: '380px', lg: '570px' }}
-      width="lg"
+      maxHeight={{ md: '840px', lg: '570px' }}
+      width="2xl"
       title={
         view === 'list'
           ? t<string>('services.products')

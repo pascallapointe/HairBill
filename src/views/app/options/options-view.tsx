@@ -1,37 +1,12 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Button,
-  Heading,
-  HStack,
-  KeyboardAvoidingView,
-} from 'native-base';
+import { Box, Heading, HStack, KeyboardAvoidingView } from 'native-base';
 import { Platform, SafeAreaView } from 'react-native';
 import Card from '@components/card';
 import { useTranslation } from 'react-i18next';
 
 import SalesTaxView from '@views/app/options/sales-tax/sales-tax-view';
 import GeneralView from '@views/app/options/general/general-view';
-
-const TabBtn: React.FC<{
-  text: string;
-  action: () => void;
-  selected: boolean;
-}> = ({ text, action, selected }) => {
-  const fontWeight = selected ? 'bold' : 'normal';
-  return (
-    <Button
-      minW="100px"
-      onPress={action}
-      colorScheme={selected ? 'lime' : 'muted'}
-      rounded={20}
-      _text={{ fontWeight: fontWeight }}
-      opacity={selected ? 1 : 0.6}
-      shadow={selected ? 0 : 5}>
-      {text}
-    </Button>
-  );
-};
+import TabButton from '@components/tab-button';
 
 const OptionsView = () => {
   const { t } = useTranslation();
@@ -64,12 +39,12 @@ const OptionsView = () => {
             title={t<string>('options.appSettings')}
             pb={4}>
             <HStack justifyContent="center" space={4} pb={4}>
-              <TabBtn
+              <TabButton
                 text={t<string>('general')}
                 action={() => setView('general')}
                 selected={view === 'general'}
               />
-              <TabBtn
+              <TabButton
                 text={t<string>('tax')}
                 action={() => setView('tax')}
                 selected={view === 'tax'}
