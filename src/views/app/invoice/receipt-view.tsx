@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Box,
@@ -27,6 +27,8 @@ import OctIcon from 'react-native-vector-icons/Octicons';
 import ViewShot from 'react-native-view-shot';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { NavigationProp, ParamListBase } from '@react-navigation/native';
+import { CameraRoll } from '@react-native-camera-roll/camera-roll';
+import Modal, { ModalRef } from '@components/modal';
 
 const Items: React.FC<{
   item: ProductType;
@@ -93,6 +95,25 @@ const ReceiptView: React.FC<{
   const receiptRef = useRef<ViewShot>(null);
   const amount = receipt.total;
 
+  // Modals
+  const successModal = useRef<ModalRef>(null);
+  const errorModal = useRef<ModalRef>(null);
+  const [successTitle, setSuccessTitle] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  async function saveScreenshot(): Promise<void> {
+    if (receiptRef.current?.capture) {
+      const uri = await receiptRef.current.capture();
+      CameraRoll.save(uri)
+        .then(() => {
+          setSuccessTitle(t<string>('invoice.screenshotSaved'));
+          setSuccessMessage(t<string>('invoice.screenshotSavedLibrary'));
+          successModal.current && successModal.current.open();
+        })
+        .catch(() => errorModal.current && errorModal.current.open());
+    }
+  }
+
   return (
     <Box
       position="absolute"
@@ -113,6 +134,7 @@ const ReceiptView: React.FC<{
           ref={receiptRef}
           options={{ fileName: 'Your-File-Name', format: 'jpg', quality: 0.9 }}>
           <ScrollView
+            rounded={10}
             bgColor="white"
             width="400px"
             maxHeight={{ md: '940px', lg: '690px' }}
@@ -321,13 +343,7 @@ const ReceiptView: React.FC<{
               maxW="200px"
               m={2}
               shadow={4}
-              onPress={() =>
-                receiptRef.current?.capture &&
-                receiptRef.current
-                  .capture()
-                  .then(console.log)
-                  .catch(console.error)
-              }
+              onPress={saveScreenshot}
               leftIcon={
                 <FontAwesome5Icon color="white" size={20} name="image" />
               }
@@ -349,6 +365,24 @@ const ReceiptView: React.FC<{
           </Flex>
         </Box>
       </HStack>
+      <Modal
+        ref={successModal}
+        hideAction={true}
+        title={successTitle}
+        modalType="success">
+        <Text fontSize="md" textAlign="center">
+          {successMessage}
+        </Text>
+      </Modal>
+      <Modal
+        ref={errorModal}
+        hideAction={true}
+        title={t('exception.operationFailed')}
+        modalType="error">
+        <Text fontSize="md" textAlign="center">
+          {t('exception.operationFailed')}
+        </Text>
+      </Modal>
     </Box>
   );
 };

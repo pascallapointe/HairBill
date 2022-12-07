@@ -96,7 +96,9 @@
     "cash": "Cash",
     "newInvoice": "New invoice",
     "saved": "Invoice saved",
-    "thankYou": "Thank You"
+    "thankYou": "Thank You",
+    "screenshotSaved": "Screenshot saved",
+    "screenshotSavedLibrary": "Screenshot saved to photo library"
   },
   "services": {
     "title": "Manage services",

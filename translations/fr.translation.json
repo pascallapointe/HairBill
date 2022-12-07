@@ -95,7 +95,9 @@
     "cash": "Comptant",
     "newInvoice": "Nouvelle facture",
     "saved": "Facture sauvegardé",
-    "thankYou": "Merci"
+    "thankYou": "Merci",
+    "screenshotSaved": "Capture écran sauvegardée",
+    "screenshotSavedLibrary": "Capture écran sauvegardée dans l'album photo"
   },
   "services": {
     "title": "Gérer les services",
