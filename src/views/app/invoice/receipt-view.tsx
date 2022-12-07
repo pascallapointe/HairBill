@@ -106,7 +106,7 @@ const ReceiptView: React.FC<{
     if (receiptRef.current?.capture) {
       const uri = await receiptRef.current.capture();
       RNPrint.print({
-        html: `<html lang="en"><div style="text-align: center;"><img width="350px" src="file://${uri}" alt="receipt" /></div></html>`,
+        html: `<html lang="en"><div style="text-align: center;"><img width="350px" src="file://${uri}" alt="HairBill Receipt" /></div></html>`,
       }).catch(() => errorModal.current && errorModal.current.open());
     }
   }

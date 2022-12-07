@@ -61,6 +61,7 @@ const RegisterView: React.FC<Props> = ({ navigation }) => {
         .then((cred: FirebaseAuthTypes.UserCredential) => {
           cred.user.sendEmailVerification().catch(console.error);
           successModal.current && successModal.current.open();
+          auth().signOut().catch(console.error);
         })
         .catch(e => {
           console.error(e);

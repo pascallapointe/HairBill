@@ -15,13 +15,13 @@ const App = () => {
 
   // Handle user state changes
   function onAuthStateChanged(fbUser: FirebaseAuthTypes.User | null) {
-    console.log(
-      'Current User: ',
-      fbUser ? fbUser.email + ' verified: ' + fbUser.emailVerified : 'NULL',
-    );
+    console.log(fbUser?.email);
     if (fbUser?.emailVerified) {
       setUser(fbUser);
     } else {
+      if (fbUser) {
+        auth().signOut().catch(console.error);
+      }
       setUser(null);
     }
 
@@ -57,7 +57,6 @@ const App = () => {
 
     // Monitor internet status
     const netInfoSubscriber = NetInfo.addEventListener(state => {
-      console.log(state.isConnected, state.isInternetReachable);
       if (state.isConnected && state.isInternetReachable) {
         firestore()
           .enableNetwork()
