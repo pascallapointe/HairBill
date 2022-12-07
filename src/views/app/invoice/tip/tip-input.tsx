@@ -14,11 +14,7 @@ import {
   Input,
 } from 'native-base';
 import ValidationErrors from '@components/form/validation-errors';
-import {
-  HostComponent,
-  NativeSyntheticEvent,
-  TextInputFocusEventData,
-} from 'react-native';
+import { HostComponent } from 'react-native';
 import type { ThemeComponentSizeType } from 'native-base/lib/typescript/components/types';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import AmountList from '@views/app/invoice/tip/list';
@@ -81,14 +77,12 @@ const TipInput = forwardRef<TipInputRef, Props>(
     // Popover properties
     const [isOpen, setIsOpen] = useState(false);
 
-    function initAndValidate(
-      e: NativeSyntheticEvent<TextInputFocusEventData>,
-    ): void {
+    function initAndValidate(): void {
       if (!init) {
         setInit(true);
       }
       if (validation) {
-        validate(e.nativeEvent.text);
+        validate();
       }
     }
 
@@ -126,8 +120,6 @@ const TipInput = forwardRef<TipInputRef, Props>(
     useImperativeHandle(ref, () => ({ validate, getValue }));
 
     function handleChange(val: string) {
-      setIsOpen(true);
-
       setValue(val);
       if (init && validation) {
         validate(val);
@@ -135,6 +127,7 @@ const TipInput = forwardRef<TipInputRef, Props>(
     }
 
     function selectAmount(amount: string) {
+      validate(amount);
       setValue(amount.toString());
       setIsOpen(false);
       inputField.current && inputField.current.blur();
@@ -196,8 +189,8 @@ const TipInput = forwardRef<TipInputRef, Props>(
               selection: { start: 0, end: _value?.length },
             });
           }}
-          onBlur={e => {
-            initAndValidate(e);
+          onBlur={() => {
+            initAndValidate();
           }}
           onSubmitEditing={() => setIsOpen(false)}
           onChangeText={handleChange}

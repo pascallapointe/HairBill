@@ -2,6 +2,7 @@
   "waitButton": "... un instant",
   "add": "Ajouter",
   "back": "Retour",
+  "goToMenu": "Retour au menu",
   "save": "Enregistrer",
   "delete": "Supprimer",
   "cancel": "Annuler",
@@ -10,7 +11,7 @@
   "price": "{{price}}$",
   "general": "Général",
   "tax": "Taxe",
-  "goToMenu": "Retour au menu",
+
   "validation": {
     "required": "Obligatoire",
     "stringType": "Obligatoire",

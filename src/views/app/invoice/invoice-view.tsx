@@ -70,14 +70,14 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
   const clientField = useRef<ClientInputRef>(null);
   const productsField = useRef<ProductSelectRef>(null);
   const tipField = useRef<TipInputRef>(null);
-  const [wait, setWait] = useState(false);
   const paymentField = useRef<PayMethodRef>(null);
   const totalRef = useRef<TotalRef>(null);
   const [invoiceNum, setInvoiceNum] = useState<string>('');
   const [receipt, setReceipt] = useState<InvoiceType>(defaultReceipt);
+  const [wait, setWait] = useState(false);
+  const [showReceipt, setShowReceipt] = useState(false);
 
   // Modals
-  const successModal = useRef<ModalRef>(null);
   const errorModal = useRef<ModalRef>(null);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -131,7 +131,7 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
         },
       });
       setReceipt(r);
-      successModal.current && successModal.current.open();
+      setShowReceipt(true);
 
       // Save last 12 custom tip value
       AsyncStorage.getItem('lastTips')
@@ -142,7 +142,7 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
             const amountsSet = [...new Set([formattedTip, ...lastAmounts])];
             AsyncStorage.setItem(
               'lastTips',
-              JSON.stringify(amountsSet.slice(0, 4)),
+              JSON.stringify(amountsSet.slice(0, 12)),
             ).catch(console.error);
           }
         })
@@ -248,20 +248,6 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
         </Card>
       </SafeAreaView>
       <Modal
-        ref={successModal}
-        outClick={false}
-        callback={async () => navigation.navigate('menu')}
-        hideAction={true}
-        closeBtnText={t<string>('goToMenu')}
-        title={t('invoice.saved')}
-        modalType="success">
-        <ReceiptView
-          receipt={receipt}
-          generalSettings={generalSettings}
-          taxSettings={taxSettings}
-        />
-      </Modal>
-      <Modal
         ref={errorModal}
         hideAction={true}
         title={t('exception.operationFailed')}
@@ -270,6 +256,16 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
           {errorMessage}
         </Text>
       </Modal>
+      {showReceipt ? (
+        <ReceiptView
+          navigation={navigation}
+          receipt={receipt}
+          generalSettings={generalSettings}
+          taxSettings={taxSettings}
+        />
+      ) : (
+        ''
+      )}
     </Box>
   );
 };
