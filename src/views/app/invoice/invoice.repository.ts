@@ -63,9 +63,19 @@ export async function getNextInvoiceNumber() {
     .startAt(start.valueOf())
     .get();
 
+  let lastNumber = 0;
+
+  if (result.size > 0) {
+    const lastInvoice = result.docs.pop();
+    const lastInvoiceNum = lastInvoice?.get<string>('invoiceNumber');
+    if (lastInvoiceNum && lastInvoiceNum.length) {
+      lastNumber = parseInt(lastInvoiceNum.slice(4), 10);
+    }
+  }
+
   return `${year.toString().slice(2)}${month > 9 ? month : '0' + month}${(
     10000 +
-    result.size +
+    lastNumber +
     1
   )
     .toString()

@@ -15,7 +15,6 @@ const App = () => {
 
   // Handle user state changes
   function onAuthStateChanged(fbUser: FirebaseAuthTypes.User | null) {
-    console.log(fbUser?.email);
     if (fbUser?.emailVerified) {
       setUser(fbUser);
     } else {
