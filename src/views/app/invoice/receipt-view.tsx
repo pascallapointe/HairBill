@@ -29,6 +29,7 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { NavigationProp, ParamListBase } from '@react-navigation/native';
 import { CameraRoll } from '@react-native-camera-roll/camera-roll';
 import Modal, { ModalRef } from '@components/modal';
+import RNPrint from 'react-native-print';
 
 const Items: React.FC<{
   item: ProductType;
@@ -100,6 +101,15 @@ const ReceiptView: React.FC<{
   const errorModal = useRef<ModalRef>(null);
   const [successTitle, setSuccessTitle] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+
+  async function print(): Promise<void> {
+    if (receiptRef.current?.capture) {
+      const uri = await receiptRef.current.capture();
+      RNPrint.print({
+        html: `<html lang="en"><div style="text-align: center;"><img width="350px" src="file://${uri}" alt="receipt" /></div></html>`,
+      }).catch(() => errorModal.current && errorModal.current.open());
+    }
+  }
 
   async function saveScreenshot(): Promise<void> {
     if (receiptRef.current?.capture) {
@@ -320,6 +330,7 @@ const ReceiptView: React.FC<{
             direction="column"
             justifyContent="center">
             <Button
+              onPress={print}
               maxW="200px"
               m={2}
               shadow={4}

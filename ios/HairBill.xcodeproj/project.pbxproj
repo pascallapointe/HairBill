@@ -53,6 +53,34 @@
 			remoteGlobalIDString = 3846DAC62403170500B4283E;
 			remoteInfo = "RNCNetInfo-macOS";
 		};
+		50B4AEE22940FCEA00B7EAF6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 50B4AED92940FCEA00B7EAF6 /* RNPrint.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1132585C1B99F348005E19FE;
+			remoteInfo = RNPrint;
+		};
+		50B4AEE42940FCEA00B7EAF6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 50B4AED92940FCEA00B7EAF6 /* RNPrint.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 113258671B99F348005E19FE;
+			remoteInfo = RNPrintTests;
+		};
+		50B4AEF22940FE2A00B7EAF6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 50B4AEE92940FE2A00B7EAF6 /* RNHTMLtoPDF.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 117405EF1B9954BF004425E1;
+			remoteInfo = RNHTMLtoPDF;
+		};
+		50B4AEF42940FE2A00B7EAF6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 50B4AEE92940FE2A00B7EAF6 /* RNHTMLtoPDF.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 117405FA1B9954BF004425E1;
+			remoteInfo = RNHTMLtoPDFTests;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +97,8 @@
 		500CF4F32940ED7E00D05DC0 /* RNCCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNCCameraRoll.xcodeproj; path = "../node_modules/@react-native-camera-roll/camera-roll/ios/RNCCameraRoll.xcodeproj"; sourceTree = "<group>"; };
 		502E73F12918484F00F551E8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5031CD652936C0DC00370766 /* RNCNetInfo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNCNetInfo.xcodeproj; path = "../node_modules/@react-native-community/netinfo/macos/RNCNetInfo.xcodeproj"; sourceTree = "<group>"; };
+		50B4AED92940FCEA00B7EAF6 /* RNPrint.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNPrint.xcodeproj; path = "../node_modules/react-native-print/ios/RNPrint.xcodeproj"; sourceTree = "<group>"; };
+		50B4AEE92940FE2A00B7EAF6 /* RNHTMLtoPDF.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNHTMLtoPDF.xcodeproj; path = "../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF.xcodeproj"; sourceTree = "<group>"; };
 		50CAF43E291AC44800E81048 /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
 		50CAF43F291AC44800E81048 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
 		50CAF440291AC44800E81048 /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
@@ -172,6 +202,24 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		50B4AEDA2940FCEA00B7EAF6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				50B4AEE32940FCEA00B7EAF6 /* libRNPrint.a */,
+				50B4AEE52940FCEA00B7EAF6 /* RNPrintTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		50B4AEEA2940FE2A00B7EAF6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				50B4AEF32940FE2A00B7EAF6 /* libRNHTMLtoPDF.a */,
+				50B4AEF52940FE2A00B7EAF6 /* RNHTMLtoPDFTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		50CAF43D291AC44800E81048 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
@@ -199,6 +247,8 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				50B4AEE92940FE2A00B7EAF6 /* RNHTMLtoPDF.xcodeproj */,
+				50B4AED92940FCEA00B7EAF6 /* RNPrint.xcodeproj */,
 				500CF4F32940ED7E00D05DC0 /* RNCCameraRoll.xcodeproj */,
 				5031CD652936C0DC00370766 /* RNCNetInfo.xcodeproj */,
 			);
@@ -326,6 +376,14 @@
 					ProductGroup = 5031CD662936C0DC00370766 /* Products */;
 					ProjectRef = 5031CD652936C0DC00370766 /* RNCNetInfo.xcodeproj */;
 				},
+				{
+					ProductGroup = 50B4AEEA2940FE2A00B7EAF6 /* Products */;
+					ProjectRef = 50B4AEE92940FE2A00B7EAF6 /* RNHTMLtoPDF.xcodeproj */;
+				},
+				{
+					ProductGroup = 50B4AEDA2940FCEA00B7EAF6 /* Products */;
+					ProjectRef = 50B4AED92940FCEA00B7EAF6 /* RNPrint.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -362,6 +420,34 @@
 			fileType = archive.ar;
 			path = "libRNCNetInfo-macOS.a";
 			remoteRef = 5031CD6F2936C0DC00370766 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		50B4AEE32940FCEA00B7EAF6 /* libRNPrint.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNPrint.a;
+			remoteRef = 50B4AEE22940FCEA00B7EAF6 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		50B4AEE52940FCEA00B7EAF6 /* RNPrintTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = RNPrintTests.xctest;
+			remoteRef = 50B4AEE42940FCEA00B7EAF6 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		50B4AEF32940FE2A00B7EAF6 /* libRNHTMLtoPDF.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNHTMLtoPDF.a;
+			remoteRef = 50B4AEF22940FE2A00B7EAF6 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		50B4AEF52940FE2A00B7EAF6 /* RNHTMLtoPDFTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = RNHTMLtoPDFTests.xctest;
+			remoteRef = 50B4AEF42940FE2A00B7EAF6 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
