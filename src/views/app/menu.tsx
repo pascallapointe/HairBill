@@ -34,7 +34,7 @@ const MenuView: React.FC<Props> = ({ navigation }) => {
             icon="receipt"
           />
           <NavButton
-            action={() => null}
+            action={() => navigation.navigate('lists')}
             text={t('home.listsReports')}
             icon="list"
           />

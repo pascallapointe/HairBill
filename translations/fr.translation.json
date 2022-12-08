@@ -72,6 +72,7 @@
   "invoice": {
     "title": "Nouvelle Facture",
     "invoice": "Facture",
+    "invoices": "Factures",
     "client": "Client",
     "clientInfo": "Information client",
     "clientName": "Nom du client",
@@ -98,6 +99,10 @@
     "thankYou": "Merci",
     "screenshotSaved": "Capture écran sauvegardée",
     "screenshotSavedLibrary": "Capture écran sauvegardée dans l'album photo"
+  },
+  "lists": {
+    "title": "Listes & Rapports",
+    "reports": "Rapports"
   },
   "services": {
     "title": "Gérer les services",

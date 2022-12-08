@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { NavigationContainer } from '@react-navigation/native';
 import MenuView from '@views/app/menu';
 import InvoiceView from '@views/app/invoice/invoice-view';
+import ListsView from '@views/app/lists/lists-view';
 import ServicesView from '@views/app/services/services';
 import OptionsView from '@views/app/options/options-view';
 
@@ -32,6 +33,11 @@ const AppNavigation = () => {
             name="invoice"
             component={InvoiceView}
             options={{ title: `HairBill - ${t('invoice.title')}` }}
+          />
+          <Stack.Screen
+            name="lists"
+            component={ListsView}
+            options={{ title: `HairBill - ${t('home.listsReports')}` }}
           />
           <Stack.Screen
             name="services"

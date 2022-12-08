@@ -30,6 +30,7 @@ interface Props extends IFormControlProps {
   fontWeight?: string;
   required?: boolean;
   validation?: boolean;
+  popoverPosition?: 'top' | 'bottom';
 }
 
 export type TipInputRef = {
@@ -62,6 +63,7 @@ const TipInput = forwardRef<TipInputRef, Props>(
       fontWeight = 'bold',
       required = true,
       validation = true,
+      popoverPosition,
       ...props
     },
     ref,
@@ -139,13 +141,25 @@ const TipInput = forwardRef<TipInputRef, Props>(
         <ValidationErrors
           m={0}
           mb={1}
-          display={{ md: 'none', lg: 'flex' }}
+          display={
+            popoverPosition
+              ? popoverPosition === 'bottom'
+                ? 'flex'
+                : 'none'
+              : { md: 'none', lg: 'flex' }
+          }
           error={error}
           errorMessages={errorMessages}
         />
         <Box width="100%" display={isOpen ? 'flex' : 'none'}>
           <Box
-            bottom={{ md: 0, lg: '-187px' }}
+            bottom={
+              popoverPosition
+                ? popoverPosition === 'bottom'
+                  ? '-187px'
+                  : 0
+                : { md: 0, lg: '-187px' }
+            }
             position="absolute"
             zIndex={10}
             bgColor="white"
@@ -220,7 +234,13 @@ const TipInput = forwardRef<TipInputRef, Props>(
           size={size}
         />
         <ValidationErrors
-          display={{ md: 'flex', lg: 'none' }}
+          display={
+            popoverPosition
+              ? popoverPosition === 'bottom'
+                ? 'none'
+                : 'flex'
+              : { md: 'flex', lg: 'none' }
+          }
           error={error}
           errorMessages={errorMessages}
         />

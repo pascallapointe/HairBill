@@ -97,8 +97,8 @@ const ClientList: React.FC<{
   }, []);
 
   useEffect(() => {
-    if (!query.length) {
-      return setFiltered(clients);
+    if (!(query.length >= 3)) {
+      return setFiltered([]);
     }
     const regex = new RegExp(query, 'gi');
     setFiltered(clients.filter(({ name }) => name.match(regex)));
@@ -146,8 +146,13 @@ const ClientList: React.FC<{
         height={{ md: '250px', lg: '210px' }}
         justifyContent="center"
         alignItems="center">
-        <Text mb={5} fontSize="lg" color="muted.500">
-          {t<string>('invoice.noMatch')}
+        <Text
+          mb={5}
+          fontSize="lg"
+          color={query.length > 3 ? 'danger.500' : 'muted.500'}>
+          {query.length >= 3
+            ? t<string>('invoice.noMatch')
+            : t<string>('invoice.type3Chars')}
         </Text>
         <Button
           onPress={() => setView('add')}

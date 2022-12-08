@@ -73,6 +73,7 @@
   "invoice": {
     "title": "New Invoice",
     "invoice": "Invoice",
+    "invoices": "Invoices",
     "client": "Client",
     "clientInfo": "Client information",
     "clientName": "Client name",
@@ -99,6 +100,10 @@
     "thankYou": "Thank You",
     "screenshotSaved": "Screenshot saved",
     "screenshotSavedLibrary": "Screenshot saved to photo library"
+  },
+  "lists": {
+    "title": "Lists & Reports",
+    "reports": "Reports"
   },
   "services": {
     "title": "Manage services",

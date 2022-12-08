@@ -167,9 +167,8 @@ const ClientInput = forwardRef<ClientInputRef, Props>(
           ref={inputField}
           onFocus={e => {
             setView('list');
-            if (_value.name.length >= 3) {
-              setIsOpen(true);
-            }
+            setIsOpen(true);
+
             // Workaround for selectTextOnFocus={true} not working
             e.currentTarget.setNativeProps({
               selection: { start: 0, end: _value.name.length },

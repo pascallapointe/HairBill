@@ -13,6 +13,7 @@ import ActionButton from '@components/action-button';
 interface Props extends IModalProps {
   title: string;
   action?: () => Promise<any>; // Customizable action. Modal must be close explicitly
+  actionAutoClose?: boolean;
   callback?: () => void; // Always called on modal close
   actionBtnText?: string;
   actionBtnStyles?: StyleProp<ViewStyle>;
@@ -21,6 +22,12 @@ interface Props extends IModalProps {
   hideAction?: boolean;
   outClick?: boolean;
   modalType?: 'success' | 'warning' | 'error';
+  keyboardShouldPersistTaps?:
+    | boolean
+    | 'always'
+    | 'never'
+    | 'handled'
+    | undefined;
   children: ReactNode;
 }
 
@@ -41,6 +48,7 @@ const Modal = forwardRef<ModalRef, PropsWithChildren<Props>>(
       children,
       title,
       action,
+      actionAutoClose = true,
       callback,
       actionBtnText,
       actionBtnStyles,
@@ -49,6 +57,7 @@ const Modal = forwardRef<ModalRef, PropsWithChildren<Props>>(
       hideClose,
       outClick = true,
       modalType = 'success',
+      keyboardShouldPersistTaps = 'always',
       ...props
     },
     ref,
@@ -59,7 +68,9 @@ const Modal = forwardRef<ModalRef, PropsWithChildren<Props>>(
 
     const open = () => setIsOpen(true);
     const close = () => {
-      if (callback) callback();
+      if (callback) {
+        callback();
+      }
       setIsOpen(false);
       setWait(false);
     };
@@ -67,8 +78,11 @@ const Modal = forwardRef<ModalRef, PropsWithChildren<Props>>(
       setWait(true);
       if (action) {
         await action();
+        setWait(false);
       }
-      close();
+      if (actionAutoClose) {
+        close();
+      }
     };
     useImperativeHandle(ref, () => ({ open, close }));
 
@@ -83,7 +97,12 @@ const Modal = forwardRef<ModalRef, PropsWithChildren<Props>>(
         <NBModal.Content>
           <NBModal.CloseButton />
           <NBModal.Header bgColor={color[modalType]}>{title}</NBModal.Header>
-          <NBModal.Body>{children}</NBModal.Body>
+          <NBModal.Body
+            _scrollview={{
+              keyboardShouldPersistTaps: keyboardShouldPersistTaps,
+            }}>
+            {children}
+          </NBModal.Body>
           <NBModal.Footer>
             <Button.Group space={2}>
               <Button

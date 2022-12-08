@@ -46,12 +46,6 @@ export async function getInvoices(): Promise<InvoiceType[]> {
   return invoices;
 }
 
-export function addInvoice(invoice: InvoiceType): InvoiceType {
-  const doc = getInvoiceCollection().doc();
-  doc.set(invoice).catch(console.error);
-  return { ...invoice, id: doc.id };
-}
-
 export async function getNextInvoiceNumber() {
   const now = new Date();
   const year = now.getFullYear();
@@ -80,4 +74,15 @@ export async function getNextInvoiceNumber() {
   )
     .toString()
     .slice(1)}`;
+}
+
+export function addInvoice(invoice: InvoiceType): InvoiceType {
+  const doc = getInvoiceCollection().doc();
+  doc.set(invoice).catch(console.error);
+  return { ...invoice, id: doc.id };
+}
+
+export function updateTip(id: string, tip: number): void {
+  const doc = getInvoiceCollection().doc(id);
+  doc.update({ tip }).catch(console.error);
 }

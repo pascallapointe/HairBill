@@ -15,7 +15,7 @@ import {
   VStack,
 } from 'native-base';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
-import { InvoiceType } from '@views/app/invoice/invoice.repository';
+import { InvoiceType, updateTip } from '@views/app/invoice/invoice.repository';
 import { TaxSettingsType } from '@views/app/options/sales-tax/sales-tax.repository';
 import { GeneralSettingsType } from '@views/app/options/general/general.repository';
 import { createTimestamp } from '@lib/utils';
@@ -30,6 +30,9 @@ import { NavigationProp, ParamListBase } from '@react-navigation/native';
 import { CameraRoll } from '@react-native-camera-roll/camera-roll';
 import Modal, { ModalRef } from '@components/modal';
 import RNPrint from 'react-native-print';
+import TipInput, { TipInputRef } from '@views/app/invoice/tip/tip-input';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { defaultTipValues } from '@views/app/invoice/tip/list';
 
 const Items: React.FC<{
   item: ProductType;
@@ -93,10 +96,13 @@ const ReceiptView: React.FC<{
   navigation: NavigationProp<ParamListBase>;
 }> = ({ receipt, taxSettings, generalSettings, navigation }) => {
   const { t } = useTranslation();
+  const [tip, setTip] = useState<number>(receipt.tip);
   const receiptRef = useRef<ViewShot>(null);
   const amount = receipt.total;
+  const tipField = useRef<TipInputRef>(null);
 
   // Modals
+  const tipModal = useRef<ModalRef>(null);
   const successModal = useRef<ModalRef>(null);
   const errorModal = useRef<ModalRef>(null);
   const [successTitle, setSuccessTitle] = useState('');
@@ -121,6 +127,37 @@ const ReceiptView: React.FC<{
           successModal.current && successModal.current.open();
         })
         .catch(() => errorModal.current && errorModal.current.open());
+    }
+  }
+
+  function addTip(): void {
+    const fields = [tipField.current && tipField.current.validate()];
+    if (fields.every(field => field)) {
+      const val = tipField.current && tipField.current.getValue();
+      if (val && receipt.id) {
+        const newTip = parseFloat(val.replace(',', '.'));
+        console.log(receipt.id);
+        updateTip(receipt.id, newTip);
+        setTip(newTip);
+        tipModal.current && tipModal.current.close();
+
+        // Save last 12 custom tip value
+        AsyncStorage.getItem('lastTips')
+          .then(value => {
+            const formattedTip = newTip.toFixed(2).toString();
+            if (!defaultTipValues.includes(formattedTip)) {
+              const lastAmounts = value ? JSON.parse(value) : [];
+              const amountsSet = [...new Set([formattedTip, ...lastAmounts])];
+              AsyncStorage.setItem(
+                'lastTips',
+                JSON.stringify(amountsSet.slice(0, 12)),
+              ).catch(console.error);
+            }
+          })
+          .catch(console.error);
+      } else {
+        errorModal.current && errorModal.current.open();
+      }
     }
   }
 
@@ -302,12 +339,12 @@ const ReceiptView: React.FC<{
                 </Text>
               </HStack>
 
-              <HStack display={receipt.tip > 0 ? 'flex' : 'none'}>
+              <HStack display={tip > 0 ? 'flex' : 'none'}>
                 <Text fontSize="md" fontWeight="bold">
                   {t<string>('invoice.tip')} :
                 </Text>
                 <Text ml={1} fontSize="md" fontWeight="bold" color="muted.600">
-                  {t('price', { price: receipt.tip.toFixed(2) })}
+                  {t('price', { price: tip.toFixed(2) })}
                 </Text>
               </HStack>
 
@@ -360,10 +397,22 @@ const ReceiptView: React.FC<{
               Screenshot
             </Button>
             <Button
+              onPress={() => tipModal.current && tipModal.current.open()}
+              maxW="200px"
+              mx={2}
+              mt={10}
+              shadow={4}
+              leftIcon={
+                <FontAwesome5Icon color="white" size={18} name="coins" />
+              }
+              colorScheme="lime">
+              {t<string>('invoice.addTip')}
+            </Button>
+            <Button
               onPress={() => navigation.navigate('menu')}
               maxW="200px"
               mx={2}
-              mt={20}
+              mt={10}
               shadow={4}
               leftIcon={
                 <FontAwesomeIcon color="white" size={18} name="chevron-left" />
@@ -391,6 +440,22 @@ const ReceiptView: React.FC<{
         <Text fontSize="md" textAlign="center">
           {t('exception.operationFailed')}
         </Text>
+      </Modal>
+      <Modal
+        ref={tipModal}
+        size="xl"
+        title={t('invoice.addTip')}
+        modalType="success"
+        action={async () => addTip()}
+        actionAutoClose={false}>
+        <Box h="230px">
+          <TipInput
+            ref={tipField}
+            label={t<string>('invoice.tip')}
+            value="0"
+            popoverPosition="bottom"
+          />
+        </Box>
       </Modal>
     </Box>
   );
