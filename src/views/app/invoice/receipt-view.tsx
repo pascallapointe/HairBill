@@ -149,7 +149,7 @@ const ReceiptView: React.FC<{
             width="400px"
             maxHeight={{ md: '940px', lg: '690px' }}
             pinchGestureEnabled={true}>
-            <VStack px={5} py={4} shadow={4} ref={receiptRef}>
+            <VStack px={5} py={4} ref={receiptRef}>
               <Center>
                 <Text fontSize="4xl" fontWeight="bold">
                   {t<string>('invoice.invoice')}
@@ -228,17 +228,6 @@ const ReceiptView: React.FC<{
               <Divider mb={2} bg="black" />
               {taxSettings.enabled ? (
                 <>
-                  <HStack
-                    mb={1}
-                    display={receipt.tip > 0 ? 'flex' : 'none'}
-                    justifyContent="space-between">
-                    <Text fontSize="md" fontWeight="bold" color="muted.500">
-                      {t<string>('invoice.tip')}
-                    </Text>
-                    <Text fontSize="md" fontWeight="bold" color="muted.600">
-                      {t('price', { price: receipt.tip.toFixed(2) })}
-                    </Text>
-                  </HStack>
                   <HStack justifyContent="space-between">
                     <Text fontSize="md" fontWeight="bold" color="muted.500">
                       {t<string>('invoice.subtotal')}
@@ -310,6 +299,15 @@ const ReceiptView: React.FC<{
                 </Text>
                 <Text ml={1} fontSize="md" fontWeight="bold" color="muted.600">
                   {t<string>('invoice.' + receipt.payment)}
+                </Text>
+              </HStack>
+
+              <HStack display={receipt.tip > 0 ? 'flex' : 'none'}>
+                <Text fontSize="md" fontWeight="bold">
+                  {t<string>('invoice.tip')} :
+                </Text>
+                <Text ml={1} fontSize="md" fontWeight="bold" color="muted.600">
+                  {t('price', { price: receipt.tip.toFixed(2) })}
                 </Text>
               </HStack>
 
