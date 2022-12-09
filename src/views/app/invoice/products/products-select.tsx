@@ -37,16 +37,17 @@ export type ProductSelectRef = {
 interface Props extends IFormControlProps {
   label: string;
   required?: boolean;
+  value?: ProductType[];
   selectBind: (products: ProductType[]) => void;
 }
 
 const ProductsSelect = forwardRef<ProductSelectRef, Props>(
-  ({ label, required = true, selectBind, ...props }, ref) => {
+  ({ label, required = true, value = [], selectBind, ...props }, ref) => {
     const { t } = useTranslation();
     const [init, setInit] = useState(true);
     const [view, setView] = useState<'selection' | 'options'>('selection');
     const [sectionList, setSectionList] = useState<ProductSectionMapType>({});
-    const [selected, setSelected] = useState<ProductType[]>([]);
+    const [selected, setSelected] = useState<ProductType[]>(value);
     const [error, setError] = useState(false);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
@@ -99,9 +100,9 @@ const ProductsSelect = forwardRef<ProductSelectRef, Props>(
         ? baseSchema.nonempty(t<string>('validation.required'))
         : baseSchema.nullable();
 
-      const value = productList === undefined ? selected : productList;
+      const v = productList === undefined ? selected : productList;
 
-      let result = schema.safeParse(value);
+      let result = schema.safeParse(v);
 
       setError(!result.success);
       setErrorMessages([]);

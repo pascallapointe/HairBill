@@ -26,8 +26,8 @@ import {
   defaultReceipt,
   getNextInvoiceNumber,
   InvoiceType,
+  updateInvoice,
 } from '@views/app/invoice/invoice.repository';
-import { NavigationProp, ParamListBase } from '@react-navigation/native';
 import ReceiptView from '@views/app/invoice/receipt-view';
 import {
   GeneralSettingsType,
@@ -38,14 +38,15 @@ import Total, { defaultAmount, TotalRef } from '@views/app/invoice/total/total';
 import { ProductType } from '@views/app/services/product/product.repository';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { defaultTipValues } from '@views/app/invoice/tip/list';
+import { NativeStackScreenProps } from 'react-native-screens/native-stack';
+import { NavigatorParamList } from '@views/app-navigation';
 
-interface Props {
-  navigation: NavigationProp<ParamListBase>;
-}
+interface Props extends NativeStackScreenProps<NavigatorParamList, 'invoice'> {}
 
-const InvoiceView: React.FC<Props> = ({ navigation }) => {
+const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
   const { t } = useTranslation();
   const [init, setInit] = useState(true);
+  const { invoice } = route.params;
   const [taxSettings, setTaxSettings] =
     useState<TaxSettingsType>(defaultTaxSettings);
   const [generalSettings, setGeneralSettings] = useState<GeneralSettingsType>(
@@ -67,12 +68,21 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
 
   useEffect(() => {
     if (init) {
+      if (invoice) {
+        navigation.setOptions({
+          // @ts-ignore
+          title: `HairBill - ${t('invoice.invoice')}# ${invoice.invoiceNumber}`,
+        });
+      }
       getGeneralSettings().then(val => val && setGeneralSettings(val));
       getNextInvoiceNumber().then(setInvoiceNum);
       getTaxSettings()
         .then(val => {
           if (val) {
             setTaxSettings(val);
+          }
+          if (invoice) {
+            totalRef.current && totalRef.current.calculate(invoice.products);
           }
           setInit(false);
         })
@@ -91,29 +101,58 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
     ];
     if (fields.every(field => field)) {
       setWait(true);
-      const r = addInvoice({
-        invoiceNumber: invoiceNum,
-        date: new Date().valueOf(),
-        client:
-          (clientField.current && clientField.current.getValue()) ??
-          defaultClient,
-        products:
-          (productsField.current && productsField.current.getValue()) ?? [],
-        tip: roundTo(
-          parseFloat(
-            (tipField.current &&
-              tipField.current.getValue().replace(',', '.')) ??
-              '0',
+      let r: InvoiceType;
+      if (invoice === null) {
+        r = addInvoice({
+          invoiceNumber: invoiceNum,
+          date: new Date().valueOf(),
+          client:
+            (clientField.current && clientField.current.getValue()) ??
+            defaultClient,
+          products:
+            (productsField.current && productsField.current.getValue()) ?? [],
+          tip: roundTo(
+            parseFloat(
+              (tipField.current &&
+                tipField.current.getValue().replace(',', '.')) ??
+                '0',
+            ),
+            2,
           ),
-          2,
-        ),
-        payment:
-          (paymentField.current && paymentField.current.getValue()) ??
-          'pending',
-        total: (totalRef.current && totalRef.current.getValue()) ?? {
-          ...defaultAmount,
-        },
-      });
+          payment:
+            (paymentField.current && paymentField.current.getValue()) ??
+            'pending',
+          total: (totalRef.current && totalRef.current.getValue()) ?? {
+            ...defaultAmount,
+          },
+        });
+      } else {
+        r = updateInvoice({
+          id: invoice.id,
+          invoiceNumber: invoice.invoiceNumber,
+          date: invoice.date,
+          client:
+            (clientField.current && clientField.current.getValue()) ??
+            defaultClient,
+          products:
+            (productsField.current && productsField.current.getValue()) ?? [],
+          tip: roundTo(
+            parseFloat(
+              (tipField.current &&
+                tipField.current.getValue().replace(',', '.')) ??
+                '0',
+            ),
+            2,
+          ),
+          payment:
+            (paymentField.current && paymentField.current.getValue()) ??
+            'pending',
+          total: (totalRef.current && totalRef.current.getValue()) ?? {
+            ...defaultAmount,
+          },
+        });
+      }
+
       setReceipt(r);
       setShowReceipt(true);
 
@@ -175,6 +214,7 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
                     ref={clientField}
                     label="Nom du client"
                     placeholder={t<string>('invoice.type3Chars')}
+                    value={invoice ? invoice.client : { ...defaultClient }}
                     schema={z
                       .string({
                         required_error: t<string>('validation.required'),
@@ -196,6 +236,7 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
                 <ProductsSelect
                   ref={productsField}
                   label={t<string>('invoice.selectedP&S')}
+                  value={invoice ? invoice.products : []}
                   selectBind={productsSelectHandler}
                 />
               </Box>
@@ -205,13 +246,19 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
                 </Heading>
                 <Divider mb={2} bg="violet.700" />
                 <View zIndex={10}>
-                  <TipInput ref={tipField} value="0" />
+                  <TipInput
+                    ref={tipField}
+                    value={invoice ? invoice.tip.toFixed(2).toString() : '0.00'}
+                  />
                 </View>
                 <Heading size="md" mt={2} color="violet.700">
                   {t<string>('invoice.payment')}
                 </Heading>
                 <Divider mb={2} bg="violet.700" />
-                <PayMethod ref={paymentField} />
+                <PayMethod
+                  ref={paymentField}
+                  value={invoice ? invoice.payment : 'pending'}
+                />
                 <Heading size="md" mt={2} color="violet.700">
                   {t<string>('invoice.total')}
                 </Heading>
@@ -245,8 +292,13 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
         receipt={receipt}
         generalSettings={generalSettings}
         taxSettings={taxSettings}
-        showAddTip={true}
-        closeAction={() => navigation.navigate('menu')}
+        showAddTip={invoice === null}
+        closeAction={
+          invoice === null
+            ? () => navigation.navigate('menu')
+            : () =>
+                navigation.navigate('lists', { refresh: new Date().valueOf() })
+        }
       />
     </Box>
   );

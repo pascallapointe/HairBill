@@ -71,7 +71,7 @@ const AmountList: React.FC<{
 
   useEffect(() => {
     const regex = new RegExp(
-      query === '0' ? '' : escapeRegExp(query.replace(',', '.')),
+      parseFloat(query) === 0 ? '' : escapeRegExp(query.replace(',', '.')),
       'gi',
     );
     setFiltered(amounts.filter(amount => amount.toString().match(regex)));

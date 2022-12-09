@@ -4,6 +4,8 @@ import { ClientType } from '@views/app/invoice/client/client.repository';
 import { ProductType } from '@views/app/services/product/product.repository';
 import { defaultClient } from '@views/app/invoice/client/client-input';
 import { defaultAmount } from '@views/app/invoice/total/total';
+import ErrorException from '@lib/error.exception';
+import { PaymentMethodType } from '@views/app/invoice/payment/pay-method';
 
 export type AmountType = {
   subtotal: number;
@@ -19,8 +21,10 @@ export type InvoiceType = {
   client: ClientType;
   products: ProductType[];
   tip: number;
-  payment: string | null;
+  payment: PaymentMethodType;
   total: AmountType;
+  updatedAt?: number | null;
+  deletedAt?: number | null;
 };
 
 export const defaultReceipt = {
@@ -30,7 +34,7 @@ export const defaultReceipt = {
   client: { ...defaultClient },
   products: [],
   tip: 0,
-  payment: null,
+  payment: 'pending' as PaymentMethodType,
   total: { ...defaultAmount },
 };
 
@@ -53,6 +57,8 @@ export async function getInvoices(): Promise<InvoiceType[]> {
       tip: doc.get('tip'),
       payment: doc.get('payment'),
       total: doc.get('total'),
+      updatedAt: doc.get<number | null>('updatedAt'),
+      deletedAt: doc.get<number | null>('deletedAt'),
     });
   });
 
@@ -95,7 +101,27 @@ export function addInvoice(invoice: InvoiceType): InvoiceType {
   return { ...invoice, id: doc.id };
 }
 
+export function updateInvoice(invoice: InvoiceType): InvoiceType {
+  if (!invoice.id) {
+    throw new ErrorException(
+      'badRequest',
+      'NULL id provided to update invoice.',
+    );
+  }
+  const doc = getInvoiceCollection().doc(invoice.id);
+
+  const updatedAt = new Date().valueOf();
+
+  doc.set({ ...invoice, updatedAt: updatedAt }).catch(console.error);
+  return { ...invoice };
+}
+
 export function updateTip(id: string, tip: number): void {
   const doc = getInvoiceCollection().doc(id);
   doc.update({ tip }).catch(console.error);
+}
+
+export function softDelete(id: string): void {
+  const doc = getInvoiceCollection().doc(id);
+  doc.update({ deletedAt: new Date().valueOf() }).catch(console.error);
 }

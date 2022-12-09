@@ -33,7 +33,7 @@ export const defaultClient = {
 
 interface Props extends IFormControlProps {
   label?: string;
-  value?: string;
+  value?: ClientType;
   placeholder?: string;
   size?: ThemeComponentSizeType<'Input'>;
   color?: string;
@@ -74,7 +74,7 @@ const ClientInput = forwardRef<ClientInputRef, Props>(
   (
     {
       label,
-      value = '',
+      value = { ...defaultClient },
       placeholder,
       size = 'md',
       color = 'light.600',
@@ -92,10 +92,7 @@ const ClientInput = forwardRef<ClientInputRef, Props>(
   ) => {
     // Input properties
     const [init, setInit] = useState(false);
-    const [_value, setValue] = useState<ClientType>({
-      ...defaultClient,
-      name: value,
-    });
+    const [_value, setValue] = useState<ClientType>(value);
     const inputField = useRef<React.ElementRef<HostComponent<unknown>>>(null);
     const [error, setError] = useState(false);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);

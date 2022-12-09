@@ -17,10 +17,15 @@ import {
   getGeneralSettings,
 } from '@views/app/options/general/general.repository';
 import InvoiceList from '@views/app/lists/invoices/list';
+import { NativeStackScreenProps } from 'react-native-screens/native-stack';
+import { NavigatorParamList } from '@views/app-navigation';
 
-const ListsView = () => {
+interface Props extends NativeStackScreenProps<NavigatorParamList, 'lists'> {}
+
+const ListsView: React.FC<Props> = ({ navigation, route }) => {
   const { t } = useTranslation();
   const [init, setInit] = useState(true);
+  const { refresh } = route.params;
   const [view, setView] = useState<'invoices' | 'reports'>('invoices');
   const showReceiptRef = useRef<ShowReceiptRefType>(null);
   const [taxSettings, setTaxSettings] =
@@ -46,6 +51,8 @@ const ListsView = () => {
       case 'invoices':
         return (
           <InvoiceList
+            refresh={refresh}
+            navigation={navigation}
             viewReceipt={
               showReceiptRef.current
                 ? showReceiptRef.current.viewReceipt

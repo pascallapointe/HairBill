@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Box,
@@ -116,6 +116,10 @@ const ReceiptView: React.FC<{
   const [successTitle, setSuccessTitle] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  useEffect(() => {
+    setTip(receipt.tip);
+  }, [receipt]);
+
   async function print(): Promise<void> {
     if (receiptRef.current?.capture) {
       const uri = await receiptRef.current.capture();
@@ -144,7 +148,6 @@ const ReceiptView: React.FC<{
       const val = tipField.current && tipField.current.getValue();
       if (val && receipt.id) {
         const newTip = parseFloat(val.replace(',', '.'));
-        console.log(receipt.id);
         updateTip(receipt.id, newTip);
         setTip(newTip);
         tipModal.current && tipModal.current.close();

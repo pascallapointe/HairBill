@@ -8,8 +8,17 @@ import InvoiceView from '@views/app/invoice/invoice-view';
 import ListsView from '@views/app/lists/lists-view';
 import ServicesView from '@views/app/services/services';
 import OptionsView from '@views/app/options/options-view';
+import { InvoiceType } from '@views/app/invoice/invoice.repository';
 
-const Stack = createNativeStackNavigator();
+export type NavigatorParamList = {
+  menu: undefined;
+  invoice: { invoice: InvoiceType | null };
+  lists: { refresh: number };
+  services: undefined;
+  options: undefined;
+};
+
+const Stack = createNativeStackNavigator<NavigatorParamList>();
 
 // Linear gradient support
 const config = {
@@ -33,11 +42,13 @@ const AppNavigation = () => {
             name="invoice"
             component={InvoiceView}
             options={{ title: `HairBill - ${t('invoice.title')}` }}
+            initialParams={{ invoice: null }}
           />
           <Stack.Screen
             name="lists"
             component={ListsView}
             options={{ title: `HairBill - ${t('home.listsReports')}` }}
+            initialParams={{ refresh: 0 }}
           />
           <Stack.Screen
             name="services"
