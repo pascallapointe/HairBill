@@ -2,6 +2,8 @@ import { CollectionReference } from '@type/firestore.type';
 import { getRootDocument } from '@lib/repository';
 import { ClientType } from '@views/app/invoice/client/client.repository';
 import { ProductType } from '@views/app/services/product/product.repository';
+import { defaultClient } from '@views/app/invoice/client/client-input';
+import { defaultAmount } from '@views/app/invoice/total/total';
 
 export type AmountType = {
   subtotal: number;
@@ -19,6 +21,17 @@ export type InvoiceType = {
   tip: number;
   payment: string | null;
   total: AmountType;
+};
+
+export const defaultReceipt = {
+  id: '',
+  invoiceNumber: '',
+  date: new Date().valueOf(),
+  client: { ...defaultClient },
+  products: [],
+  tip: 0,
+  payment: null,
+  total: { ...defaultAmount },
 };
 
 function getInvoiceCollection(): CollectionReference {

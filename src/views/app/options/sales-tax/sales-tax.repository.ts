@@ -26,6 +26,13 @@ export const defaultTaxSettings: TaxSettingsType = {
   taxB: 0,
 };
 
+export const defaultGeneralSettings = {
+  shopName: '',
+  phone: '',
+  employeeName: '',
+  address: '',
+};
+
 export async function getTaxSettings(): Promise<TaxSettingsType | undefined> {
   const doc = getRootDocument();
 

@@ -12,6 +12,7 @@ import ProductsSelect, {
   ProductSelectRef,
 } from '@views/app/invoice/products/products-select';
 import {
+  defaultGeneralSettings,
   defaultTaxSettings,
   getTaxSettings,
   TaxSettingsType,
@@ -22,6 +23,7 @@ import TipInput, { TipInputRef } from '@views/app/invoice/tip/tip-input';
 import ActionButton from '@components/action-button';
 import {
   addInvoice,
+  defaultReceipt,
   getNextInvoiceNumber,
   InvoiceType,
 } from '@views/app/invoice/invoice.repository';
@@ -36,24 +38,6 @@ import Total, { defaultAmount, TotalRef } from '@views/app/invoice/total/total';
 import { ProductType } from '@views/app/services/product/product.repository';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { defaultTipValues } from '@views/app/invoice/tip/list';
-
-const defaultReceipt = {
-  id: '',
-  invoiceNumber: '',
-  date: new Date().valueOf(),
-  client: { ...defaultClient },
-  products: [],
-  tip: 0,
-  payment: null,
-  total: { ...defaultAmount },
-};
-
-const defaultGeneralSettings = {
-  shopName: '',
-  phone: '',
-  employeeName: '',
-  address: '',
-};
 
 interface Props {
   navigation: NavigationProp<ParamListBase>;
@@ -73,7 +57,7 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
   const paymentField = useRef<PayMethodRef>(null);
   const totalRef = useRef<TotalRef>(null);
   const [invoiceNum, setInvoiceNum] = useState<string>('');
-  const [receipt, setReceipt] = useState<InvoiceType>(defaultReceipt);
+  const [receipt, setReceipt] = useState<InvoiceType>({ ...defaultReceipt });
   const [wait, setWait] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
 
@@ -256,16 +240,14 @@ const InvoiceView: React.FC<Props> = ({ navigation }) => {
           {errorMessage}
         </Text>
       </Modal>
-      {showReceipt ? (
-        <ReceiptView
-          navigation={navigation}
-          receipt={receipt}
-          generalSettings={generalSettings}
-          taxSettings={taxSettings}
-        />
-      ) : (
-        ''
-      )}
+      <ReceiptView
+        showReceipt={showReceipt}
+        receipt={receipt}
+        generalSettings={generalSettings}
+        taxSettings={taxSettings}
+        showAddTip={true}
+        closeAction={() => navigation.navigate('menu')}
+      />
     </Box>
   );
 };

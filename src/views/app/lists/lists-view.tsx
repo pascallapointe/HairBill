@@ -1,12 +1,61 @@
-import React, { useState } from 'react';
-import { Box, HStack, KeyboardAvoidingView } from 'native-base';
-import { Platform, SafeAreaView } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Box, HStack } from 'native-base';
+import { SafeAreaView } from 'react-native';
 import TabButton from '@components/tab-button';
 import { useTranslation } from 'react-i18next';
+import ShowReceiptView, {
+  ShowReceiptRefType,
+} from '@views/app/lists/invoices/show-receipt-view';
+import {
+  defaultGeneralSettings,
+  defaultTaxSettings,
+  getTaxSettings,
+  TaxSettingsType,
+} from '@views/app/options/sales-tax/sales-tax.repository';
+import {
+  GeneralSettingsType,
+  getGeneralSettings,
+} from '@views/app/options/general/general.repository';
+import InvoiceList from '@views/app/lists/invoices/list';
 
 const ListsView = () => {
   const { t } = useTranslation();
+  const [init, setInit] = useState(true);
   const [view, setView] = useState<'invoices' | 'reports'>('invoices');
+  const showReceiptRef = useRef<ShowReceiptRefType>(null);
+  const [taxSettings, setTaxSettings] =
+    useState<TaxSettingsType>(defaultTaxSettings);
+  const [generalSettings, setGeneralSettings] = useState<GeneralSettingsType>(
+    defaultGeneralSettings,
+  );
+
+  useEffect(() => {
+    if (init) {
+      getGeneralSettings().then(val => val && setGeneralSettings(val));
+      getTaxSettings().then(val => {
+        if (val) {
+          setTaxSettings(val);
+        }
+        setInit(false);
+      });
+    }
+  }, []);
+
+  function switchView() {
+    switch (view) {
+      case 'invoices':
+        return (
+          <InvoiceList
+            viewReceipt={
+              showReceiptRef.current
+                ? showReceiptRef.current.viewReceipt
+                : () => null
+            }
+          />
+        );
+    }
+  }
+
   return (
     <Box
       flex={1}
@@ -19,21 +68,24 @@ const ListsView = () => {
       }}>
       <SafeAreaView
         style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
-          <HStack justifyContent="center" space={4} mb={5}>
-            <TabButton
-              text={t<string>('invoice.invoices')}
-              action={() => setView('invoices')}
-              selected={view === 'invoices'}
-            />
-            <TabButton
-              text={t<string>('lists.reports')}
-              action={() => setView('reports')}
-              selected={view === 'reports'}
-            />
-          </HStack>
-        </KeyboardAvoidingView>
+        <HStack justifyContent="center" space={4} mb={5}>
+          <TabButton
+            text={t<string>('invoice.invoices')}
+            action={() => setView('invoices')}
+            selected={view === 'invoices'}
+          />
+          <TabButton
+            text={t<string>('lists.reports')}
+            action={() => setView('reports')}
+            selected={view === 'reports'}
+          />
+        </HStack>
+        {switchView()}
+        <ShowReceiptView
+          ref={showReceiptRef}
+          generalSettings={generalSettings}
+          taxSettings={taxSettings}
+        />
       </SafeAreaView>
     </Box>
   );

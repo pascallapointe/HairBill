@@ -26,7 +26,6 @@ import {
 import OctIcon from 'react-native-vector-icons/Octicons';
 import ViewShot from 'react-native-view-shot';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import { NavigationProp, ParamListBase } from '@react-navigation/native';
 import { CameraRoll } from '@react-native-camera-roll/camera-roll';
 import Modal, { ModalRef } from '@components/modal';
 import RNPrint from 'react-native-print';
@@ -90,11 +89,20 @@ const ProductList: React.FC<{ products: ProductType[] }> = ({ products }) => {
 };
 
 const ReceiptView: React.FC<{
+  showReceipt: boolean;
   receipt: InvoiceType;
   taxSettings: TaxSettingsType;
   generalSettings: GeneralSettingsType;
-  navigation: NavigationProp<ParamListBase>;
-}> = ({ receipt, taxSettings, generalSettings, navigation }) => {
+  closeAction: () => void;
+  showAddTip: boolean;
+}> = ({
+  showReceipt,
+  receipt,
+  taxSettings,
+  generalSettings,
+  closeAction,
+  showAddTip,
+}) => {
   const { t } = useTranslation();
   const [tip, setTip] = useState<number>(receipt.tip);
   const receiptRef = useRef<ViewShot>(null);
@@ -163,6 +171,7 @@ const ReceiptView: React.FC<{
 
   return (
     <Box
+      display={showReceipt ? 'flex' : 'none'}
       position="absolute"
       height="100%"
       w="100%"
@@ -397,6 +406,7 @@ const ReceiptView: React.FC<{
               Screenshot
             </Button>
             <Button
+              display={showAddTip ? 'flex' : 'none'}
               onPress={() => tipModal.current && tipModal.current.open()}
               maxW="200px"
               mx={2}
@@ -409,7 +419,7 @@ const ReceiptView: React.FC<{
               {t<string>('invoice.addTip')}
             </Button>
             <Button
-              onPress={() => navigation.navigate('menu')}
+              onPress={closeAction}
               maxW="200px"
               mx={2}
               mt={10}
@@ -418,7 +428,7 @@ const ReceiptView: React.FC<{
                 <FontAwesomeIcon color="white" size={18} name="chevron-left" />
               }
               colorScheme="muted">
-              {t<string>('goToMenu')}
+              {t<string>('done')}
             </Button>
           </Flex>
         </Box>
