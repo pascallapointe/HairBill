@@ -121,7 +121,12 @@ export function updateTip(id: string, tip: number): void {
   doc.update({ tip }).catch(console.error);
 }
 
-export function softDelete(id: string): void {
+export function softDelete(id: string, restore = false): void {
   const doc = getInvoiceCollection().doc(id);
-  doc.update({ deletedAt: new Date().valueOf() }).catch(console.error);
+
+  if (restore) {
+    doc.update({ deletedAt: null }).catch(console.error);
+  } else {
+    doc.update({ deletedAt: new Date().valueOf() }).catch(console.error);
+  }
 }

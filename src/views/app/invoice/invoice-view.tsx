@@ -150,6 +150,7 @@ const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
           total: (totalRef.current && totalRef.current.getValue()) ?? {
             ...defaultAmount,
           },
+          deletedAt: invoice.deletedAt ?? null,
         });
       }
 

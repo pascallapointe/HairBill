@@ -42,7 +42,7 @@ const Loading = () => {
 const Item: React.FC<{
   navigation: NativeStackNavigationProp<ParamListBase, 'lists'>;
   item: InvoiceType;
-  remove: (id: string) => void;
+  remove: (id: string, restore: boolean) => void;
   viewReceipt: (receipt: InvoiceType) => void;
 }> = ({ navigation, item, viewReceipt, remove }) => {
   return (
@@ -52,7 +52,13 @@ const Item: React.FC<{
         fontFamily="Menlo"
         fontSize="md"
         fontWeight="bold"
-        color="muted.500">
+        color={
+          item.deletedAt
+            ? 'red.500'
+            : item.updatedAt
+            ? 'purple.500'
+            : 'muted.500'
+        }>
         {item.invoiceNumber}
       </Text>
       <VStack ml={4} w="160px">
@@ -120,11 +126,17 @@ const Item: React.FC<{
           <Icon as={FontAwesome5Icon} name="pen" color="yellow.500" />
         </Button>
         <Button
-          onPress={() => (item.id ? remove(item.id) : null)}
+          onPress={() =>
+            item.id ? remove(item.id, item.deletedAt != null) : null
+          }
           ml={2}
           variant="outline"
           colorScheme="danger">
-          <Icon as={FontAwesome5Icon} name="trash" />
+          <Icon
+            as={FontAwesome5Icon}
+            name={item.deletedAt ? 'recycle' : 'trash'}
+            color={item.deletedAt ? 'lime.500' : 'muted.500'}
+          />
         </Button>
       </HStack>
     </HStack>
@@ -153,8 +165,8 @@ const InvoiceList: React.FC<Props> = ({ viewReceipt, navigation, refresh }) => {
     }
   }, [init, refresh]);
 
-  function remove(id: string): void {
-    softDelete(id);
+  function remove(id: string, restore = false): void {
+    softDelete(id, restore);
     // Force refresh
     setInit(true);
   }
