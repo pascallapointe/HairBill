@@ -360,6 +360,53 @@ const ReceiptView: React.FC<{
                 </Text>
               </HStack>
 
+              <HStack
+                mt={3}
+                display={
+                  receipt.updatedAt || receipt.deletedAt ? 'flex' : 'none'
+                }>
+                {receipt.deletedAt ? (
+                  <>
+                    <Text fontSize="md" fontWeight="bold" color="muted.500">
+                      {t<string>('invoice.deletedOn')} :
+                    </Text>
+                    <Text ml={1} fontSize="md" color="muted.500">
+                      {createTimestamp(new Date(receipt.deletedAt))}
+                    </Text>
+                  </>
+                ) : (
+                  ''
+                )}
+                {receipt.updatedAt && receipt.deletedAt === null ? (
+                  <>
+                    <Text fontSize="md" fontWeight="bold" color="muted.500">
+                      {t<string>('invoice.updatedOn')} :
+                    </Text>
+                    <Text ml={1} fontSize="md" color="muted.500">
+                      {createTimestamp(new Date(receipt.updatedAt))}
+                    </Text>
+                  </>
+                ) : (
+                  ''
+                )}
+              </HStack>
+              <HStack
+                display={
+                  (receipt.updatedAt &&
+                    receipt.updateNote.length &&
+                    !receipt.deletedAt) ||
+                  (receipt.deletedAt && receipt.deleteNote.length)
+                    ? 'flex'
+                    : 'none'
+                }>
+                <Text fontSize="md" fontWeight="bold" color="muted.500">
+                  Note :
+                </Text>
+                <Text ml={1} fontSize="md" color="muted.500">
+                  {receipt.deletedAt ? receipt.deleteNote : receipt.updateNote}
+                </Text>
+              </HStack>
+
               <Center>
                 <Text mt={5} fontSize="xl" fontWeight="bold" color="pink.500">
                   {t<string>('invoice.thankYou')} !
@@ -367,6 +414,18 @@ const ReceiptView: React.FC<{
               </Center>
             </VStack>
           </ScrollView>
+          <Box
+            display={receipt.deletedAt ? 'flex' : 'none'}
+            position="absolute"
+            h="150px"
+            w="410px"
+            top="240px"
+            zIndex={1000}
+            style={{ transform: [{ rotateZ: '45deg' }] }}>
+            <Text color="red.600" fontSize="100px" fontWeight="black">
+              {t<string>('invoice.deletedLabel')}
+            </Text>
+          </Box>
         </ViewShot>
         <Box justifyContent="center">
           <Flex
@@ -426,12 +485,10 @@ const ReceiptView: React.FC<{
               maxW="200px"
               mx={2}
               mt={10}
-              shadow={4}
-              leftIcon={
-                <FontAwesomeIcon color="white" size={18} name="chevron-left" />
-              }
+              leftIcon={<Icon as={FontAwesomeIcon} size={18} name="close" />}
+              variant="outline"
               colorScheme="muted">
-              {t<string>('done')}
+              {t<string>('close')}
             </Button>
           </Flex>
         </Box>
@@ -470,6 +527,22 @@ const ReceiptView: React.FC<{
           />
         </Box>
       </Modal>
+      <Button
+        onPress={closeAction}
+        position="absolute"
+        right="10px"
+        top="10px"
+        variant="ghost"
+        rounded={10}
+        colorScheme="fuchsia">
+        <Icon
+          size="30px"
+          left="2px"
+          as={FontAwesomeIcon}
+          name="close"
+          color="white"
+        />
+      </Button>
     </Box>
   );
 };

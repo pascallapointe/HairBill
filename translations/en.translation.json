@@ -6,7 +6,9 @@
   "save": "Save",
   "delete": "Delete",
   "cancel": "Cancel",
+  "close": "Close",
   "done": "Done",
+  "continue": "Continue",
   "change": "Change",
   "none": "None",
   "price": "${{price}}",
@@ -100,7 +102,14 @@
     "saved": "Invoice saved",
     "thankYou": "Thank You",
     "screenshotSaved": "Screenshot saved",
-    "screenshotSavedLibrary": "Screenshot saved to photo library"
+    "screenshotSavedLibrary": "Screenshot saved to photo library",
+    "updateNote": "Update note",
+    "updateNotePlaceholder": "Some details about applied changes...",
+    "deleteNote": "Delete note",
+    "deletedLabel": "Deleted",
+    "deleteNotePlaceholder": "Some details justifying removal...",
+    "deletedOn": "Deleted on",
+    "updatedOn": "Updated on"
   },
   "lists": {
     "title": "Lists & Reports",

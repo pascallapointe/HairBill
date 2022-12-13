@@ -1,5 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Center, Flex, FormControl, HStack, Text } from 'native-base';
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  FormControl,
+  HStack,
+  Text,
+} from 'native-base';
 import { useTranslation } from 'react-i18next';
 import SwitchBtn from '@components/form/switch';
 import TextInput, { InputRef } from '@components/form/text-input';
@@ -10,7 +18,6 @@ import {
 } from '@views/app/options/sales-tax/sales-tax.repository';
 import SkeletonView from '@views/app/options/sales-tax/skeleton-view';
 import { z } from 'zod';
-import ActionButton from '@components/action-button';
 import Modal, { ModalRef } from '@components/modal';
 
 const SalesTaxView = () => {
@@ -32,7 +39,6 @@ const SalesTaxView = () => {
   const [taxB, setTaxB] = useState<number>(0);
   const taxBNameField = useRef<InputRef>(null);
   const [taxBName, setTaxBName] = useState('');
-  const [wait, setWait] = useState<boolean>(false);
 
   // Modal
   const successModal = useRef<ModalRef>(null);
@@ -88,7 +94,7 @@ const SalesTaxView = () => {
     setTaxEnabled(settings.enabled);
   }
 
-  function save() {
+  async function save(): Promise<void> {
     const fields = [
       taxANumField.current && taxANumField.current.validate(),
       taxANameField.current && taxANameField.current.validate(),
@@ -98,7 +104,6 @@ const SalesTaxView = () => {
       !useBTax || (taxBField.current && taxBField.current.validate()),
     ];
     if (fields.every(field => field)) {
-      setWait(true);
       updateTaxSettings(getSettingsObj());
       successModal.current && successModal.current.open();
     }
@@ -276,19 +281,14 @@ const SalesTaxView = () => {
           />
         </HStack>
         <Center mt={4}>
-          <ActionButton
-            size="lg"
-            text={t<string>('save')}
-            action={save}
-            colorScheme="violet"
-            wait={wait}
-          />
+          <Button size="lg" onPress={save} colorScheme="violet">
+            {t<string>('save')}
+          </Button>
         </Center>
       </Box>
       <Modal
         ref={successModal}
         hideAction={true}
-        callback={() => setWait(false)}
         title={t<string>('modal.changeSaved')}>
         <Text fontSize="md" textAlign="center">
           {t<string>('modal.changeSaved')}
@@ -297,7 +297,6 @@ const SalesTaxView = () => {
       <Modal
         ref={errorModal}
         hideAction={true}
-        callback={() => setWait(false)}
         title={t('modal.defaultErrorTitle')}>
         <Text fontSize="md" textAlign="center">
           {t('modal.defaultErrorMessage')}

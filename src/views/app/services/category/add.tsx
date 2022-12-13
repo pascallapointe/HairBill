@@ -1,7 +1,6 @@
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react';
-import { VStack } from 'native-base';
+import { Button, VStack } from 'native-base';
 import TextInput, { InputRef } from '@components/form/text-input';
-import ActionButton from '@components/action-button';
 import { addCategory } from '@views/app/services/category/category.repository';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
@@ -14,12 +13,10 @@ const AddView: React.FC<Props> = ({ setParentView }) => {
   const { t } = useTranslation();
   const nameField = useRef<InputRef>(null);
   const [value, setValue] = useState('');
-  const [wait, setWait] = useState(false);
 
-  function add() {
+  async function add(): Promise<void> {
     const fields = [nameField.current && nameField.current.validate()];
     if (fields.every(field => field)) {
-      setWait(true);
       addCategory(value.trim());
       setParentView('list');
     }
@@ -45,13 +42,9 @@ const AddView: React.FC<Props> = ({ setParentView }) => {
             })
             .min(1, { message: t<string>('validation.min', { count: 1 }) })}
         />
-        <ActionButton
-          size="lg"
-          text={t('save')}
-          action={add}
-          wait={wait}
-          colorScheme="violet"
-        />
+        <Button size="lg" onPress={add} colorScheme="violet">
+          {t('save')}
+        </Button>
       </VStack>
     </>
   );

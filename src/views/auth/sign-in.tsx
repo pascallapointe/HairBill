@@ -14,7 +14,6 @@ import { useTranslation } from 'react-i18next';
 import ZocialIcon from 'react-native-vector-icons/Zocial';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import TextInput, { InputRef } from '@components/form/text-input';
-import ActionButton from '@components/action-button';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Modal, { ModalRef } from '@components/modal';
@@ -31,7 +30,6 @@ const SignInView: React.FC<Props> = ({ navigation }) => {
   const [defaultEmail, setDefaultEmail] = useState('');
   const passwordField = useRef<InputRef>(null);
   const [passwordValue, setPasswordValue] = useState('');
-  const [wait, setWait] = useState(false);
   const errorModal = useRef<ModalRef>(null);
   const emailCheckModal = useRef<ModalRef>(null);
 
@@ -42,8 +40,7 @@ const SignInView: React.FC<Props> = ({ navigation }) => {
       .catch(console.error);
   }, []);
 
-  function signIn() {
-    setWait(true);
+  async function signIn(): Promise<void> {
     const fields = [
       emailField.current && emailField.current.validate(),
       passwordField.current && passwordField.current.validate(),
@@ -67,13 +64,10 @@ const SignInView: React.FC<Props> = ({ navigation }) => {
           console.error(e);
           errorModal.current && errorModal.current.open();
         });
-    } else {
-      setWait(false);
     }
   }
 
   function signOut() {
-    setWait(false);
     auth().signOut().catch(console.error);
   }
 
@@ -132,14 +126,9 @@ const SignInView: React.FC<Props> = ({ navigation }) => {
                   secureTextEntry={true}
                   ref={passwordField}
                 />
-                <ActionButton
-                  m={2}
-                  size="lg"
-                  wait={wait}
-                  text={t('auth.signIn')}
-                  colorScheme="violet"
-                  action={signIn}
-                />
+                <Button m={2} size="lg" colorScheme="violet" onPress={signIn}>
+                  {t('auth.signIn')}
+                </Button>
               </VStack>
             </Card>
             <Text color="white" fontSize="md" fontWeight="bold">
@@ -156,8 +145,7 @@ const SignInView: React.FC<Props> = ({ navigation }) => {
           <Modal
             ref={errorModal}
             hideAction={true}
-            title={t('auth.authFailure.title')}
-            callback={() => setWait(false)}>
+            title={t('auth.authFailure.title')}>
             <Text fontSize="md" mb={3} textAlign="center">
               {t('auth.authFailure.message1')}
             </Text>

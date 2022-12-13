@@ -1,6 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { z, ZodLiteral } from 'zod';
-import { Box, Heading, KeyboardAvoidingView, Text, VStack } from 'native-base';
+import {
+  Box,
+  Button,
+  Heading,
+  KeyboardAvoidingView,
+  Text,
+  VStack,
+} from 'native-base';
 import { Platform, SafeAreaView } from 'react-native';
 import Card from '@components/card';
 import { useTranslation } from 'react-i18next';
@@ -8,7 +15,6 @@ import TextInput, { InputRef } from '@components/form/text-input';
 import ZocialIcon from 'react-native-vector-icons/Zocial';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import Modal, { ModalRef } from '@components/modal';
-import ActionButton from '@components/action-button';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { NavigationProp, ParamListBase } from '@react-navigation/native';
 
@@ -24,7 +30,6 @@ const RegisterView: React.FC<Props> = ({ navigation }) => {
   const [passwordValue, setPasswordValue] = useState('');
   const confirmField = useRef<InputRef>(null);
   const [confirmValue, setConfirmValue] = useState('');
-  const [wait, setWait] = useState(false);
 
   // Modals
   const successModal = useRef<ModalRef>(null);
@@ -48,8 +53,7 @@ const RegisterView: React.FC<Props> = ({ navigation }) => {
     return z.literal(val ?? '', { errorMap: customErrorMap });
   }
 
-  function signUp() {
-    setWait(true);
+  async function signUp(): Promise<void> {
     const fields = [
       emailField.current && emailField.current.validate(emailValue),
       passwordField.current && passwordField.current.validate(passwordValue),
@@ -73,8 +77,6 @@ const RegisterView: React.FC<Props> = ({ navigation }) => {
               errorModal.current && errorModal.current.open();
           }
         });
-    } else {
-      setWait(false);
     }
   }
 
@@ -142,14 +144,9 @@ const RegisterView: React.FC<Props> = ({ navigation }) => {
                   clear="while-editing"
                   secureTextEntry={true}
                 />
-                <ActionButton
-                  m={2}
-                  size="lg"
-                  wait={wait}
-                  text={t('auth.createAccount')}
-                  colorScheme="violet"
-                  action={signUp}
-                />
+                <Button m={2} size="lg" colorScheme="violet" onPress={signUp}>
+                  {t('auth.createAccount')}
+                </Button>
               </VStack>
             </Card>
           </VStack>
@@ -169,7 +166,6 @@ const RegisterView: React.FC<Props> = ({ navigation }) => {
           <Modal
             ref={usedEmailModal}
             hideAction={true}
-            callback={() => setWait(false)}
             title={t('auth.registerFailure.title')}>
             <Text fontSize="md" textAlign="center">
               {t('auth.registerFailure.usedEmail')}
@@ -178,7 +174,6 @@ const RegisterView: React.FC<Props> = ({ navigation }) => {
           <Modal
             ref={errorModal}
             hideAction={true}
-            callback={() => setWait(false)}
             title={t('auth.registerFailure.title')}>
             <Text fontSize="md" textAlign="center">
               {t('modal.defaultErrorMessage')}

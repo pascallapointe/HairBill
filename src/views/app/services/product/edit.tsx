@@ -5,10 +5,9 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Icon, Text, VStack } from 'native-base';
+import { Button, Icon, Text, VStack } from 'native-base';
 import TextInput, { InputRef } from '@components/form/text-input';
 import Modal, { ModalRef } from '@components/modal';
-import ActionButton from '@components/action-button';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import {
@@ -40,7 +39,6 @@ const EditView: React.FC<Props> = ({ product, setParentView }) => {
   const [category, setCategory] = useState<CategoryType | null>(
     product?.category ?? null,
   );
-  const [wait, setWait] = useState(false);
   const errorModal = useRef<ModalRef>(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [categories, setCategories] = useState<CategoryType[]>([]);
@@ -54,14 +52,13 @@ const EditView: React.FC<Props> = ({ product, setParentView }) => {
       });
   }, []);
 
-  function edit() {
+  async function edit(): Promise<void> {
     const fields = [
       nameField.current && nameField.current.validate(),
       priceField.current && priceField.current.validate(),
       categoryField.current && categoryField.current.validate(),
     ];
     if (fields.every(field => field)) {
-      setWait(true);
       if (product) {
         updateProduct({
           id: product.id,
@@ -133,18 +130,13 @@ const EditView: React.FC<Props> = ({ product, setParentView }) => {
           label={t('services.category')}
           options={categories}
         />
-        <ActionButton
-          size="lg"
-          text={t('save')}
-          action={edit}
-          wait={wait}
-          colorScheme="violet"
-        />
+        <Button size="lg" onPress={edit} colorScheme="violet">
+          {t('save')}
+        </Button>
       </VStack>
       <Modal
         ref={errorModal}
         hideAction={true}
-        callback={() => setWait(false)}
         title={t('exception.operationFailed')}
         modalType="error">
         <Text fontSize="md" textAlign="center">

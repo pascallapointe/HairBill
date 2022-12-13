@@ -1,5 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Center, Divider, Heading, Stack, Text, View } from 'native-base';
+import {
+  Box,
+  Button,
+  Center,
+  Divider,
+  Heading,
+  Stack,
+  Text,
+  View,
+} from 'native-base';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native';
 import Card from '@components/card';
@@ -20,13 +29,13 @@ import {
 import Modal, { ModalRef } from '@components/modal';
 import { roundTo } from '@lib/utils';
 import TipInput, { TipInputRef } from '@views/app/invoice/tip/tip-input';
-import ActionButton from '@components/action-button';
 import {
   addInvoice,
   defaultReceipt,
   getNextInvoiceNumber,
   InvoiceType,
   updateInvoice,
+  updateNote,
 } from '@views/app/invoice/invoice.repository';
 import ReceiptView from '@views/app/invoice/receipt-view';
 import {
@@ -40,6 +49,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { defaultTipValues } from '@views/app/invoice/tip/list';
 import { NativeStackScreenProps } from 'react-native-screens/native-stack';
 import { NavigatorParamList } from '@views/app-navigation';
+import TextAreaInput, { TextAreaRef } from '@components/form/text-area-input';
 
 interface Props extends NativeStackScreenProps<NavigatorParamList, 'invoice'> {}
 
@@ -56,13 +66,14 @@ const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
   const productsField = useRef<ProductSelectRef>(null);
   const tipField = useRef<TipInputRef>(null);
   const paymentField = useRef<PayMethodRef>(null);
+  const updateField = useRef<TextAreaRef>(null);
   const totalRef = useRef<TotalRef>(null);
   const [invoiceNum, setInvoiceNum] = useState<string>('');
   const [receipt, setReceipt] = useState<InvoiceType>({ ...defaultReceipt });
-  const [wait, setWait] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
 
   // Modals
+  const updateModal = useRef<ModalRef>(null);
   const errorModal = useRef<ModalRef>(null);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -93,14 +104,13 @@ const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
     }
   }, []);
 
-  function save() {
+  async function save(): Promise<void> {
     const fields = [
       clientField.current && clientField.current.validate(),
       productsField.current && productsField.current.validate(),
       tipField.current && tipField.current.validate(),
     ];
     if (fields.every(field => field)) {
-      setWait(true);
       let r: InvoiceType;
       if (invoice === null) {
         r = addInvoice({
@@ -125,6 +135,8 @@ const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
           total: (totalRef.current && totalRef.current.getValue()) ?? {
             ...defaultAmount,
           },
+          updateNote: '',
+          deleteNote: '',
         });
       } else {
         r = updateInvoice({
@@ -150,12 +162,19 @@ const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
           total: (totalRef.current && totalRef.current.getValue()) ?? {
             ...defaultAmount,
           },
+          updatedAt: invoice.updatedAt ?? null,
+          updateNote: invoice.updateNote ?? '',
           deletedAt: invoice.deletedAt ?? null,
+          deleteNote: invoice.deleteNote ?? '',
         });
       }
 
       setReceipt(r);
-      setShowReceipt(true);
+      if (invoice === null) {
+        setShowReceipt(true);
+      } else {
+        updateModal.current && updateModal.current.open();
+      }
 
       // Save last 12 custom tip value
       AsyncStorage.getItem('lastTips')
@@ -171,6 +190,12 @@ const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
           }
         })
         .catch(console.error);
+    }
+  }
+
+  function saveUpdateNote(): void {
+    if (invoice !== null && invoice.id && updateField.current) {
+      updateNote(invoice.id, updateField.current.getValue());
     }
   }
 
@@ -268,13 +293,9 @@ const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
               </Box>
             </Stack>
             <Center>
-              <ActionButton
-                mt={2}
-                wait={wait}
-                colorScheme="violet"
-                text={t<string>('save')}
-                action={save}
-              />
+              <Button mt={2} colorScheme="violet" onPress={save}>
+                {t<string>('save')}
+              </Button>
             </Center>
           </Box>
         </Card>
@@ -287,6 +308,23 @@ const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
         <Text fontSize="md" textAlign="center">
           {errorMessage}
         </Text>
+      </Modal>
+      <Modal
+        ref={updateModal}
+        action={saveUpdateNote}
+        hideClose={true}
+        outClick={false}
+        actionBtnText={t<string>('continue')}
+        title={t('invoice.updateNote')}
+        callback={() => setShowReceipt(true)}
+        modalType="warning">
+        <TextAreaInput
+          ref={updateField}
+          required={false}
+          label="Note"
+          value={invoice !== null ? invoice.updateNote : ''}
+          placeholder={t<string>('invoice.updateNotePlaceholder')}
+        />
       </Modal>
       <ReceiptView
         showReceipt={showReceipt}

@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Center, Stack, Text } from 'native-base';
+import { Box, Button, Center, Stack, Text } from 'native-base';
 import { z } from 'zod';
 import TextInput, { InputRef } from '@components/form/text-input';
 import { useTranslation } from 'react-i18next';
 import Modal, { ModalRef } from '@components/modal';
-import ActionButton from '@components/action-button';
 import TextAreaInput from '@components/form/text-area-input';
 import SkeletonView from '@views/app/options/general/skeleton-view';
 import {
@@ -16,7 +15,6 @@ import {
 const GeneralView = () => {
   const { t } = useTranslation();
   const [init, setInit] = useState(true);
-  const [wait, setWait] = useState<boolean>(false);
   const shopNameField = useRef<InputRef>(null);
   const [shopName, setShopName] = useState('');
   const phoneField = useRef<InputRef>(null);
@@ -60,7 +58,7 @@ const GeneralView = () => {
     setAddress(settings.address);
   }
 
-  function save() {
+  async function save(): Promise<void> {
     const fields = [
       shopNameField.current && shopNameField.current.validate(),
       phoneField.current && phoneField.current.validate(),
@@ -68,7 +66,6 @@ const GeneralView = () => {
       addressField.current && addressField.current.validate(),
     ];
     if (fields.every(field => field)) {
-      setWait(true);
       updateGeneralSettings(getSettingsObj());
       successModal.current && successModal.current.open();
     }
@@ -156,18 +153,13 @@ const GeneralView = () => {
       </Stack>
 
       <Center mt={4}>
-        <ActionButton
-          size="lg"
-          text={t<string>('save')}
-          action={save}
-          colorScheme="violet"
-          wait={wait}
-        />
+        <Button size="lg" onPress={save} colorScheme="violet">
+          {t<string>('save')}
+        </Button>
       </Center>
       <Modal
         ref={successModal}
         hideAction={true}
-        callback={() => setWait(false)}
         title={t<string>('modal.changeSaved')}>
         <Text fontSize="md" textAlign="center">
           {t<string>('modal.changeSaved')}
@@ -176,7 +168,6 @@ const GeneralView = () => {
       <Modal
         ref={errorModal}
         hideAction={true}
-        callback={() => setWait(false)}
         title={t('modal.defaultErrorTitle')}>
         <Text fontSize="md" textAlign="center">
           {t('modal.defaultErrorMessage')}

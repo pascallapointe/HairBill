@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
 import { Button, IButtonProps } from 'native-base';
 import { useTranslation } from 'react-i18next';
@@ -6,28 +6,40 @@ import { useTranslation } from 'react-i18next';
 interface Props extends IButtonProps {
   text: string;
   icon?: ReactElement;
-  wait?: boolean;
   customStyle?: StyleProp<ViewStyle>;
-  action: () => void;
+  action: () => Promise<void>;
 }
 
 const ActionButton: React.FC<React.PropsWithChildren<Props>> = ({
   text,
   icon,
-  wait = false,
   customStyle,
-  action = () => null,
+  action,
   ...props
 }) => {
   const { t } = useTranslation();
+  const [wait, setWait] = useState(false);
+
+  useEffect(() => {
+    if (wait) {
+      action()
+        .catch(console.error)
+        .finally(() => setWait(false));
+    }
+  }, [wait]);
+
+  function triggerAction(): void {
+    setWait(true);
+  }
+
   return (
     <Button
       isLoading={wait}
-      onPress={action}
+      onPress={triggerAction}
       startIcon={icon}
       style={customStyle}
       shadow={5}
-      isLoadingText={t('waitButton')}
+      isLoadingText={t<string>('waitButton')}
       {...props}>
       {text}
     </Button>

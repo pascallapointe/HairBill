@@ -17,7 +17,7 @@ import { NativeSyntheticEvent, TextInputFocusEventData } from 'react-native';
 import type { ThemeComponentSizeType } from 'native-base/lib/typescript/components/types';
 
 interface Props extends IFormControlProps {
-  bindValue: (val: any) => void;
+  bindValue?: (val: any) => void;
   label?: string;
   value?: string;
   placeholder?: string;
@@ -36,10 +36,11 @@ interface Props extends IFormControlProps {
   icon?: JSX.Element;
 }
 
-export type InputRef = {
+export type TextAreaRef = {
   validate: (val?: string) => void;
   clearValue: () => void;
   updateSchema: (newSchema: ZodType) => void;
+  getValue: () => string;
 };
 
 const InputLabel: React.FC<{
@@ -63,7 +64,7 @@ const InputIcon: React.FC<{ icon?: JSX.Element }> = ({ icon }) => {
   return null;
 };
 
-const TextAreaInput = forwardRef<InputRef, Props>(
+const TextAreaInput = forwardRef<TextAreaRef, Props>(
   (
     {
       label,
@@ -104,7 +105,9 @@ const TextAreaInput = forwardRef<InputRef, Props>(
     // Re-render component if prop 'value' change
     useEffect(() => {
       setValue(value);
-      bindValue(value);
+      if (bindValue) {
+        bindValue(value);
+      }
     }, [value]);
 
     function initAndValidate(
@@ -135,11 +138,22 @@ const TextAreaInput = forwardRef<InputRef, Props>(
       return result.success;
     }
 
-    useImperativeHandle(ref, () => ({ validate, clearValue, updateSchema }));
+    function getValue(): string {
+      return _value;
+    }
+
+    useImperativeHandle(ref, () => ({
+      validate,
+      clearValue,
+      updateSchema,
+      getValue,
+    }));
 
     function handleChange(val: string) {
       setValue(val);
-      bindValue(val);
+      if (bindValue) {
+        bindValue(val);
+      }
       if (init && validation) {
         validate(val);
       }
@@ -147,7 +161,9 @@ const TextAreaInput = forwardRef<InputRef, Props>(
 
     function clearValue() {
       setValue('');
-      bindValue('');
+      if (bindValue) {
+        bindValue('');
+      }
     }
 
     function updateSchema(newSchema: ZodType) {

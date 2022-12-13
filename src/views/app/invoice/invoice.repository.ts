@@ -25,6 +25,8 @@ export type InvoiceType = {
   total: AmountType;
   updatedAt?: number | null;
   deletedAt?: number | null;
+  updateNote: string;
+  deleteNote: string;
 };
 
 export const defaultReceipt = {
@@ -36,6 +38,8 @@ export const defaultReceipt = {
   tip: 0,
   payment: 'pending' as PaymentMethodType,
   total: { ...defaultAmount },
+  updateNote: '',
+  deleteNote: '',
 };
 
 function getInvoiceCollection(): CollectionReference {
@@ -59,6 +63,8 @@ export async function getInvoices(): Promise<InvoiceType[]> {
       total: doc.get('total'),
       updatedAt: doc.get<number | null>('updatedAt'),
       deletedAt: doc.get<number | null>('deletedAt'),
+      updateNote: doc.get<string>('updateNote') ?? '',
+      deleteNote: doc.get<string>('deleteNote') ?? '',
     });
   });
 
@@ -119,6 +125,16 @@ export function updateInvoice(invoice: InvoiceType): InvoiceType {
 export function updateTip(id: string, tip: number): void {
   const doc = getInvoiceCollection().doc(id);
   doc.update({ tip }).catch(console.error);
+}
+
+export function updateNote(id: string, text: string): void {
+  const doc = getInvoiceCollection().doc(id);
+  doc.update({ updateNote: text }).catch(console.error);
+}
+
+export function deleteNote(id: string, text: string): void {
+  const doc = getInvoiceCollection().doc(id);
+  doc.update({ deleteNote: text }).catch(console.error);
 }
 
 export function softDelete(id: string, restore = false): void {

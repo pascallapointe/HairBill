@@ -3,16 +3,14 @@ import React, {
   PropsWithChildren,
   ReactNode,
   useImperativeHandle,
-  useState,
 } from 'react';
 import { Modal as NBModal, Button, IModalProps } from 'native-base';
 import { StyleProp, ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import ActionButton from '@components/action-button';
 
 interface Props extends IModalProps {
   title: string;
-  action?: () => Promise<any>; // Customizable action. Modal must be close explicitly
+  action?: () => any; // Customizable action. Modal must be close explicitly
   actionAutoClose?: boolean;
   callback?: () => void; // Always called on modal close
   actionBtnText?: string;
@@ -64,7 +62,6 @@ const Modal = forwardRef<ModalRef, PropsWithChildren<Props>>(
   ) => {
     const { t } = useTranslation();
     const [_isOpen, setIsOpen] = React.useState(false);
-    const [wait, setWait] = useState(false);
 
     const open = () => setIsOpen(true);
     const close = () => {
@@ -72,21 +69,16 @@ const Modal = forwardRef<ModalRef, PropsWithChildren<Props>>(
         callback();
       }
       setIsOpen(false);
-      setWait(false);
     };
     const triggerAction = async () => {
-      setWait(true);
       if (action) {
         await action();
-        setWait(false);
       }
       if (actionAutoClose) {
         close();
       }
     };
     useImperativeHandle(ref, () => ({ open, close }));
-
-    const cancelRef = React.useRef(null);
 
     return (
       <NBModal
@@ -109,19 +101,17 @@ const Modal = forwardRef<ModalRef, PropsWithChildren<Props>>(
                 display={hideClose ? 'none' : 'flex'}
                 variant="outline"
                 colorScheme="coolGray"
-                onPress={close}
-                ref={cancelRef}>
+                onPress={close}>
                 {closeBtnText || t('modal.defaultCloseText')}
               </Button>
-              <ActionButton
+              <Button
                 minW="80px"
                 display={hideAction ? 'none' : 'flex'}
-                text={actionBtnText || t('modal.defaultActionText')}
                 colorScheme="violet"
                 style={actionBtnStyles}
-                wait={wait}
-                action={triggerAction}
-              />
+                onPress={triggerAction}>
+                {actionBtnText || t('modal.defaultActionText')}
+              </Button>
             </Button.Group>
           </NBModal.Footer>
         </NBModal.Content>

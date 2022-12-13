@@ -6,7 +6,9 @@
   "save": "Enregistrer",
   "delete": "Supprimer",
   "cancel": "Annuler",
+  "close": "Fermer",
   "done": "Terminer",
+  "continue": "Continuer",
   "change": "Changer",
   "none": "Aucun",
   "price": "{{price}}$",
@@ -99,7 +101,14 @@
     "saved": "Facture sauvegardé",
     "thankYou": "Merci",
     "screenshotSaved": "Capture écran sauvegardée",
-    "screenshotSavedLibrary": "Capture écran sauvegardée dans l'album photo"
+    "screenshotSavedLibrary": "Capture écran sauvegardée dans l'album photo",
+    "updateNote": "Note de mise à jour",
+    "updateNotePlaceholder": "Quelques détails à propos des changements appliqués...",
+    "deleteNote": "Note de suppression",
+    "deletedLabel": "Annulée",
+    "deleteNotePlaceholder": "Quelques détails justifiant le retrait...",
+    "deletedOn": "Annulée le",
+    "updatedOn": "Modifiée le"
   },
   "lists": {
     "title": "Listes & Rapports",

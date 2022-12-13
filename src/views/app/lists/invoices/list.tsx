@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
+  deleteNote,
   getInvoices,
   InvoiceType,
   softDelete,
 } from '@views/app/invoice/invoice.repository';
 import {
+  Box,
   Button,
   FlatList,
   HStack,
@@ -20,6 +22,8 @@ import Card from '@components/card';
 import { useTranslation } from 'react-i18next';
 import { ParamListBase } from '@react-navigation/native';
 import { NativeStackNavigationProp } from 'react-native-screens/src/native-stack/types';
+import TextAreaInput, { TextAreaRef } from '@components/form/text-area-input';
+import Modal, { ModalRef } from '@components/modal';
 
 const Loading = () => {
   return (
@@ -47,32 +51,36 @@ const Item: React.FC<{
 }> = ({ navigation, item, viewReceipt, remove }) => {
   return (
     <HStack py={2} borderBottomWidth={1} borderColor="muted.300">
-      <Text
-        w="80px"
-        fontFamily="Menlo"
-        fontSize="md"
-        fontWeight="bold"
-        color={
-          item.deletedAt
-            ? 'red.500'
-            : item.updatedAt
-            ? 'purple.500'
-            : 'muted.500'
-        }>
-        {item.invoiceNumber}
-      </Text>
-      <VStack ml={4} w="160px">
-        <Text
-          fontFamily="Menlo"
-          fontSize="md"
-          fontWeight="bold"
-          color="muted.500">
-          {createTimestamp(new Date(item.date))}
-        </Text>
+      <VStack w="240px">
+        <HStack>
+          <Text
+            w="80px"
+            fontFamily="Menlo"
+            fontSize="md"
+            fontWeight="bold"
+            color={
+              item.deletedAt
+                ? 'red.500'
+                : item.updatedAt
+                ? 'purple.500'
+                : 'muted.500'
+            }>
+            {item.invoiceNumber}
+          </Text>
+          <Text
+            ml={4}
+            w="160px"
+            fontFamily="Menlo"
+            fontSize="md"
+            fontWeight="bold"
+            color="muted.500">
+            {createTimestamp(new Date(item.date))}
+          </Text>
+        </HStack>
         {item.updatedAt && !item.deletedAt ? (
           <Text
             fontFamily="Menlo"
-            fontSize="xs"
+            fontSize="sm"
             fontWeight="bold"
             color="purple.500">
             Mod: {createTimestamp(new Date(item.updatedAt))}
@@ -83,7 +91,7 @@ const Item: React.FC<{
         {item.deletedAt ? (
           <Text
             fontFamily="Menlo"
-            fontSize="xs"
+            fontSize="sm"
             fontWeight="bold"
             color="red.500">
             Del: {createTimestamp(new Date(item.deletedAt))}
@@ -91,7 +99,23 @@ const Item: React.FC<{
         ) : (
           ''
         )}
+        <Box
+          flexDirection="row"
+          display={
+            (item.updatedAt && item.updateNote.length && !item.deletedAt) ||
+            (item.deletedAt && item.deleteNote.length)
+              ? 'flex'
+              : 'none'
+          }>
+          <Text fontWeight="bold" color="muted.500">
+            Note:
+          </Text>
+          <Text ml={1} color="muted.500">
+            {item.deletedAt ? item.deleteNote : item.updateNote}
+          </Text>
+        </Box>
       </VStack>
+
       <VStack ml={4} w={{ md: '210px', lg: '200px' }}>
         <Text
           isTruncated={true}
@@ -110,13 +134,18 @@ const Item: React.FC<{
           {item.client.phone.length ? item.client.phone : ' '}
         </Text>
       </VStack>
-      <HStack ml="auto">
+      <HStack ml="auto" maxH="45px">
         <Button
           onPress={() => viewReceipt(item)}
           ml={4}
           variant="outline"
           colorScheme="amber">
-          <Icon as={FontAwesome5Icon} name="receipt" color="violet.400" />
+          <Icon
+            as={FontAwesome5Icon}
+            left="2px"
+            name="receipt"
+            color="violet.400"
+          />
         </Button>
         <Button
           onPress={() => navigation.navigate('invoice', { invoice: item })}
@@ -133,6 +162,7 @@ const Item: React.FC<{
           variant="outline"
           colorScheme="danger">
           <Icon
+            left={item.deletedAt != null ? '0px' : '1px'}
             as={FontAwesome5Icon}
             name={item.deletedAt ? 'recycle' : 'trash'}
             color={item.deletedAt ? 'lime.500' : 'muted.500'}
@@ -154,6 +184,11 @@ const InvoiceList: React.FC<Props> = ({ viewReceipt, navigation, refresh }) => {
   const [init, setInit] = useState(true);
   const [invoices, setInvoices] = useState<InvoiceType[]>([]);
 
+  // Modal
+  const deleteModal = useRef<ModalRef>(null);
+  const [deleteTarget, setDeleteTarget] = useState<string>('');
+  const deleteNoteField = useRef<TextAreaRef>(null);
+
   useEffect(() => {
     if (init || refresh !== 0) {
       getInvoices()
@@ -167,6 +202,19 @@ const InvoiceList: React.FC<Props> = ({ viewReceipt, navigation, refresh }) => {
 
   function remove(id: string, restore = false): void {
     softDelete(id, restore);
+    if (!restore) {
+      setDeleteTarget(id);
+      deleteModal.current && deleteModal.current.open();
+    } else {
+      // Force refresh
+      setInit(true);
+    }
+  }
+
+  function saveRemoveNote() {
+    if (deleteTarget.length && deleteNoteField.current) {
+      deleteNote(deleteTarget, deleteNoteField.current.getValue());
+    }
     // Force refresh
     setInit(true);
   }
@@ -175,8 +223,8 @@ const InvoiceList: React.FC<Props> = ({ viewReceipt, navigation, refresh }) => {
     return (
       <Card width="2xl" title={t<string>('invoice.invoices')}>
         <ScrollView maxHeight={{ md: '760px', lg: '520px' }}>
-          {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map(() => (
-            <Loading />
+          {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((v, i) => (
+            <Loading key={i} />
           ))}
         </ScrollView>
       </Card>
@@ -192,6 +240,7 @@ const InvoiceList: React.FC<Props> = ({ viewReceipt, navigation, refresh }) => {
         data={invoices}
         renderItem={({ item }) => (
           <Item
+            key={item.id}
             navigation={navigation}
             remove={remove}
             item={item}
@@ -199,6 +248,21 @@ const InvoiceList: React.FC<Props> = ({ viewReceipt, navigation, refresh }) => {
           />
         )}
       />
+      <Modal
+        ref={deleteModal}
+        action={saveRemoveNote}
+        hideClose={true}
+        outClick={false}
+        actionBtnText={t<string>('continue')}
+        title={t('invoice.deleteNote')}
+        modalType="warning">
+        <TextAreaInput
+          ref={deleteNoteField}
+          required={false}
+          label="Note"
+          placeholder={t<string>('invoice.deleteNotePlaceholder')}
+        />
+      </Modal>
     </Card>
   );
 };
