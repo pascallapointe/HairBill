@@ -14,7 +14,7 @@
   "price": "${{price}}",
   "general": "General",
   "tax": "Tax",
-
+  "noResult": "No result",
   "validation": {
     "required": "Required",
     "stringType": "Required",

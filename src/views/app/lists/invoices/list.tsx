@@ -314,23 +314,32 @@ const InvoiceList: React.FC<Props> = ({ viewReceipt, navigation, refresh }) => {
       width="2xl"
       title={t<string>('invoice.invoices')}
       options={<SearchBar search={search} />}>
-      <FlatList
-        initialNumToRender={14}
-        mb={2}
-        maxHeight={{ md: '760px', lg: '520px' }}
-        data={invoices}
-        renderItem={({ item }) => (
-          <Item
-            key={item.id}
-            navigation={navigation}
-            remove={remove}
-            item={item}
-            viewReceipt={viewReceipt}
-          />
-        )}
-        onEndReached={query.length ? loadMoreSearch : loadMore}
-        onEndReachedThreshold={1.5}
-      />
+      {invoices.length ? (
+        <FlatList
+          initialNumToRender={14}
+          mb={2}
+          maxHeight={{ md: '760px', lg: '520px' }}
+          data={invoices}
+          renderItem={({ item }) => (
+            <Item
+              key={item.id}
+              navigation={navigation}
+              remove={remove}
+              item={item}
+              viewReceipt={viewReceipt}
+            />
+          )}
+          onEndReached={query.length ? loadMoreSearch : loadMore}
+          onEndReachedThreshold={1.5}
+        />
+      ) : (
+        <Box p={20} alignItems="center">
+          <Text fontSize="lg" fontWeight="bold" color="muted.400">
+            {t<string>('noResult')}
+          </Text>
+        </Box>
+      )}
+
       <Modal
         ref={deleteModal}
         action={saveRemoveNote}

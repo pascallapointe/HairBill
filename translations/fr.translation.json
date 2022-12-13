@@ -14,7 +14,7 @@
   "price": "{{price}}$",
   "general": "Général",
   "tax": "Taxe",
-
+  "noResult": "Aucun résultat",
   "validation": {
     "required": "Obligatoire",
     "stringType": "Obligatoire",
