@@ -6,6 +6,9 @@ import { defaultClient } from '@views/app/invoice/client/client-input';
 import { defaultAmount } from '@views/app/invoice/total/total';
 import ErrorException from '@lib/error.exception';
 import { PaymentMethodType } from '@views/app/invoice/payment/pay-method';
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+
+export const RESULT_LIMIT = 40;
 
 export type AmountType = {
   subtotal: number;
@@ -46,9 +49,9 @@ function getInvoiceCollection(): CollectionReference {
   return getRootDocument().collection('invoices');
 }
 
-export async function getInvoices(): Promise<InvoiceType[]> {
-  let result = await getInvoiceCollection().orderBy('date', 'desc').get();
-
+function invoicesToArray(
+  result: FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>,
+) {
   const invoices: InvoiceType[] = [];
 
   result.forEach(doc => {
@@ -69,6 +72,52 @@ export async function getInvoices(): Promise<InvoiceType[]> {
   });
 
   return invoices;
+}
+
+export async function getInvoices(afterDate?: number): Promise<InvoiceType[]> {
+  let query = getInvoiceCollection()
+    .orderBy('date', 'desc')
+    .limit(RESULT_LIMIT);
+
+  if (afterDate) {
+    query = query.startAfter(afterDate);
+  }
+
+  let result = await query.get();
+
+  return invoicesToArray(result);
+}
+
+export async function getFilteredInvoices(
+  queryString: string,
+  afterDate?: number,
+): Promise<InvoiceType[]> {
+  let query = (field: string, order: 'asc' | 'desc') =>
+    getInvoiceCollection()
+      .where(field, '>=', queryString)
+      .where(field, '<=', queryString + '~')
+      .orderBy(field, order)
+      .limit(RESULT_LIMIT);
+
+  let query1 = query('invoiceNumber', 'desc');
+
+  let query2 = query('client.name', 'asc');
+  let query3 = query('client.phone', 'asc');
+
+  if (afterDate) {
+    query1 = query1.startAfter(afterDate);
+    query2 = query1.startAfter(afterDate);
+    query3 = query1.startAfter(afterDate);
+  }
+
+  let result1 = invoicesToArray(await query1.get()).map(v => JSON.stringify(v));
+  let result2 = invoicesToArray(await query2.get()).map(v => JSON.stringify(v));
+  let result3 = invoicesToArray(await query3.get()).map(v => JSON.stringify(v));
+
+  // Keep uniq result
+  const merge = [...new Set([...result1, ...result2, ...result3])];
+
+  return merge.map(v => JSON.parse(v));
 }
 
 export async function getNextInvoiceNumber() {

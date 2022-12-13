@@ -113,7 +113,8 @@
   },
   "lists": {
     "title": "Lists & Reports",
-    "reports": "Reports"
+    "reports": "Reports",
+    "searchPlaceholder": "Invoice#, Name, Phone"
   },
   "services": {
     "title": "Manage services",

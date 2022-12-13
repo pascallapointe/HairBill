@@ -112,7 +112,8 @@
   },
   "lists": {
     "title": "Listes & Rapports",
-    "reports": "Rapports"
+    "reports": "Rapports",
+    "searchPlaceholder": "#Facture, Nom, Tél."
   },
   "services": {
     "title": "Gérer les services",

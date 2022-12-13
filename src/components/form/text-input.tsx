@@ -36,6 +36,7 @@ interface Props extends IFormControlProps {
   validation?: boolean;
   schema?: ZodType;
   icon?: JSX.Element;
+  InputRightElement?: JSX.Element;
 }
 
 export type InputRef = {
@@ -90,6 +91,7 @@ const TextInput = forwardRef<InputRef, Props>(
         invalid_type_error: 'Must be a string',
       }),
       icon,
+      InputRightElement,
       ...props
     },
     ref,
@@ -184,6 +186,7 @@ const TextInput = forwardRef<InputRef, Props>(
           clearTextOnFocus={secureTextEntry}
           InputLeftElement={<InputIcon icon={icon} />}
           value={_value}
+          InputRightElement={InputRightElement}
           placeholder={placeholder ? placeholder : ''}
           _focus={{ borderColor: 'violet.700', bg: 'fuchsia.100' }}
           color={color}

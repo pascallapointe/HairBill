@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   deleteNote,
+  getFilteredInvoices,
   getInvoices,
   InvoiceType,
+  RESULT_LIMIT,
   softDelete,
 } from '@views/app/invoice/invoice.repository';
 import {
@@ -24,6 +26,7 @@ import { ParamListBase } from '@react-navigation/native';
 import { NativeStackNavigationProp } from 'react-native-screens/src/native-stack/types';
 import TextAreaInput, { TextAreaRef } from '@components/form/text-area-input';
 import Modal, { ModalRef } from '@components/modal';
+import TextInput, { InputRef } from '@components/form/text-input';
 
 const Loading = () => {
   return (
@@ -173,6 +176,34 @@ const Item: React.FC<{
   );
 };
 
+const SearchBar: React.FC<{ search: (v: string) => void }> = ({ search }) => {
+  const { t } = useTranslation();
+  const searchField = useRef<InputRef>(null);
+
+  function handleSearch() {
+    if (searchField.current) {
+      const queryString = searchField.current.getValue();
+      search(queryString);
+    }
+  }
+
+  return (
+    <HStack maxW="200px" mx={2}>
+      <TextInput
+        ref={searchField}
+        autoCapitalize="words"
+        placeholder={t<string>('lists.searchPlaceholder')}
+        clear="while-editing"
+        InputRightElement={
+          <Button onPress={handleSearch} rounded="none" colorScheme="violet">
+            <FontAwesome5Icon name="search" color="white" />
+          </Button>
+        }
+      />
+    </HStack>
+  );
+};
+
 interface Props {
   navigation: NativeStackNavigationProp<ParamListBase, 'lists'>;
   viewReceipt: (receipt: InvoiceType) => void;
@@ -182,7 +213,9 @@ interface Props {
 const InvoiceList: React.FC<Props> = ({ viewReceipt, navigation, refresh }) => {
   const { t } = useTranslation();
   const [init, setInit] = useState(true);
+  const [query, setQuery] = useState('');
   const [invoices, setInvoices] = useState<InvoiceType[]>([]);
+  const [endOfList, setEndOfList] = useState(false);
 
   // Modal
   const deleteModal = useRef<ModalRef>(null);
@@ -191,14 +224,59 @@ const InvoiceList: React.FC<Props> = ({ viewReceipt, navigation, refresh }) => {
 
   useEffect(() => {
     if (init || refresh !== 0) {
-      getInvoices()
+      fetchInvoices();
+    }
+  }, [init, refresh]);
+
+  function loadMore() {
+    if (!endOfList && invoices.length) {
+      fetchInvoices(invoices[invoices.length - 1].date);
+    }
+  }
+
+  function loadMoreSearch() {
+    if (!endOfList && invoices.length) {
+      search(query, invoices[invoices.length - 1].date);
+    }
+  }
+
+  function fetchInvoices(afterDate?: number) {
+    getInvoices(afterDate)
+      .then(res => {
+        if (res.length < RESULT_LIMIT) {
+          setEndOfList(true);
+        }
+        if (afterDate) {
+          setInvoices([...invoices, ...res]);
+        } else {
+          setInvoices([...res]);
+        }
+        setInit(false);
+      })
+      .catch(console.error);
+  }
+
+  function search(queryString: string, afterDate?: number) {
+    setQuery(queryString);
+    setEndOfList(false);
+    if (queryString.length) {
+      getFilteredInvoices(queryString, afterDate)
         .then(res => {
-          setInvoices(res);
+          if (res.length < RESULT_LIMIT) {
+            setEndOfList(true);
+          }
+          if (afterDate) {
+            setInvoices([...invoices, ...res]);
+          } else {
+            setInvoices([...res]);
+          }
           setInit(false);
         })
         .catch(console.error);
+    } else {
+      setInit(true);
     }
-  }, [init, refresh]);
+  }
 
   function remove(id: string, restore = false): void {
     softDelete(id, restore);
@@ -232,7 +310,10 @@ const InvoiceList: React.FC<Props> = ({ viewReceipt, navigation, refresh }) => {
   }
 
   return (
-    <Card width="2xl" title={t<string>('invoice.invoices')}>
+    <Card
+      width="2xl"
+      title={t<string>('invoice.invoices')}
+      options={<SearchBar search={search} />}>
       <FlatList
         initialNumToRender={14}
         mb={2}
@@ -247,6 +328,8 @@ const InvoiceList: React.FC<Props> = ({ viewReceipt, navigation, refresh }) => {
             viewReceipt={viewReceipt}
           />
         )}
+        onEndReached={query.length ? loadMoreSearch : loadMore}
+        onEndReachedThreshold={1.5}
       />
       <Modal
         ref={deleteModal}
