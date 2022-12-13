@@ -316,7 +316,7 @@ const InvoiceList: React.FC<Props> = ({ viewReceipt, navigation, refresh }) => {
       options={<SearchBar search={search} />}>
       {invoices.length ? (
         <FlatList
-          initialNumToRender={14}
+          initialNumToRender={20}
           mb={2}
           maxHeight={{ md: '760px', lg: '520px' }}
           data={invoices}
