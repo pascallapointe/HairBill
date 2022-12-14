@@ -168,7 +168,7 @@ export function updateInvoice(invoice: InvoiceType): InvoiceType {
   const updatedAt = new Date().valueOf();
 
   doc.set({ ...invoice, updatedAt: updatedAt }).catch(console.error);
-  return { ...invoice };
+  return { ...invoice, updatedAt: updatedAt };
 }
 
 export function updateTip(id: string, tip: number): void {

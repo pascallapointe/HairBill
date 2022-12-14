@@ -195,7 +195,9 @@ const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
 
   function saveUpdateNote(): void {
     if (invoice !== null && invoice.id && updateField.current) {
-      updateNote(invoice.id, updateField.current.getValue());
+      const note = updateField.current.getValue();
+      setReceipt({ ...receipt, updateNote: note });
+      updateNote(invoice.id, note);
     }
   }
 
@@ -293,7 +295,7 @@ const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
               </Box>
             </Stack>
             <Center>
-              <Button mt={2} colorScheme="violet" onPress={save}>
+              <Button mt={2} colorScheme="violet" onPress={save} shadow={4}>
                 {t<string>('save')}
               </Button>
             </Center>
