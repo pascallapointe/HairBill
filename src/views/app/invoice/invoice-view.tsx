@@ -1,14 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  Box,
-  Button,
-  Center,
-  Divider,
-  Heading,
-  Stack,
-  Text,
-  View,
-} from 'native-base';
+import { Box, Center, Divider, Heading, Stack, Text, View } from 'native-base';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native';
 import Card from '@components/card';
@@ -50,6 +41,7 @@ import { defaultTipValues } from '@views/app/invoice/tip/list';
 import { NativeStackScreenProps } from 'react-native-screens/native-stack';
 import { NavigatorParamList } from '@views/app-navigation';
 import TextAreaInput, { TextAreaRef } from '@components/form/text-area-input';
+import ActionButton from '@components/action-button';
 
 interface Props extends NativeStackScreenProps<NavigatorParamList, 'invoice'> {}
 
@@ -104,7 +96,7 @@ const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
     }
   }, []);
 
-  async function save(): Promise<void> {
+  async function save(): Promise<boolean> {
     const fields = [
       clientField.current && clientField.current.validate(),
       productsField.current && productsField.current.validate(),
@@ -190,6 +182,12 @@ const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
           }
         })
         .catch(console.error);
+
+      // Keep save locked
+      return true;
+    } else {
+      // Unlock save button
+      return false;
     }
   }
 
@@ -295,9 +293,13 @@ const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
               </Box>
             </Stack>
             <Center>
-              <Button mt={2} colorScheme="violet" onPress={save} shadow={4}>
-                {t<string>('save')}
-              </Button>
+              <ActionButton
+                mt={2}
+                text={t<string>('save')}
+                colorScheme="violet"
+                action={save}
+                shadow={4}
+              />
             </Center>
           </Box>
         </Card>
