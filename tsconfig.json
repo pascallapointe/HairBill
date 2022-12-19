@@ -9,7 +9,7 @@
     "target": "esnext",
     "paths": {
       "@components/*": ["src/components/*"],
-      "@views/*": ["src/views/*"],
+      "@app/*": ["src/app/*"],
       "@type/*": ["src/types/*"],
       "@lib/*": ["src/lib/*"]
     }

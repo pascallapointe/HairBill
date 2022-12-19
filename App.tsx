@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import AuthNavigation from '@views/auth-navigation';
-import AppNavigation from '@views/app-navigation';
+import AuthNavigation from './src/app/auth-navigation';
+import AppNavigation from './src/app/app-navigation';
 import { useTranslation } from 'react-i18next';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { Platform, NativeModules } from 'react-native';
