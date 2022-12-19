@@ -39,7 +39,7 @@ const Items: React.FC<{
   const { t } = useTranslation();
   return (
     <HStack justifyContent="space-between">
-      <HStack>
+      <HStack maxW="210px">
         <Icon
           top="3px"
           color="violet.700"
@@ -52,9 +52,20 @@ const Items: React.FC<{
           {item.name}
         </Text>
       </HStack>
-      <Text ml={4} fontSize="md" fontWeight="bold" color="muted.600">
-        {t('price', { price: item.price.toFixed(2) })}
-      </Text>
+      <HStack>
+        <Text top="3px" fontSize="xs" fontWeight="bold" color="muted.500">
+          {item.quantity} X
+        </Text>
+        <Text
+          ml={1}
+          minW="70px"
+          fontSize="md"
+          fontWeight="bold"
+          textAlign="right"
+          color="muted.600">
+          {t('price', { price: item.price.toFixed(2) })}
+        </Text>
+      </HStack>
     </HStack>
   );
 };

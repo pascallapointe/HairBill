@@ -60,7 +60,7 @@ const Total = forwardRef<TotalRef, Props>(({ init, taxSettings }, ref) => {
   function calculate(products: ProductType[]) {
     const a = { ...defaultAmount };
     for (const product of products) {
-      a.total += product.price;
+      a.total += product.price * product.quantity!;
     }
     if (!taxSettings.enabled) {
       return setAmount(a);

@@ -19,8 +19,9 @@ import OctIcon from 'react-native-vector-icons/Octicons';
 
 const SelectedItem: React.FC<{
   item: ProductType;
-  remove: (productId: string) => void;
-}> = ({ item, remove }) => {
+  select: (selected: ProductType) => void;
+  remove: (productId: string, all?: boolean) => void;
+}> = ({ item, select, remove }) => {
   const { t } = useTranslation();
   return (
     <HStack justifyContent="space-between">
@@ -33,13 +34,57 @@ const SelectedItem: React.FC<{
           as={OctIcon}
           name="dot"
         />
-        <Text fontSize="md" fontWeight="bold" color="light.700">
+        <Text
+          maxW={{ md: '350px', lg: '180px' }}
+          fontSize="md"
+          fontWeight="bold"
+          color="light.700">
           {item.name}
         </Text>
       </HStack>
 
-      <HStack>
-        <Text ml={4} fontSize="md" fontWeight="bold" color="muted.500">
+      <HStack alignItems="flex-start">
+        <Button
+          p={1}
+          size="xs"
+          variant="ghost"
+          colorScheme="pink"
+          onPress={() => remove(item.id, false)}>
+          <Icon
+            as={FontAwesome5Icon}
+            left={1}
+            name="caret-left"
+            color="pink.500"
+          />
+        </Button>
+        <Text
+          mx={1}
+          minW="30px"
+          fontSize="md"
+          fontWeight="bold"
+          color="muted.500"
+          textAlign="center">
+          {item.quantity}
+        </Text>
+        <Button
+          p={1}
+          size="xs"
+          variant="ghost"
+          colorScheme="pink"
+          onPress={() => select(item)}>
+          <Icon
+            as={FontAwesome5Icon}
+            left={1}
+            name="caret-right"
+            color="pink.500"
+          />
+        </Button>
+        <Text
+          minW="75px"
+          fontSize="md"
+          fontWeight="bold"
+          color="muted.500"
+          textAlign="right">
           {t('price', { price: item.price.toFixed(2) })}
         </Text>
         <Button
@@ -48,7 +93,7 @@ const SelectedItem: React.FC<{
           bottom={1}
           variant="ghost"
           colorScheme="danger"
-          onPress={() => remove(item.id)}>
+          onPress={() => remove(item.id, true)}>
           <Icon as={FontAwesome5Icon} name="trash" />
         </Button>
       </HStack>
@@ -58,8 +103,9 @@ const SelectedItem: React.FC<{
 
 const SelectedList: React.FC<{
   selected: ProductType[];
-  remove: (productId: string) => void;
-}> = ({ selected, remove }) => {
+  select: (selected: ProductType) => void;
+  remove: (productId: string, all?: boolean) => void;
+}> = ({ selected, select, remove }) => {
   const { t } = useTranslation();
   const sectionMap = buildSectionMap(
     selected,
@@ -98,6 +144,7 @@ const SelectedList: React.FC<{
               <SelectedItem
                 key={item.id + itemIndex}
                 item={item}
+                select={select}
                 remove={remove}
               />
             ))}

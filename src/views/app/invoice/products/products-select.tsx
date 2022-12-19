@@ -70,18 +70,34 @@ const ProductsSelect = forwardRef<ProductSelectRef, Props>(
     }, []);
 
     function select(p: ProductType) {
-      const mergedList = [...selected, p];
-      mergedList.sort((a, b) => (a.name > b.name ? 1 : -1));
-      selectBind(mergedList);
-      setSelected(mergedList);
-      validate(mergedList);
+      const index = selected.findIndex(s => s.id === p.id);
+
+      let updatedList: ProductType[];
+
+      if (index >= 0) {
+        updatedList = [...selected];
+        updatedList[index].quantity!++;
+      } else {
+        p.quantity = 1;
+        updatedList = [...selected, p];
+        updatedList.sort((a, b) => (a.name > b.name ? 1 : -1));
+      }
+
+      selectBind(updatedList);
+      setSelected(updatedList);
+      validate(updatedList);
       setView('selection');
     }
 
-    function remove(productId: string) {
+    function remove(productId: string, all = false) {
       const list: ProductType[] = [...selected];
       const index = list.findIndex(p => p.id === productId);
-      list.splice(index, 1);
+      if (all || list[index].quantity === 1) {
+        list.splice(index, 1);
+      } else {
+        list[index].quantity!--;
+      }
+
       selectBind(list);
       setSelected(list);
       validate(list);
@@ -163,7 +179,7 @@ const ProductsSelect = forwardRef<ProductSelectRef, Props>(
         {view === 'options' ? (
           <OptionsPicker options={sectionList} select={select} />
         ) : (
-          <SelectedList selected={selected} remove={remove} />
+          <SelectedList selected={selected} select={select} remove={remove} />
         )}
         <Center>
           {view === 'selection' ? (
