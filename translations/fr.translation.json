@@ -108,7 +108,8 @@
     "deletedLabel": "Annulée",
     "deleteNotePlaceholder": "Quelques détails justifiant le retrait...",
     "deletedOn": "Annulée le",
-    "updatedOn": "Modifiée le"
+    "updatedOn": "Modifiée le",
+    "noBTPrinterFound": "Aucune imprimante bluetooth trouvée"
   },
   "lists": {
     "title": "Listes & Rapports",

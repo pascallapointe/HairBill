@@ -330,7 +330,7 @@ const InvoiceList: React.FC<Props> = ({ viewReceipt, navigation, refresh }) => {
             />
           )}
           onEndReached={query.length ? loadMoreSearch : loadMore}
-          onEndReachedThreshold={1.5}
+          onEndReachedThreshold={2}
         />
       ) : (
         <Box p={20} alignItems="center">

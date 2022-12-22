@@ -149,7 +149,7 @@ const ClientList: React.FC<{
         <Text
           mb={5}
           fontSize="lg"
-          color={query.length > 3 ? 'danger.500' : 'muted.500'}>
+          color={query.length >= 3 ? 'danger.500' : 'muted.500'}>
           {query.length >= 3
             ? t<string>('invoice.noMatch')
             : t<string>('invoice.type3Chars')}

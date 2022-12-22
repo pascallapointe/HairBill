@@ -21,6 +21,7 @@ import { GeneralSettingsType } from '@app/main/options/general/general.repositor
 import { createTimestamp } from '@lib/utils';
 import {
   buildSectionMap,
+  ProductSectionMapType,
   ProductType,
 } from '@app/main/services/product/product.repository';
 import OctIcon from 'react-native-vector-icons/Octicons';
@@ -32,6 +33,9 @@ import RNPrint from 'react-native-print';
 import TipInput, { TipInputRef } from '@app/main/invoice/tip/tip-input';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { defaultTipValues } from '@app/main/invoice/tip/list';
+import { BTPrinter } from '@app/main/invoice/bt-printer';
+import ActionButton from '@components/action-button';
+import { BLEPrinter } from 'react-native-thermal-receipt-printer-image-qr';
 
 const Items: React.FC<{
   item: ProductType;
@@ -70,27 +74,21 @@ const Items: React.FC<{
   );
 };
 
-const ProductList: React.FC<{ products: ProductType[] }> = ({ products }) => {
-  const { t } = useTranslation();
-  const sectionMap = buildSectionMap(
-    products,
-    t<string>('services.noCategory'),
-  );
-  if (sectionMap.none && !sectionMap.none.products.length) {
-    delete sectionMap.none;
-  }
+const ProductList: React.FC<{ products: ProductSectionMapType }> = ({
+  products,
+}) => {
   return (
     <View>
-      {Object.keys(sectionMap).map(key => (
+      {Object.keys(products).map(key => (
         <View key={key}>
           <Text
             fontSize="sm"
             fontWeight="bold"
             color={key === 'none' ? 'muted.400' : 'pink.500'}>
-            {sectionMap[key].name}
+            {products[key].name}
           </Text>
 
-          {sectionMap[key].products.map((item, itemIndex) => (
+          {products[key].products.map((item, itemIndex) => (
             <Items key={item.id + itemIndex} item={item} />
           ))}
         </View>
@@ -119,6 +117,23 @@ const ReceiptView: React.FC<{
   const receiptRef = useRef<ViewShot>(null);
   const amount = receipt.total;
   const tipField = useRef<TipInputRef>(null);
+  const [btEnabled, setBTEnabled] = useState(false);
+
+  // Products section map
+  const products = buildSectionMap(
+    receipt.products,
+    t<string>('services.noCategory'),
+  );
+  if (products.none && !products.none.products.length) {
+    delete products.none;
+  }
+
+  useEffect(() => {
+    setTip(receipt.tip);
+    return () => {
+      BLEPrinter.closeConn().catch(console.error);
+    };
+  }, [receipt]);
 
   // Modals
   const tipModal = useRef<ModalRef>(null);
@@ -126,10 +141,7 @@ const ReceiptView: React.FC<{
   const errorModal = useRef<ModalRef>(null);
   const [successTitle, setSuccessTitle] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-
-  useEffect(() => {
-    setTip(receipt.tip);
-  }, [receipt]);
+  const [errorMessage, setErrorMessage] = useState('');
 
   async function print(): Promise<void> {
     if (receiptRef.current?.capture) {
@@ -181,6 +193,35 @@ const ReceiptView: React.FC<{
         errorModal.current && errorModal.current.open();
       }
     }
+  }
+
+  async function btPrint(): Promise<boolean> {
+    const btPrinter = new BTPrinter();
+    await btPrinter.init();
+
+    if (!btEnabled) {
+      if (!btPrinter.getPrinters().length) {
+        setErrorMessage(t<string>('invoice.noBTPrinterFound'));
+        errorModal.current && errorModal.current.open();
+        return false;
+      }
+
+      if (btPrinter.getPrinters().length > 1) {
+        // todo: add modal to select printer
+      } else {
+        await btPrinter.setCurrentPrinter(btPrinter.getPrinters()[0]);
+        setBTEnabled(true);
+      }
+    }
+
+    try {
+      await btPrinter.printReceipt(receipt, products, tip, t);
+    } catch (e) {
+      console.error(e);
+      errorModal.current && errorModal.current.open();
+    }
+
+    return false;
   }
 
   return (
@@ -280,7 +321,7 @@ const ReceiptView: React.FC<{
               </Heading>
               <Divider mb={2} bg="black" />
 
-              <ProductList products={receipt.products} />
+              <ProductList products={products} />
 
               <Heading size="md" mt={2} color="violet.700">
                 {t<string>('invoice.total')}
@@ -353,7 +394,7 @@ const ReceiptView: React.FC<{
                 </Text>
               </HStack>
 
-              <HStack mt={3} display={receipt.payment ? 'flex' : 'none'}>
+              <HStack mt={3}>
                 <Text fontSize="md" fontWeight="bold">
                   {t<string>('invoice.paymentMethod')} :
                 </Text>
@@ -457,16 +498,18 @@ const ReceiptView: React.FC<{
               colorScheme="cyan">
               AirPrint
             </Button>
-            <Button
+            <ActionButton
               maxW="200px"
               m={2}
+              text="BT Print"
+              action={btPrint}
               shadow={4}
               leftIcon={
                 <FontAwesome5Icon color="white" size={20} name="bluetooth" />
               }
               colorScheme="blue">
               BT Print
-            </Button>
+            </ActionButton>
             <Button
               maxW="200px"
               m={2}
@@ -517,9 +560,10 @@ const ReceiptView: React.FC<{
         ref={errorModal}
         hideAction={true}
         title={t('exception.operationFailed')}
-        modalType="error">
+        modalType="error"
+        callback={() => setErrorMessage('')}>
         <Text fontSize="md" textAlign="center">
-          {t('exception.operationFailed')}
+          {errorMessage.length ? errorMessage : t('exception.operationFailed')}
         </Text>
       </Modal>
       <Modal

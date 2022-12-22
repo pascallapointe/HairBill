@@ -109,7 +109,8 @@
     "deletedLabel": "Deleted",
     "deleteNotePlaceholder": "Some details justifying removal...",
     "deletedOn": "Deleted on",
-    "updatedOn": "Updated on"
+    "updatedOn": "Updated on",
+    "noBTPrinterFound": "No bluetooth printer found"
   },
   "lists": {
     "title": "Lists & Reports",

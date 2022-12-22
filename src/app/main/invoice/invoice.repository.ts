@@ -8,7 +8,7 @@ import ErrorException from '@lib/error.exception';
 import { PaymentMethodType } from '@app/main/invoice/payment/pay-method';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 
-export const RESULT_LIMIT = 40;
+export const RESULT_LIMIT = 100;
 
 export type AmountType = {
   subtotal: number;
