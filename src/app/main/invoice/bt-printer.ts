@@ -34,6 +34,8 @@ export class BTPrinter {
   async setCurrentPrinter(printer: IBLEPrinter): Promise<void> {
     try {
       await BLEPrinter.connectPrinter(printer.inner_mac_address);
+      // Delay to allow bluetooth connection
+      await new Promise<null>(res => setTimeout(() => res(null), 3000));
     } catch (e) {
       console.error('PRINTER_CONNEXION_FAILED');
     }
