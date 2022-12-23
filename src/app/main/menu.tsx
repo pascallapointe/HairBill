@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { NavigationProp, ParamListBase } from '@react-navigation/native';
-import { Box, Flex, Heading, Skeleton } from 'native-base';
+import { Box, Flex, Heading } from 'native-base';
 import { SafeAreaView } from 'react-native';
 import NavButton from '@components/nav-button';
 import { useTranslation } from 'react-i18next';
@@ -25,81 +25,27 @@ export type SettingsType = {
   taxSettings: TaxSettingsType;
 };
 
-const Loading = () => (
-  <Box
-    flex={1}
-    bg={{
-      linearGradient: {
-        colors: ['fuchsia.400', 'violet.900'],
-        start: [0, 0],
-        end: [1, 0],
-      },
-    }}>
-    <SafeAreaView
-      style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Heading color="white" size="4xl" mb={4} fontFamily="SignPainter">
-        &nbsp;Menu&nbsp;
-      </Heading>
-      <Flex direction="row" wrap="wrap" justify="center" maxWidth="500px">
-        {[1, 2, 3, 4].map(v => (
-          <Skeleton
-            key={v}
-            m={4}
-            height="180px"
-            width="200px"
-            shadow={6}
-            startColor="violet.800"
-          />
-        ))}
-      </Flex>
-    </SafeAreaView>
-  </Box>
-);
-
 const MenuView: React.FC<Props> = ({ navigation }) => {
   const { t } = useTranslation();
-  const [init, setInit] = useState(true);
-  const [settings, setSettings] = useState<SettingsType>({
-    generalSettings: defaultGeneralSettings,
-    taxSettings: defaultTaxSettings,
-  });
-  const [invoiceNum, setInvoiceNum] = useState('');
 
-  useEffect(() => {
-    if (init) {
-      fetchSettings().then(
-        (res: { settings: SettingsType; invoiceNum: string }) => {
-          const s = {
-            generalSettings: res.settings.generalSettings,
-            taxSettings: res.settings.taxSettings,
-          };
-          const iN = res.invoiceNum;
-          setSettings(s);
-          setInvoiceNum(iN);
-          setInit(false);
-        },
-      );
-    }
-  });
-
-  async function fetchSettings(): Promise<{
-    settings: SettingsType;
-    invoiceNum: string;
-  }> {
+  async function fetchSettings(): Promise<SettingsType> {
     const gS = getGeneralSettings();
     const tS = getTaxSettings();
-    const iN = getNextInvoiceNumber();
     return {
-      settings: {
-        generalSettings: (await gS) ?? defaultGeneralSettings,
-        taxSettings: (await tS) ?? defaultTaxSettings,
-      },
-      invoiceNum: (await iN) ?? '',
+      generalSettings: (await gS) ?? defaultGeneralSettings,
+      taxSettings: (await tS) ?? defaultTaxSettings,
     };
   }
 
-  if (init) {
-    return <Loading />;
+  async function gotoNewInvoice() {
+    const settings = await fetchSettings();
+    const invoiceNum = await getNextInvoiceNumber();
+    navigation.navigate('invoice', { settings, invoiceNum });
+  }
+
+  async function gotoLists() {
+    const settings = await fetchSettings();
+    navigation.navigate('lists', { settings });
   }
 
   return (
@@ -119,14 +65,12 @@ const MenuView: React.FC<Props> = ({ navigation }) => {
         </Heading>
         <Flex direction="row" wrap="wrap" justify="center" maxWidth="500px">
           <NavButton
-            action={() =>
-              navigation.navigate('invoice', { settings, invoiceNum })
-            }
+            action={gotoNewInvoice}
             text={t('home.newInvoice')}
             icon="receipt"
           />
           <NavButton
-            action={() => navigation.navigate('lists', { settings })}
+            action={gotoLists}
             text={t('home.listsReports')}
             icon="list"
           />
