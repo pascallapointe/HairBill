@@ -1,17 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Button, Center, Text } from 'native-base';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
 interface Props {
-  action: () => void;
+  action: () => Promise<void>;
   text: string;
   icon: string;
 }
 
 const NavButton: React.FC<Props> = ({ action, text, icon }) => {
+  const [wait, setWait] = useState(false);
   return (
     <Button
-      onPress={action}
+      isLoading={wait}
+      onPress={() => {
+        setWait(true);
+        action().then(() => setWait(false));
+      }}
       bg="violet.800"
       _pressed={{ opacity: '40' }}
       m={4}
