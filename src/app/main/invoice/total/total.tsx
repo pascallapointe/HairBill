@@ -15,6 +15,7 @@ export const defaultAmount = {
 
 interface Props {
   taxSettings: TaxSettingsType;
+  initAmount: AmountType;
 }
 
 export type TotalRef = {
@@ -22,136 +23,142 @@ export type TotalRef = {
   getValue: () => AmountType;
 };
 
-const Total = forwardRef<TotalRef, Props>(({ taxSettings }, ref) => {
-  const { t } = useTranslation();
-  const [amount, setAmount] = useState<AmountType>({ ...defaultAmount });
+const Total = forwardRef<TotalRef, Props>(
+  ({ taxSettings, initAmount }, ref) => {
+    const { t } = useTranslation();
+    const [amount, setAmount] = useState<AmountType>({ ...initAmount });
 
-  useImperativeHandle(ref, () => ({
-    calculate,
-    getValue,
-  }));
+    useImperativeHandle(ref, () => ({
+      calculate,
+      getValue,
+    }));
 
-  function getValue(): AmountType {
-    return amount;
-  }
-
-  function calculate(products: ProductType[]) {
-    const a = { ...defaultAmount };
-    for (const product of products) {
-      a.total += product.price * product.quantity!;
-    }
-    if (!taxSettings.enabled) {
-      return setAmount(a);
+    function getValue(): AmountType {
+      return amount;
     }
 
-    // Tax calculation
-
-    if (taxSettings.includeTax) {
-      a.subtotal =
-        a.total /
-        (1 +
-          taxSettings.taxA +
-          (taxSettings.useBTax
-            ? taxSettings.compounded
-              ? taxSettings.taxB * (1 + taxSettings.taxA)
-              : taxSettings.taxB
-            : 0));
-
-      a.taxA = taxSettings.taxA * a.subtotal;
-      a.taxB =
-        taxSettings.taxB *
-        (taxSettings.compounded
-          ? (1 + taxSettings.taxA) * a.subtotal
-          : a.subtotal);
-
-      a.subtotal = roundTo(a.subtotal, 2);
-      a.taxA = roundTo(a.taxA, 2);
-      a.taxB = roundTo(a.taxB, 2);
-
-      return setAmount(a);
-    } else {
-      a.subtotal = a.total;
-      a.taxA = a.subtotal * taxSettings.taxA;
-      a.total += a.taxA;
-      if (taxSettings.useBTax) {
-        if (taxSettings.compounded) {
-          a.taxB = a.total * taxSettings.taxB;
-        } else {
-          a.taxB = a.subtotal * taxSettings.taxB;
-        }
-        a.total += a.taxB;
+    function calculate(products: ProductType[]) {
+      const a = { ...defaultAmount };
+      for (const product of products) {
+        a.total += product.price * product.quantity!;
+      }
+      if (!taxSettings.enabled) {
+        return setAmount(a);
       }
 
-      a.taxA = roundTo(a.taxA, 2);
-      a.taxB = roundTo(a.taxB, 2);
-      a.total = roundTo(a.total, 2);
+      // Tax calculation
 
-      return setAmount(a);
+      if (taxSettings.includeTax) {
+        a.subtotal =
+          a.total /
+          (1 +
+            taxSettings.taxA +
+            (taxSettings.useBTax
+              ? taxSettings.compounded
+                ? taxSettings.taxB * (1 + taxSettings.taxA)
+                : taxSettings.taxB
+              : 0));
+
+        a.taxA = taxSettings.taxA * a.subtotal;
+        a.taxB =
+          taxSettings.taxB *
+          (taxSettings.compounded
+            ? (1 + taxSettings.taxA) * a.subtotal
+            : a.subtotal);
+
+        a.subtotal = roundTo(a.subtotal, 2);
+        a.taxA = roundTo(a.taxA, 2);
+        a.taxB = roundTo(a.taxB, 2);
+
+        return setAmount(a);
+      } else {
+        a.subtotal = a.total;
+        a.taxA = a.subtotal * taxSettings.taxA;
+        a.total += a.taxA;
+        if (taxSettings.useBTax) {
+          if (taxSettings.compounded) {
+            a.taxB = a.total * taxSettings.taxB;
+          } else {
+            a.taxB = a.subtotal * taxSettings.taxB;
+          }
+          a.total += a.taxB;
+        }
+
+        a.taxA = roundTo(a.taxA, 2);
+        a.taxB = roundTo(a.taxB, 2);
+        a.total = roundTo(a.total, 2);
+
+        return setAmount(a);
+      }
     }
-  }
 
-  return (
-    <Box>
-      {taxSettings.enabled ? (
-        <>
-          <HStack justifyContent="space-between">
-            <Text fontSize="md" fontWeight="bold" color="muted.500">
-              {t<string>('invoice.subtotal')}
-            </Text>
-            <Text fontSize="md" fontWeight="bold" color="muted.600">
-              {t('price', { price: amount.subtotal.toFixed(2) })}
-            </Text>
-          </HStack>
+    return (
+      <Box>
+        {taxSettings.enabled ? (
+          <>
+            <HStack justifyContent="space-between">
+              <Text fontSize="md" fontWeight="bold" color="muted.500">
+                {t<string>('invoice.subtotal')}
+              </Text>
+              <Text fontSize="md" fontWeight="bold" color="muted.600">
+                {t('price', { price: amount.subtotal.toFixed(2) })}
+              </Text>
+            </HStack>
+            <HStack justifyContent="space-between">
+              <HStack space={2}>
+                <Text fontSize="md" fontWeight="bold" color="muted.500">
+                  {taxSettings.taxAName}
+                </Text>
+                <Text
+                  top={1}
+                  fontSize="2xs"
+                  fontWeight="bold"
+                  color="muted.500">
+                  {taxSettings.taxANumber.length
+                    ? `(${taxSettings.taxANumber})`
+                    : ''}
+                </Text>
+              </HStack>
+
+              <Text fontSize="md" fontWeight="bold" color="muted.600">
+                {t('price', { price: amount.taxA.toFixed(2) })}
+              </Text>
+            </HStack>
+          </>
+        ) : (
+          ''
+        )}
+        {taxSettings.enabled && taxSettings.useBTax ? (
           <HStack justifyContent="space-between">
             <HStack space={2}>
               <Text fontSize="md" fontWeight="bold" color="muted.500">
-                {taxSettings.taxAName}
+                {taxSettings.taxBName}
               </Text>
               <Text top={1} fontSize="2xs" fontWeight="bold" color="muted.500">
-                {taxSettings.taxANumber.length
-                  ? `(${taxSettings.taxANumber})`
+                {taxSettings.taxBNumber.length
+                  ? `(${taxSettings.taxBNumber})`
                   : ''}
               </Text>
             </HStack>
 
             <Text fontSize="md" fontWeight="bold" color="muted.600">
-              {t('price', { price: amount.taxA.toFixed(2) })}
+              {t('price', { price: amount.taxB.toFixed(2) })}
             </Text>
           </HStack>
-        </>
-      ) : (
-        ''
-      )}
-      {taxSettings.enabled && taxSettings.useBTax ? (
+        ) : (
+          ''
+        )}
         <HStack justifyContent="space-between">
-          <HStack space={2}>
-            <Text fontSize="md" fontWeight="bold" color="muted.500">
-              {taxSettings.taxBName}
-            </Text>
-            <Text top={1} fontSize="2xs" fontWeight="bold" color="muted.500">
-              {taxSettings.taxBNumber.length
-                ? `(${taxSettings.taxBNumber})`
-                : ''}
-            </Text>
-          </HStack>
-
-          <Text fontSize="md" fontWeight="bold" color="muted.600">
-            {t('price', { price: amount.taxB.toFixed(2) })}
+          <Text fontSize="lg" fontWeight="bold" color="muted.700">
+            {t<string>('invoice.total')}
+          </Text>
+          <Text fontSize="lg" fontWeight="bold" color="violet.700">
+            {t('price', { price: amount.total.toFixed(2) })}
           </Text>
         </HStack>
-      ) : (
-        ''
-      )}
-      <HStack justifyContent="space-between">
-        <Text fontSize="lg" fontWeight="bold" color="muted.700">
-          {t<string>('invoice.total')}
-        </Text>
-        <Text fontSize="lg" fontWeight="bold" color="violet.700">
-          {t('price', { price: amount.total.toFixed(2) })}
-        </Text>
-      </HStack>
-    </Box>
-  );
-});
+      </Box>
+    );
+  },
+);
 
 export default Total;

@@ -256,7 +256,11 @@ const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
                   {t<string>('invoice.total')}
                 </Heading>
                 <Divider mb={2} bg="violet.700" />
-                <Total ref={totalRef} taxSettings={settings.taxSettings} />
+                <Total
+                  ref={totalRef}
+                  taxSettings={settings.taxSettings}
+                  initAmount={invoice ? invoice.total : defaultAmount}
+                />
               </Box>
             </Stack>
             <Center>
