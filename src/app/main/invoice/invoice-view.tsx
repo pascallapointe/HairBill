@@ -11,28 +11,17 @@ import { z } from 'zod';
 import ProductsSelect, {
   ProductSelectRef,
 } from '@app/main/invoice/products/products-select';
-import {
-  defaultGeneralSettings,
-  defaultTaxSettings,
-  getTaxSettings,
-  TaxSettingsType,
-} from '@app/main/options/sales-tax/sales-tax.repository';
 import Modal, { ModalRef } from '@components/modal';
 import { roundTo } from '@lib/utils';
 import TipInput, { TipInputRef } from '@app/main/invoice/tip/tip-input';
 import {
   addInvoice,
   defaultReceipt,
-  getNextInvoiceNumber,
   InvoiceType,
   updateInvoice,
   updateNote,
 } from '@app/main/invoice/invoice.repository';
 import ReceiptView from '@app/main/invoice/receipt-view';
-import {
-  GeneralSettingsType,
-  getGeneralSettings,
-} from '@app/main/options/general/general.repository';
 import PayMethod, { PayMethodRef } from '@app/main/invoice/payment/pay-method';
 import Total, { defaultAmount, TotalRef } from '@app/main/invoice/total/total';
 import { ProductType } from '@app/main/services/product/product.repository';
@@ -47,52 +36,25 @@ interface Props extends NativeStackScreenProps<NavigatorParamList, 'invoice'> {}
 
 const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
   const { t } = useTranslation();
-  const [init, setInit] = useState(true);
-  const { invoice } = route.params;
-  const [taxSettings, setTaxSettings] =
-    useState<TaxSettingsType>(defaultTaxSettings);
-  const [generalSettings, setGeneralSettings] = useState<GeneralSettingsType>(
-    defaultGeneralSettings,
-  );
+  const { invoice, settings, invoiceNum } = route.params;
   const clientField = useRef<ClientInputRef>(null);
   const productsField = useRef<ProductSelectRef>(null);
   const tipField = useRef<TipInputRef>(null);
   const paymentField = useRef<PayMethodRef>(null);
   const updateField = useRef<TextAreaRef>(null);
   const totalRef = useRef<TotalRef>(null);
-  const [invoiceNum, setInvoiceNum] = useState<string>('');
   const [receipt, setReceipt] = useState<InvoiceType>({ ...defaultReceipt });
   const [showReceipt, setShowReceipt] = useState(false);
 
   // Modals
   const updateModal = useRef<ModalRef>(null);
-  const errorModal = useRef<ModalRef>(null);
-  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    if (init) {
-      if (invoice) {
-        navigation.setOptions({
-          // @ts-ignore
-          title: `HairBill - ${t('invoice.invoice')}# ${invoice.invoiceNumber}`,
-        });
-      }
-      getGeneralSettings().then(val => val && setGeneralSettings(val));
-      getNextInvoiceNumber().then(setInvoiceNum);
-      getTaxSettings()
-        .then(val => {
-          if (val) {
-            setTaxSettings(val);
-          }
-          if (invoice) {
-            totalRef.current && totalRef.current.calculate(invoice.products);
-          }
-          setInit(false);
-        })
-        .catch(e => {
-          setErrorMessage(t<string>(e.message ?? 'exception.database'));
-          errorModal.current && errorModal.current.open();
-        });
+    if (invoice) {
+      navigation.setOptions({
+        // @ts-ignore
+        title: `HairBill - ${t('invoice.invoice')}# ${invoice.invoiceNumber}`,
+      });
     }
   }, []);
 
@@ -129,6 +91,8 @@ const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
           },
           updateNote: '',
           deleteNote: '',
+          generalSettings: settings.generalSettings,
+          taxSettings: settings.taxSettings,
         });
       } else {
         r = updateInvoice({
@@ -158,6 +122,8 @@ const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
           updateNote: invoice.updateNote ?? '',
           deletedAt: invoice.deletedAt ?? null,
           deleteNote: invoice.deleteNote ?? '',
+          generalSettings: settings.generalSettings,
+          taxSettings: settings.taxSettings,
         });
       }
 
@@ -252,7 +218,8 @@ const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
                 </View>
                 <Heading size="md" mt={2} color="violet.700">
                   {t<string>('invoice.productsAndServices')}
-                  <Box display={taxSettings.includeTax ? 'flex' : 'none'}>
+                  <Box
+                    display={settings.taxSettings.includeTax ? 'flex' : 'none'}>
                     <Text top="2px" ml={4} fontSize="sm" color="muted.500">
                       ({t<string>('invoice.taxIncluded')})
                     </Text>
@@ -289,7 +256,7 @@ const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
                   {t<string>('invoice.total')}
                 </Heading>
                 <Divider mb={2} bg="violet.700" />
-                <Total ref={totalRef} init={init} taxSettings={taxSettings} />
+                <Total ref={totalRef} taxSettings={settings.taxSettings} />
               </Box>
             </Stack>
             <Center>
@@ -304,15 +271,6 @@ const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
           </Box>
         </Card>
       </SafeAreaView>
-      <Modal
-        ref={errorModal}
-        hideAction={true}
-        title={t('exception.operationFailed')}
-        modalType="error">
-        <Text fontSize="md" textAlign="center">
-          {errorMessage}
-        </Text>
-      </Modal>
       <Modal
         ref={updateModal}
         action={saveUpdateNote}
@@ -333,14 +291,15 @@ const InvoiceView: React.FC<Props> = ({ navigation, route }) => {
       <ReceiptView
         showReceipt={showReceipt}
         receipt={receipt}
-        generalSettings={generalSettings}
-        taxSettings={taxSettings}
         showAddTip={invoice === null}
         closeAction={
           invoice === null
             ? () => navigation.navigate('menu')
             : () =>
-                navigation.navigate('lists', { refresh: new Date().valueOf() })
+                navigation.navigate('lists', {
+                  refresh: new Date().valueOf(),
+                  settings,
+                })
         }
       />
     </Box>

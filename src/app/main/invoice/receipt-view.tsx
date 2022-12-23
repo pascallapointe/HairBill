@@ -16,8 +16,6 @@ import {
 } from 'native-base';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import { InvoiceType, updateTip } from '@app/main/invoice/invoice.repository';
-import { TaxSettingsType } from '@app/main/options/sales-tax/sales-tax.repository';
-import { GeneralSettingsType } from '@app/main/options/general/general.repository';
 import { createTimestamp } from '@lib/utils';
 import {
   buildSectionMap,
@@ -100,18 +98,9 @@ const ProductList: React.FC<{ products: ProductSectionMapType }> = ({
 const ReceiptView: React.FC<{
   showReceipt: boolean;
   receipt: InvoiceType;
-  taxSettings: TaxSettingsType;
-  generalSettings: GeneralSettingsType;
   closeAction: () => void;
   showAddTip: boolean;
-}> = ({
-  showReceipt,
-  receipt,
-  taxSettings,
-  generalSettings,
-  closeAction,
-  showAddTip,
-}) => {
+}> = ({ showReceipt, receipt, closeAction, showAddTip }) => {
   const { t } = useTranslation();
   const [tip, setTip] = useState<number>(receipt.tip);
   const receiptRef = useRef<ViewShot>(null);
@@ -259,29 +248,37 @@ const ReceiptView: React.FC<{
                   fontSize="lg"
                   fontWeight="bold"
                   color="fuchsia.600"
-                  display={generalSettings.shopName.length ? 'flex' : 'none'}>
-                  {generalSettings.shopName}
+                  display={
+                    receipt.generalSettings.shopName.length ? 'flex' : 'none'
+                  }>
+                  {receipt.generalSettings.shopName}
                 </Text>
                 <Text
                   fontSize="md"
                   fontWeight="bold"
                   color="fuchsia.400"
-                  display={generalSettings.phone.length ? 'flex' : 'none'}>
-                  {generalSettings.phone}
+                  display={
+                    receipt.generalSettings.phone.length ? 'flex' : 'none'
+                  }>
+                  {receipt.generalSettings.phone}
                 </Text>
                 <Text
                   my={2}
                   fontSize="sm"
-                  display={generalSettings.address.length ? 'flex' : 'none'}>
-                  {generalSettings.address}
+                  display={
+                    receipt.generalSettings.address.length ? 'flex' : 'none'
+                  }>
+                  {receipt.generalSettings.address}
                 </Text>
                 <Text
                   fontSize="md"
                   color="violet.700"
                   display={
-                    generalSettings.employeeName.length ? 'flex' : 'none'
+                    receipt.generalSettings.employeeName.length
+                      ? 'flex'
+                      : 'none'
                   }>
-                  {generalSettings.employeeName}
+                  {receipt.generalSettings.employeeName}
                 </Text>
               </Center>
               <HStack mt={4} justifyContent="space-between">
@@ -313,7 +310,7 @@ const ReceiptView: React.FC<{
 
               <Heading size="md" mt={4} color="violet.700">
                 {t<string>('invoice.productsAndServices')}
-                <Box display={taxSettings.includeTax ? 'flex' : 'none'}>
+                <Box display={receipt.taxSettings.includeTax ? 'flex' : 'none'}>
                   <Text ml={4} fontSize="sm" color="muted.500">
                     ({t<string>('invoice.taxIncluded')})
                   </Text>
@@ -327,7 +324,7 @@ const ReceiptView: React.FC<{
                 {t<string>('invoice.total')}
               </Heading>
               <Divider mb={2} bg="black" />
-              {taxSettings.enabled ? (
+              {receipt.taxSettings.enabled ? (
                 <>
                   <HStack justifyContent="space-between">
                     <Text fontSize="md" fontWeight="bold" color="muted.500">
@@ -340,15 +337,15 @@ const ReceiptView: React.FC<{
                   <HStack justifyContent="space-between">
                     <HStack space={2}>
                       <Text fontSize="md" fontWeight="bold" color="muted.500">
-                        {taxSettings.taxAName}
+                        {receipt.taxSettings.taxAName}
                       </Text>
                       <Text
                         top={1}
                         fontSize="2xs"
                         fontWeight="bold"
                         color="muted.500">
-                        {taxSettings.taxANumber.length
-                          ? `(${taxSettings.taxANumber})`
+                        {receipt.taxSettings.taxANumber.length
+                          ? `(${receipt.taxSettings.taxANumber})`
                           : ''}
                       </Text>
                     </HStack>
@@ -361,19 +358,19 @@ const ReceiptView: React.FC<{
               ) : (
                 ''
               )}
-              {taxSettings.enabled && taxSettings.useBTax ? (
+              {receipt.taxSettings.enabled && receipt.taxSettings.useBTax ? (
                 <HStack justifyContent="space-between">
                   <HStack space={2}>
                     <Text fontSize="md" fontWeight="bold" color="muted.500">
-                      {taxSettings.taxBName}
+                      {receipt.taxSettings.taxBName}
                     </Text>
                     <Text
                       top={1}
                       fontSize="2xs"
                       fontWeight="bold"
                       color="muted.500">
-                      {taxSettings.taxBNumber.length
-                        ? `(${taxSettings.taxBNumber})`
+                      {receipt.taxSettings.taxBNumber.length
+                        ? `(${receipt.taxSettings.taxBNumber})`
                         : ''}
                     </Text>
                   </HStack>

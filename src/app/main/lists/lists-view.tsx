@@ -1,66 +1,26 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Box, HStack } from 'native-base';
+import React, { useRef, useState } from 'react';
+import { Box, HStack, View } from 'native-base';
 import { SafeAreaView } from 'react-native';
 import TabButton from '@components/tab-button';
 import { useTranslation } from 'react-i18next';
 import ShowReceiptView, {
   ShowReceiptRefType,
 } from '@app/main/lists/invoices/show-receipt-view';
-import {
-  defaultGeneralSettings,
-  defaultTaxSettings,
-  getTaxSettings,
-  TaxSettingsType,
-} from '@app/main/options/sales-tax/sales-tax.repository';
-import {
-  GeneralSettingsType,
-  getGeneralSettings,
-} from '@app/main/options/general/general.repository';
 import InvoiceList from '@app/main/lists/invoices/list';
 import { NativeStackScreenProps } from 'react-native-screens/native-stack';
 import { NavigatorParamList } from '@app/app-navigation';
+import { InvoiceType } from '@app/main/invoice/invoice.repository';
 
 interface Props extends NativeStackScreenProps<NavigatorParamList, 'lists'> {}
 
 const ListsView: React.FC<Props> = ({ navigation, route }) => {
   const { t } = useTranslation();
-  const [init, setInit] = useState(true);
-  const { refresh } = route.params;
+  const { refresh, settings } = route.params;
   const [view, setView] = useState<'invoices' | 'reports'>('invoices');
   const showReceiptRef = useRef<ShowReceiptRefType>(null);
-  const [taxSettings, setTaxSettings] =
-    useState<TaxSettingsType>(defaultTaxSettings);
-  const [generalSettings, setGeneralSettings] = useState<GeneralSettingsType>(
-    defaultGeneralSettings,
-  );
 
-  useEffect(() => {
-    if (init) {
-      getGeneralSettings().then(val => val && setGeneralSettings(val));
-      getTaxSettings().then(val => {
-        if (val) {
-          setTaxSettings(val);
-        }
-        setInit(false);
-      });
-    }
-  }, []);
-
-  function switchView() {
-    switch (view) {
-      case 'invoices':
-        return (
-          <InvoiceList
-            refresh={refresh}
-            navigation={navigation}
-            viewReceipt={
-              showReceiptRef.current
-                ? showReceiptRef.current.viewReceipt
-                : () => null
-            }
-          />
-        );
-    }
+  function viewReceipt(receipt: InvoiceType): void {
+    showReceiptRef.current && showReceiptRef.current.viewReceipt(receipt);
   }
 
   return (
@@ -87,12 +47,15 @@ const ListsView: React.FC<Props> = ({ navigation, route }) => {
             selected={view === 'reports'}
           />
         </HStack>
-        {switchView()}
-        <ShowReceiptView
-          ref={showReceiptRef}
-          generalSettings={generalSettings}
-          taxSettings={taxSettings}
-        />
+        <View display={view === 'invoices' ? 'flex' : 'none'}>
+          <InvoiceList
+            refresh={refresh}
+            navigation={navigation}
+            viewReceipt={viewReceipt}
+            settings={settings}
+          />
+        </View>
+        <ShowReceiptView ref={showReceiptRef} />
       </SafeAreaView>
     </Box>
   );

@@ -7,8 +7,14 @@ import { defaultAmount } from '@app/main/invoice/total/total';
 import ErrorException from '@lib/error.exception';
 import { PaymentMethodType } from '@app/main/invoice/payment/pay-method';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import { GeneralSettingsType } from '@app/main/options/general/general.repository';
+import {
+  defaultGeneralSettings,
+  defaultTaxSettings,
+  TaxSettingsType,
+} from '@app/main/options/sales-tax/sales-tax.repository';
 
-export const RESULT_LIMIT = 100;
+export const RESULT_LIMIT = 20;
 
 export type AmountType = {
   subtotal: number;
@@ -30,6 +36,9 @@ export type InvoiceType = {
   deletedAt?: number | null;
   updateNote: string;
   deleteNote: string;
+
+  generalSettings: GeneralSettingsType;
+  taxSettings: TaxSettingsType;
 };
 
 export const defaultReceipt = {
@@ -43,6 +52,8 @@ export const defaultReceipt = {
   total: { ...defaultAmount },
   updateNote: '',
   deleteNote: '',
+  generalSettings: defaultGeneralSettings,
+  taxSettings: defaultTaxSettings,
 };
 
 function getInvoiceCollection(): CollectionReference {
@@ -68,6 +79,11 @@ function invoicesToArray(
       deletedAt: doc.get<number | null>('deletedAt'),
       updateNote: doc.get<string>('updateNote') ?? '',
       deleteNote: doc.get<string>('deleteNote') ?? '',
+      generalSettings:
+        doc.get<GeneralSettingsType>('generalSettings') ??
+        defaultGeneralSettings,
+      taxSettings:
+        doc.get<TaxSettingsType>('taxSettings') ?? defaultTaxSettings,
     });
   });
 

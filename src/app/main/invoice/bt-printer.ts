@@ -6,24 +6,12 @@ import {
 } from 'react-native-thermal-receipt-printer-image-qr';
 import { InvoiceType } from '@app/main/invoice/invoice.repository';
 import { ProductSectionMapType } from '@app/main/services/product/product.repository';
-import {
-  GeneralSettingsType,
-  getGeneralSettings,
-} from '@app/main/options/general/general.repository';
-import {
-  getTaxSettings,
-  TaxSettingsType,
-} from '@app/main/options/sales-tax/sales-tax.repository';
 import { createTimestamp } from '@lib/utils';
 
 export class BTPrinter {
   private printers: IBLEPrinter[] = [];
-  private generalSettings: GeneralSettingsType | undefined;
-  private taxSettings: TaxSettingsType | undefined;
 
   async init(): Promise<void> {
-    this.generalSettings = await getGeneralSettings();
-    this.taxSettings = await getTaxSettings();
     await this.loadAvailablePrinters();
   }
 
@@ -78,14 +66,6 @@ export class BTPrinter {
     tip: number,
     t: (str: string, opt?: { [key: string]: any }) => string,
   ): Promise<void> {
-    if (!this.generalSettings) {
-      throw new Error('GENERAL_SETTINGS_UNDEFINED');
-    }
-
-    if (!this.taxSettings) {
-      throw new Error('TAX_SETTINGS_UNDEFINED');
-    }
-
     console.log('Printing...');
 
     /**
@@ -113,33 +93,33 @@ export class BTPrinter {
     );
 
     // Shop details
-    if (this.generalSettings.shopName.length) {
+    if (receipt.generalSettings.shopName.length) {
       BLEPrinter.printColumnsText(
-        [this.generalSettings.shopName],
+        [receipt.generalSettings.shopName],
         [paperWidth],
         [col.center],
         [COMMANDS.TEXT_FORMAT.TXT_FONT_A + COMMANDS.TEXT_FORMAT.TXT_BOLD_ON],
       );
     }
-    if (this.generalSettings.phone.length) {
+    if (receipt.generalSettings.phone.length) {
       BLEPrinter.printColumnsText(
-        [this.generalSettings.phone],
+        [receipt.generalSettings.phone],
         [paperWidth],
         [col.center],
         [COMMANDS.TEXT_FORMAT.TXT_FONT_C + COMMANDS.TEXT_FORMAT.TXT_BOLD_ON],
       );
     }
-    if (this.generalSettings.address.length) {
+    if (receipt.generalSettings.address.length) {
       BLEPrinter.printColumnsText(
-        [this.generalSettings.address],
+        [receipt.generalSettings.address],
         [paperWidth],
         [col.center],
         [COMMANDS.TEXT_FORMAT.TXT_FONT_B],
       );
     }
-    if (this.generalSettings.employeeName.length) {
+    if (receipt.generalSettings.employeeName.length) {
       BLEPrinter.printColumnsText(
-        [this.generalSettings.employeeName],
+        [receipt.generalSettings.employeeName],
         [paperWidth],
         [col.center],
         [COMMANDS.TEXT_FORMAT.TXT_FONT_C + COMMANDS.TEXT_FORMAT.TXT_BOLD_ON],
@@ -169,10 +149,10 @@ export class BTPrinter {
     // Products Header
     BLEPrinter.printText(
       `${t('invoice.productsAndServices')}\n${
-        this.taxSettings.includeTax
+        receipt.taxSettings.includeTax
           ? '(' + t('invoice.taxIncluded') + ')\n'
           : divider
-      }${this.taxSettings.includeTax ? divider : ''}`,
+      }${receipt.taxSettings.includeTax ? divider : ''}`,
     );
 
     for (const id in products) {
@@ -199,7 +179,7 @@ export class BTPrinter {
     // Total Header
     BLEPrinter.printText(`${t('invoice.total')}\n${divider}`);
 
-    if (this.taxSettings.enabled) {
+    if (receipt.taxSettings.enabled) {
       BLEPrinter.printColumnsText(
         [
           t('invoice.subtotal'),
@@ -211,17 +191,17 @@ export class BTPrinter {
       );
       BLEPrinter.printColumnsText(
         [
-          this.taxSettings.taxAName + ' ' + this.taxSettings.taxANumber,
+          receipt.taxSettings.taxAName + ' ' + receipt.taxSettings.taxANumber,
           t('price', { price: receipt.total.taxA.toFixed(2) }),
         ],
         [paperWidth - 8, 8],
         [col.left, col.right],
         ['', ''],
       );
-      if (this.taxSettings.useBTax) {
+      if (receipt.taxSettings.useBTax) {
         BLEPrinter.printColumnsText(
           [
-            this.taxSettings.taxBName + ' ' + this.taxSettings.taxBNumber,
+            receipt.taxSettings.taxBName + ' ' + receipt.taxSettings.taxBNumber,
             t('price', { price: receipt.total.taxB.toFixed(2) }),
           ],
           [paperWidth - 8, 8],
@@ -308,6 +288,9 @@ export class BTPrinter {
       ],
     );
     BLEPrinter.printText('');
+
+    // 5 Second delay
+    await new Promise<null>(res => setTimeout(() => res(null), 5000));
 
     console.log('Printing sequence completed.');
   }

@@ -10,15 +10,13 @@ import {
 import {
   Box,
   Button,
-  FlatList,
+  Center,
   HStack,
-  Icon,
   ScrollView,
   Skeleton,
   Text,
   VStack,
 } from 'native-base';
-import { createTimestamp } from '@lib/utils';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import Card from '@components/card';
 import { useTranslation } from 'react-i18next';
@@ -27,8 +25,11 @@ import { NativeStackNavigationProp } from 'react-native-screens/src/native-stack
 import TextAreaInput, { TextAreaRef } from '@components/form/text-area-input';
 import Modal, { ModalRef } from '@components/modal';
 import TextInput, { InputRef } from '@components/form/text-input';
+import ActionButton from '@components/action-button';
+import ListItem from '@app/main/lists/invoices/list-item';
+import { SettingsType } from '@app/main/menu';
 
-const Loading = () => {
+const LoadingItem = () => {
   return (
     <HStack py={2} borderBottomWidth={1} borderColor="muted.300">
       <Skeleton w="80px" h="20px" />
@@ -46,133 +47,18 @@ const Loading = () => {
   );
 };
 
-const Item: React.FC<{
-  navigation: NativeStackNavigationProp<ParamListBase, 'lists'>;
-  item: InvoiceType;
-  remove: (id: string, restore: boolean) => void;
-  viewReceipt: (receipt: InvoiceType) => void;
-}> = ({ navigation, item, viewReceipt, remove }) => {
+const Loading: React.FC<{ title: string }> = ({ title }) => {
   return (
-    <HStack py={2} borderBottomWidth={1} borderColor="muted.300">
-      <VStack w="240px">
-        <HStack>
-          <Text
-            w="80px"
-            fontFamily="Menlo"
-            fontSize="md"
-            fontWeight="bold"
-            color={
-              item.deletedAt
-                ? 'red.500'
-                : item.updatedAt
-                ? 'purple.500'
-                : 'muted.500'
-            }>
-            {item.invoiceNumber}
-          </Text>
-          <Text
-            ml={4}
-            w="160px"
-            fontFamily="Menlo"
-            fontSize="md"
-            fontWeight="bold"
-            color="muted.500">
-            {createTimestamp(new Date(item.date))}
-          </Text>
-        </HStack>
-        {item.updatedAt && !item.deletedAt ? (
-          <Text
-            fontFamily="Menlo"
-            fontSize="sm"
-            fontWeight="bold"
-            color="purple.500">
-            Mod: {createTimestamp(new Date(item.updatedAt))}
-          </Text>
-        ) : (
-          ''
-        )}
-        {item.deletedAt ? (
-          <Text
-            fontFamily="Menlo"
-            fontSize="sm"
-            fontWeight="bold"
-            color="red.500">
-            Del: {createTimestamp(new Date(item.deletedAt))}
-          </Text>
-        ) : (
-          ''
-        )}
-        <Box
-          flexDirection="row"
-          display={
-            (item.updatedAt && item.updateNote.length && !item.deletedAt) ||
-            (item.deletedAt && item.deleteNote.length)
-              ? 'flex'
-              : 'none'
-          }>
-          <Text fontWeight="bold" color="muted.500">
-            Note:
-          </Text>
-          <Text ml={1} color="muted.500">
-            {item.deletedAt ? item.deleteNote : item.updateNote}
-          </Text>
-        </Box>
-      </VStack>
-
-      <VStack ml={4} w={{ md: '210px', lg: '200px' }}>
-        <Text
-          isTruncated={true}
-          fontSize="md"
-          fontWeight="bold"
-          color="fuchsia.600"
-          textAlign="center">
-          {item.client.name}
-        </Text>
-        <Text
-          isTruncated={true}
-          fontSize="sm"
-          fontWeight="bold"
-          color="muted.500"
-          textAlign="center">
-          {item.client.phone.length ? item.client.phone : ' '}
-        </Text>
-      </VStack>
-      <HStack ml="auto" maxH="45px">
-        <Button
-          onPress={() => viewReceipt(item)}
-          ml={4}
-          variant="outline"
-          colorScheme="amber">
-          <Icon
-            as={FontAwesome5Icon}
-            left="2px"
-            name="receipt"
-            color="violet.400"
-          />
-        </Button>
-        <Button
-          onPress={() => navigation.navigate('invoice', { invoice: item })}
-          ml={2}
-          variant="outline"
-          colorScheme="amber">
-          <Icon as={FontAwesome5Icon} name="pen" color="yellow.500" />
-        </Button>
-        <Button
-          onPress={() =>
-            item.id ? remove(item.id, item.deletedAt != null) : null
-          }
-          ml={2}
-          variant="outline"
-          colorScheme="danger">
-          <Icon
-            left={item.deletedAt != null ? '0px' : '1px'}
-            as={FontAwesome5Icon}
-            name={item.deletedAt ? 'recycle' : 'trash'}
-            color={item.deletedAt ? 'lime.500' : 'muted.500'}
-          />
-        </Button>
-      </HStack>
-    </HStack>
+    <Card width="2xl" title={title}>
+      <Box overflow="hidden" maxHeight={{ md: '720px', lg: '480px' }}>
+        {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((v, i) => (
+          <LoadingItem key={i} />
+        ))}
+      </Box>
+      <Center my={2}>
+        <Skeleton w="80px" h="40px" rounded={4} startColor="violet.200" />
+      </Center>
+    </Card>
   );
 };
 
@@ -207,10 +93,16 @@ const SearchBar: React.FC<{ search: (v: string) => void }> = ({ search }) => {
 interface Props {
   navigation: NativeStackNavigationProp<ParamListBase, 'lists'>;
   viewReceipt: (receipt: InvoiceType) => void;
+  settings: SettingsType;
   refresh: number;
 }
 
-const InvoiceList: React.FC<Props> = ({ viewReceipt, navigation, refresh }) => {
+const InvoiceList: React.FC<Props> = ({
+  viewReceipt,
+  navigation,
+  settings,
+  refresh,
+}) => {
   const { t } = useTranslation();
   const [init, setInit] = useState(true);
   const [query, setQuery] = useState('');
@@ -224,58 +116,66 @@ const InvoiceList: React.FC<Props> = ({ viewReceipt, navigation, refresh }) => {
 
   useEffect(() => {
     if (init || refresh !== 0) {
-      fetchInvoices();
+      fetchInvoices().catch(console.error);
     }
   }, [init, refresh]);
 
-  function loadMore() {
+  async function loadMore() {
     if (!endOfList && invoices.length) {
-      fetchInvoices(invoices[invoices.length - 1].date);
+      await fetchInvoices(invoices[invoices.length - 1].date);
+    }
+    return false;
+  }
+
+  async function loadMoreSearch(): Promise<boolean> {
+    if (!endOfList && invoices.length) {
+      await search(query, invoices[invoices.length - 1].date);
+    }
+    return false;
+  }
+
+  async function fetchInvoices(afterDate?: number) {
+    try {
+      const result = await getInvoices(afterDate);
+      if (result.length < RESULT_LIMIT) {
+        setEndOfList(true);
+      }
+      if (afterDate) {
+        setInvoices([...invoices, ...result]);
+      } else {
+        setInvoices([...result]);
+      }
+      setInit(false);
+    } catch (e) {
+      console.error(e);
     }
   }
 
-  function loadMoreSearch() {
-    if (!endOfList && invoices.length) {
-      search(query, invoices[invoices.length - 1].date);
-    }
-  }
-
-  function fetchInvoices(afterDate?: number) {
-    getInvoices(afterDate)
-      .then(res => {
-        if (res.length < RESULT_LIMIT) {
-          setEndOfList(true);
-        }
-        if (afterDate) {
-          setInvoices([...invoices, ...res]);
-        } else {
-          setInvoices([...res]);
-        }
-        setInit(false);
-      })
-      .catch(console.error);
-  }
-
-  function search(queryString: string, afterDate?: number) {
+  async function search(queryString: string, afterDate?: number) {
     setQuery(queryString);
     setEndOfList(false);
     if (queryString.length) {
-      getFilteredInvoices(queryString, afterDate)
-        .then(res => {
-          if (res.length < RESULT_LIMIT) {
-            setEndOfList(true);
-          }
-          if (afterDate) {
-            setInvoices([...invoices, ...res]);
-          } else {
-            setInvoices([...res]);
-          }
-          setInit(false);
-        })
-        .catch(console.error);
+      try {
+        const result = await getFilteredInvoices(queryString, afterDate);
+        if (result.length < RESULT_LIMIT) {
+          setEndOfList(true);
+        }
+        if (afterDate) {
+          setInvoices([...invoices, ...result]);
+        } else {
+          setInvoices([...result]);
+        }
+        setInit(false);
+      } catch (e) {
+        console.error(e);
+      }
     } else {
       setInit(true);
     }
+  }
+
+  function edit(invoice: InvoiceType) {
+    navigation.navigate('invoice', { invoice: invoice, settings });
   }
 
   function remove(id: string, restore = false): void {
@@ -298,15 +198,7 @@ const InvoiceList: React.FC<Props> = ({ viewReceipt, navigation, refresh }) => {
   }
 
   if (init) {
-    return (
-      <Card width="2xl" title={t<string>('invoice.invoices')}>
-        <ScrollView maxHeight={{ md: '760px', lg: '520px' }}>
-          {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((v, i) => (
-            <Loading key={i} />
-          ))}
-        </ScrollView>
-      </Card>
-    );
+    return <Loading title={t<string>('invoice.invoices')} />;
   }
 
   return (
@@ -315,23 +207,25 @@ const InvoiceList: React.FC<Props> = ({ viewReceipt, navigation, refresh }) => {
       title={t<string>('invoice.invoices')}
       options={<SearchBar search={search} />}>
       {invoices.length ? (
-        <FlatList
-          initialNumToRender={20}
-          mb={2}
-          maxHeight={{ md: '760px', lg: '520px' }}
-          data={invoices}
-          renderItem={({ item }) => (
-            <Item
-              key={item.id}
-              navigation={navigation}
-              remove={remove}
-              item={item}
-              viewReceipt={viewReceipt}
+        <>
+          <ScrollView mb={2} maxHeight={{ md: '720px', lg: '480px' }}>
+            {invoices.map(item => (
+              <ListItem
+                key={item.id}
+                edit={edit}
+                remove={remove}
+                item={item}
+                viewReceipt={viewReceipt}
+              />
+            ))}
+          </ScrollView>
+          <Center my={2} display={endOfList ? 'none' : 'flex'}>
+            <ActionButton
+              text={t<string>('more')}
+              action={query.length ? loadMoreSearch : loadMore}
             />
-          )}
-          onEndReached={query.length ? loadMoreSearch : loadMore}
-          onEndReachedThreshold={2}
-        />
+          </Center>
+        </>
       ) : (
         <Box p={20} alignItems="center">
           <Text fontSize="lg" fontWeight="bold" color="muted.400">

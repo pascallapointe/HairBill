@@ -59,11 +59,11 @@ const App = () => {
       if (state.isConnected && state.isInternetReachable) {
         firestore()
           .enableNetwork()
-          .then(() => console.warn('Firestore reading from server.'));
+          .then(() => console.log('Firestore reading from server.'));
       } else {
         firestore()
           .disableNetwork()
-          .then(() => console.warn('Firestore reading from cache.'));
+          .then(() => console.log('Firestore reading from cache.'));
       }
     });
 

@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
-import { Box, HStack, Skeleton, Text, VStack } from 'native-base';
+import { Box, HStack, Text } from 'native-base';
 import { useTranslation } from 'react-i18next';
 import { TaxSettingsType } from '@app/main/options/sales-tax/sales-tax.repository';
 import { AmountType } from '@app/main/invoice/invoice.repository';
@@ -14,7 +14,6 @@ export const defaultAmount = {
 };
 
 interface Props {
-  init: boolean;
   taxSettings: TaxSettingsType;
 }
 
@@ -23,28 +22,7 @@ export type TotalRef = {
   getValue: () => AmountType;
 };
 
-const Loading = () => (
-  <VStack>
-    <HStack mb={1} justifyContent="space-between">
-      <Skeleton h="20px" width="150px" rounded={10} startColor="violet.400" />
-      <Skeleton h="20px" width="80px" rounded={10} />
-    </HStack>
-    <HStack mb={1} justifyContent="space-between">
-      <Skeleton h="20px" width="180px" rounded={10} startColor="violet.400" />
-      <Skeleton h="20px" width="50px" rounded={10} />
-    </HStack>
-    <HStack mb={1} justifyContent="space-between">
-      <Skeleton h="20px" width="160px" rounded={10} startColor="violet.400" />
-      <Skeleton h="20px" width="50px" rounded={10} />
-    </HStack>
-    <HStack mb={1} justifyContent="space-between">
-      <Skeleton h="20px" width="120px" rounded={10} startColor="violet.400" />
-      <Skeleton h="20px" width="100px" rounded={10} />
-    </HStack>
-  </VStack>
-);
-
-const Total = forwardRef<TotalRef, Props>(({ init, taxSettings }, ref) => {
+const Total = forwardRef<TotalRef, Props>(({ taxSettings }, ref) => {
   const { t } = useTranslation();
   const [amount, setAmount] = useState<AmountType>({ ...defaultAmount });
 
@@ -110,10 +88,6 @@ const Total = forwardRef<TotalRef, Props>(({ init, taxSettings }, ref) => {
 
       return setAmount(a);
     }
-  }
-
-  if (init) {
-    return <Loading />;
   }
 
   return (

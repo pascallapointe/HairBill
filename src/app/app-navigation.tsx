@@ -3,17 +3,25 @@ import { NativeBaseProvider } from 'native-base';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { NavigationContainer } from '@react-navigation/native';
-import MenuView from '@app/main/menu';
+import MenuView, { SettingsType } from '@app/main/menu';
 import InvoiceView from '@app/main/invoice/invoice-view';
 import ListsView from '@app/main/lists/lists-view';
 import ServicesView from '@app/main/services/services';
 import OptionsView from '@app/main/options/options-view';
 import { InvoiceType } from '@app/main/invoice/invoice.repository';
+import {
+  defaultGeneralSettings,
+  defaultTaxSettings,
+} from '@app/main/options/sales-tax/sales-tax.repository';
 
 export type NavigatorParamList = {
   menu: undefined;
-  invoice: { invoice: InvoiceType | null };
-  lists: { refresh: number };
+  invoice: {
+    invoice: InvoiceType | null;
+    settings: SettingsType;
+    invoiceNum: string;
+  };
+  lists: { refresh: number; settings: SettingsType };
   services: undefined;
   options: undefined;
 };
@@ -42,13 +50,26 @@ const AppNavigation = () => {
             name="invoice"
             component={InvoiceView}
             options={{ title: `HairBill - ${t('invoice.title')}` }}
-            initialParams={{ invoice: null }}
+            initialParams={{
+              invoice: null,
+              settings: {
+                generalSettings: defaultGeneralSettings,
+                taxSettings: defaultTaxSettings,
+              },
+              invoiceNum: '',
+            }}
           />
           <Stack.Screen
             name="lists"
             component={ListsView}
             options={{ title: `HairBill - ${t('home.listsReports')}` }}
-            initialParams={{ refresh: 0 }}
+            initialParams={{
+              refresh: 0,
+              settings: {
+                generalSettings: defaultGeneralSettings,
+                taxSettings: defaultTaxSettings,
+              },
+            }}
           />
           <Stack.Screen
             name="services"
