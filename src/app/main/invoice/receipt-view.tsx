@@ -529,7 +529,7 @@ const ReceiptView: React.FC<{
                 <FontAwesome5Icon color="white" size={18} name="coins" />
               }
               colorScheme="lime">
-              {t<string>('invoice.addTip')}
+              {t<string>('invoice.changeTip')}
             </Button>
             <Button
               onPress={closeAction}

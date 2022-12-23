@@ -135,24 +135,28 @@ export class BTPrinter {
       ],
       [10, 8, 12],
       [col.left, col.left, col.right],
-      ['', '', ''],
+      [
+        COMMANDS.TEXT_FORMAT.TXT_BOLD_ON,
+        COMMANDS.TEXT_FORMAT.TXT_BOLD_OFF,
+        COMMANDS.TEXT_FORMAT.TXT_BOLD_OFF,
+      ],
     );
 
     // Client
     BLEPrinter.printColumnsText(
       [`${t('invoice.client')}:`, receipt.client.name],
-      [7, paperWidth - 7],
+      [7, paperWidth - 8],
       [col.left, col.left],
-      ['', ''],
+      [COMMANDS.TEXT_FORMAT.TXT_BOLD_ON, COMMANDS.TEXT_FORMAT.TXT_BOLD_OFF],
     );
 
     // Products Header
     BLEPrinter.printText(
-      `${t('invoice.productsAndServices')}\n${
+      `<B>${t('invoice.productsAndServices')}\n${
         receipt.taxSettings.includeTax
           ? '(' + t('invoice.taxIncluded') + ')\n'
           : divider
-      }${receipt.taxSettings.includeTax ? divider : ''}`,
+      }${receipt.taxSettings.includeTax ? divider : ''}</B>`,
     );
 
     for (const id in products) {
@@ -169,7 +173,7 @@ export class BTPrinter {
             p.quantity + 'x',
             t('price', { price: p.price.toFixed(2) }),
           ],
-          [paperWidth - (8 + 4), 4, 8],
+          [paperWidth - (8 + 4 + 2), 4, 8],
           [col.left, col.right, col.right],
           ['', '', ''],
         );
@@ -177,7 +181,7 @@ export class BTPrinter {
     }
 
     // Total Header
-    BLEPrinter.printText(`${t('invoice.total')}\n${divider}`);
+    BLEPrinter.printText(`<B>${t('invoice.total')}\n${divider}</B>`);
 
     if (receipt.taxSettings.enabled) {
       BLEPrinter.printColumnsText(
@@ -194,7 +198,7 @@ export class BTPrinter {
           receipt.taxSettings.taxAName + ' ' + receipt.taxSettings.taxANumber,
           t('price', { price: receipt.total.taxA.toFixed(2) }),
         ],
-        [paperWidth - 8, 8],
+        [paperWidth - 9, 8],
         [col.left, col.right],
         ['', ''],
       );
@@ -204,7 +208,7 @@ export class BTPrinter {
             receipt.taxSettings.taxBName + ' ' + receipt.taxSettings.taxBNumber,
             t('price', { price: receipt.total.taxB.toFixed(2) }),
           ],
-          [paperWidth - 8, 8],
+          [paperWidth - 9, 8],
           [col.left, col.right],
           ['', ''],
         );
@@ -215,18 +219,18 @@ export class BTPrinter {
         t('invoice.total'),
         t('price', { price: receipt.total.total.toFixed(2) }),
       ],
-      [paperWidth - 10, 10],
+      [paperWidth - 11, 10],
       [col.left, col.right],
       [COMMANDS.TEXT_FORMAT.TXT_BOLD_ON, COMMANDS.TEXT_FORMAT.TXT_BOLD_ON],
     );
 
-    BLEPrinter.printText(divider);
+    BLEPrinter.printText('<B>' + divider + '</B>');
 
     // Payment mode
 
     BLEPrinter.printColumnsText(
       [t('invoice.paymentMethod') + ':', t('invoice.' + receipt.payment)],
-      [paperWidth - 12, 12],
+      [paperWidth - 13, 12],
       [col.left, col.right],
       [COMMANDS.TEXT_FORMAT.TXT_BOLD_ON, COMMANDS.TEXT_FORMAT.TXT_BOLD_OFF],
     );
@@ -234,7 +238,7 @@ export class BTPrinter {
     if (tip > 0) {
       BLEPrinter.printColumnsText(
         [t('invoice.tip') + ':', t('price', { price: tip.toFixed(2) })],
-        [paperWidth - 8, 8],
+        [paperWidth - 9, 8],
         [col.left, col.right],
         [COMMANDS.TEXT_FORMAT.TXT_BOLD_ON, COMMANDS.TEXT_FORMAT.TXT_BOLD_OFF],
       );
@@ -270,7 +274,7 @@ export class BTPrinter {
     ) {
       BLEPrinter.printColumnsText(
         ['Note :', receipt.deletedAt ? receipt.deleteNote : receipt.updateNote],
-        [7, paperWidth - 7],
+        [7, paperWidth - 8],
         [col.left, col.left],
         [COMMANDS.TEXT_FORMAT.TXT_BOLD_ON, COMMANDS.TEXT_FORMAT.TXT_BOLD_OFF],
       );

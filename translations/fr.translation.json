@@ -93,6 +93,7 @@
     "paymentMethod": "Mode de paiement",
     "tip": "Pourboire",
     "addTip": "Ajouter pourboire",
+    "changeTip": "Modifier pourboire",
     "type3Chars": "Tapez au moins 3 caractères",
     "pending": "En attente",
     "transfer": "Virement",

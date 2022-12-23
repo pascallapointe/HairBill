@@ -94,6 +94,7 @@
     "paymentMethod": "Payment method",
     "tip": "Tip",
     "addTip": "Add tip",
+    "changeTip": "Change tip",
     "type3Chars": "Type at least 3 characters",
     "pending": "Pending",
     "transfer": "Transfer",
