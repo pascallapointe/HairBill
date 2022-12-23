@@ -65,24 +65,31 @@ const MenuView: React.FC<Props> = ({ navigation }) => {
   });
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+    let unsubscribe;
+    // Provide backoff time to let firestore initialize properly
+    setTimeout(() => {
       refreshSettings();
-    });
+      unsubscribe = navigation.addListener('focus', () => {
+        refreshSettings();
+      });
+    }, 500);
 
     // Return the function to unsubscribe from the event so it gets removed on unmount
     return unsubscribe;
   }, [navigation]);
 
   function refreshSettings(): void {
-    fetchSettings().then((res: SettingsType) => {
-      const s = {
-        generalSettings: res.generalSettings,
-        taxSettings: res.taxSettings,
-      };
+    fetchSettings()
+      .then((res: SettingsType) => {
+        const s = {
+          generalSettings: res.generalSettings,
+          taxSettings: res.taxSettings,
+        };
 
-      setSettings(s);
-      setInit(false);
-    });
+        setSettings(s);
+        setInit(false);
+      })
+      .catch(console.error);
   }
 
   async function fetchSettings(): Promise<SettingsType> {
