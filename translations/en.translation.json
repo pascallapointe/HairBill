@@ -78,6 +78,7 @@
     "title": "New Invoice",
     "invoice": "Invoice",
     "invoices": "Invoices",
+    "receipt": "Receipt",
     "client": "Client",
     "clientInfo": "Client information",
     "clientName": "Client name",

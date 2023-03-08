@@ -82,7 +82,11 @@ export class BTPrinter {
 
     // Header
     BLEPrinter.printColumnsText(
-      [t('invoice.invoice')],
+      [
+        receipt.payment === 'pending'
+          ? t('invoice.invoice')
+          : t('invoice.receipt'),
+      ],
       [paperWidth],
       [col.center],
       [

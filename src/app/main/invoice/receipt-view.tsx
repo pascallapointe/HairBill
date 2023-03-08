@@ -242,7 +242,9 @@ const ReceiptView: React.FC<{
             <VStack px={5} py={4} ref={receiptRef}>
               <Center>
                 <Text fontSize="4xl" fontWeight="bold">
-                  {t<string>('invoice.invoice')}
+                  {receipt.payment === 'pending'
+                    ? t<string>('invoice.invoice')
+                    : t<string>('invoice.receipt')}
                 </Text>
                 <Text
                   fontSize="lg"
