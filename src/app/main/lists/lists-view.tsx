@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Box, HStack, View } from 'native-base';
+import { Box, HStack } from 'native-base';
 import { SafeAreaView } from 'react-native';
 import TabButton from '@components/tab-button';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +7,7 @@ import ShowReceiptView, {
   ShowReceiptRefType,
 } from '@app/main/lists/invoices/show-receipt-view';
 import InvoiceList from '@app/main/lists/invoices/list';
+import MenuView from '@app/main/lists/reports/menu-view';
 import { NativeStackScreenProps } from 'react-native-screens/native-stack';
 import { NavigatorParamList } from '@app/app-navigation';
 import { InvoiceType } from '@app/main/invoice/invoice.repository';
@@ -47,15 +48,19 @@ const ListsView: React.FC<Props> = ({ navigation, route }) => {
             selected={view === 'reports'}
           />
         </HStack>
-        <View display={view === 'invoices' ? 'flex' : 'none'}>
-          <InvoiceList
-            refresh={refresh}
-            navigation={navigation}
-            viewReceipt={viewReceipt}
-            settings={settings}
-          />
-        </View>
-        <ShowReceiptView ref={showReceiptRef} />
+        {view === 'invoices' ? (
+          <>
+            <InvoiceList
+              refresh={refresh}
+              navigation={navigation}
+              viewReceipt={viewReceipt}
+              settings={settings}
+            />
+            <ShowReceiptView ref={showReceiptRef} />
+          </>
+        ) : (
+          <MenuView navigation={navigation} route={route} />
+        )}
       </SafeAreaView>
     </Box>
   );

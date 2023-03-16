@@ -123,7 +123,7 @@ const MenuView: React.FC<Props> = ({ navigation }) => {
       <SafeAreaView
         style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Heading color="white" size="4xl" mb={4} fontFamily="SignPainter">
-          &nbsp;Menu&nbsp;
+          &nbsp;HairBill&nbsp;
         </Heading>
         <Flex direction="row" wrap="wrap" justify="center" maxWidth="500px">
           <NavButton

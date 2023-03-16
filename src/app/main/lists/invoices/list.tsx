@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   deleteNote,
   getFilteredInvoices,
-  getInvoices,
+  getInvoicesAfter,
   InvoiceType,
   RESULT_LIMIT,
   softDelete,
@@ -136,7 +136,7 @@ const InvoiceList: React.FC<Props> = ({
 
   async function fetchInvoices(afterDate?: number) {
     try {
-      const result = await getInvoices(afterDate);
+      const result = await getInvoicesAfter(afterDate);
       if (result.length < RESULT_LIMIT) {
         setEndOfList(true);
       }

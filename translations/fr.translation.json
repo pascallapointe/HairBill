@@ -117,7 +117,28 @@
   "lists": {
     "title": "Listes & Rapports",
     "reports": "Rapports",
-    "searchPlaceholder": "#Facture, Nom, Tél."
+    "report": "Rapport",
+    "searchPlaceholder": "#Facture, Nom, Tél.",
+    "reportParameters": "Paramètres du rapport",
+    "targetYear": "Année ciblée",
+    "targetMonth": "Mois ciblé",
+    "targetQuarter": "Période ciblée",
+    "fiscalStart": "Début fiscale",
+    "reportType": "Type de rapport",
+    "annual": "Annuel",
+    "quarterly": "Trimestrielle",
+    "monthly": "Mensuelle",
+    "custom": "Personnalisé",
+    "include": "Données à inclure",
+    "includeAtLeast1": "Vous devez inclure au moins une donnée autre que 'supprimé'",
+    "pending": "En attente",
+    "transfer": "Virement",
+    "check": "Chèque",
+    "cash": "Comptant",
+    "deleted": "Supprimé",
+    "generate": "Générer le rapport",
+    "print": "Imprimer",
+    "to": "à"
   },
   "services": {
     "title": "Gérer les services",
@@ -155,6 +176,20 @@
     "employeeNamePlaceholder": "Bill H., Coiffeur",
     "address": "Adresse",
     "addressPlaceholder": "123, rue des cheveux\nCompté de Bill, Hairland"
+  },
+  "months": {
+    "january": "Janvier",
+    "february": "Février",
+    "march": "Mars",
+    "april": "Avril",
+    "may": "Mai",
+    "june": "Juin",
+    "july": "Juillet",
+    "august": "Août",
+    "september": "Septembre",
+    "october": "Octobre",
+    "november": "Novembre",
+    "December": "Décembre"
   },
   "exception": {
     "unauthenticated": "Utilisateur non identifié",

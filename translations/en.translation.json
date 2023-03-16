@@ -118,7 +118,28 @@
   "lists": {
     "title": "Lists & Reports",
     "reports": "Reports",
-    "searchPlaceholder": "Invoice#, Name, Phone"
+    "report": "Report",
+    "searchPlaceholder": "Invoice#, Name, Phone",
+    "reportParameters": "Report parameters",
+    "targetYear": "Target year",
+    "targetMonth": "Target month",
+    "targetQuarter": "Target Quarter",
+    "fiscalStart": "Fiscal start",
+    "reportType": "Report type",
+    "annual": "Annual",
+    "quarterly": "Quarterly",
+    "monthly": "Monthly",
+    "custom": "Custom",
+    "include": "Data to include",
+    "includeAtLeast1": "Include at least 1 data other than 'deleted'",
+    "pending": "Pending",
+    "transfer": "Transfer",
+    "check": "Check",
+    "cash": "Cash",
+    "deleted": "Deleted",
+    "generate": "Generate Report",
+    "print": "Print",
+    "to": "to"
   },
   "services": {
     "title": "Manage services",
@@ -156,6 +177,20 @@
     "employeeNamePlaceholder": "Bill H., Hairdresser",
     "address": "Address",
     "addressPlaceholder": "123, Hair street\nBill County, Hairland"
+  },
+  "months": {
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
   },
   "exception": {
     "unauthenticated": "Unauthenticated user",

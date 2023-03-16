@@ -8,11 +8,14 @@ import InvoiceView from '@app/main/invoice/invoice-view';
 import ListsView from '@app/main/lists/lists-view';
 import ServicesView from '@app/main/services/services';
 import OptionsView from '@app/main/options/options-view';
+import ReportView from '@app/main/lists/reports/report-view';
 import { InvoiceType } from '@app/main/invoice/invoice.repository';
 import {
   defaultGeneralSettings,
   defaultTaxSettings,
 } from '@app/main/options/sales-tax/sales-tax.repository';
+import { InclusionType } from '@app/main/lists/reports/menu/inclusion-picker';
+import { ReportFormatType } from '@app/main/lists/reports/menu/format-picker';
 
 export type NavigatorParamList = {
   menu: undefined;
@@ -24,6 +27,14 @@ export type NavigatorParamList = {
   lists: { refresh: number; settings: SettingsType };
   services: undefined;
   options: undefined;
+  report: {
+    start: number;
+    end: number;
+    include: InclusionType[];
+    format: ReportFormatType;
+    quarter: number;
+    settings: SettingsType;
+  };
 };
 
 const Stack = createNativeStackNavigator<NavigatorParamList>();
@@ -80,6 +91,11 @@ const AppNavigation = () => {
             name="options"
             component={OptionsView}
             options={{ title: `HairBill - ${t('options.title')}` }}
+          />
+          <Stack.Screen
+            name="report"
+            component={ReportView}
+            options={{ title: `HairBill - ${t('lists.report')}` }}
           />
         </Stack.Navigator>
       </NavigationContainer>

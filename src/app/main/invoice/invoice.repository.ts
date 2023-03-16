@@ -13,6 +13,7 @@ import {
   defaultTaxSettings,
   TaxSettingsType,
 } from '@app/main/options/sales-tax/sales-tax.repository';
+import { InclusionType } from '@app/main/lists/reports/menu/inclusion-picker';
 
 export const RESULT_LIMIT = 20;
 
@@ -90,7 +91,29 @@ function invoicesToArray(
   return invoices;
 }
 
-export async function getInvoices(afterDate?: number): Promise<InvoiceType[]> {
+export async function getInvoicesRange(
+  startAt: number,
+  endAt: number,
+  inclusions: InclusionType[],
+): Promise<InvoiceType[]> {
+  let query = getInvoiceCollection()
+    .where('payment', 'in', inclusions)
+    .orderBy('date', 'asc')
+    .startAt(startAt)
+    .endAt(endAt);
+
+  let result = invoicesToArray(await query.get());
+
+  if (!inclusions.includes('deleted')) {
+    result = result.filter(v => !v.deletedAt);
+  }
+
+  return result;
+}
+
+export async function getInvoicesAfter(
+  afterDate?: number,
+): Promise<InvoiceType[]> {
   let query = getInvoiceCollection()
     .orderBy('date', 'desc')
     .limit(RESULT_LIMIT);

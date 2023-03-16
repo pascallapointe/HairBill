@@ -1,5 +1,15 @@
 # HairBill
 
+### MacM1 build settings
+
+1. Open XCode with rosetta
+2. Clean build folder `Product > Clean build folder`
+3. Build settings *Build active arch only* to *yes*
+4. Excluded Architectures `Any iOS Sim SDK` to `arm64`
+5. Build from Xcode once.
+
+*Note:* `pod install` command will regenerate the build settings file.
+
 ### Resources
 
 * https://reactjs.org/docs/getting-started.html
@@ -16,4 +26,5 @@
 * https://github.com/react-native-cameraroll/react-native-cameraroll
 * https://github.com/thiendangit/react-native-thermal-receipt-printer-image-qr
 * [**Search Vector Icons Database**](https://oblador.github.io/react-native-vector-icons/)
+* https://github.com/react-native-webview/react-native-webview
 
