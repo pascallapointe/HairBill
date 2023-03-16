@@ -28,6 +28,7 @@ import TextInput, { InputRef } from '@components/form/text-input';
 import ActionButton from '@components/action-button';
 import ListItem from '@app/main/lists/invoices/list-item';
 import { SettingsType } from '@app/main/menu';
+import Filters, { FilterType } from '@app/main/lists/invoices/list/filters';
 
 const LoadingItem = () => {
   return (
@@ -108,6 +109,7 @@ const InvoiceList: React.FC<Props> = ({
   const [query, setQuery] = useState('');
   const [invoices, setInvoices] = useState<InvoiceType[]>([]);
   const [endOfList, setEndOfList] = useState(false);
+  const [filter, setFilter] = useState<FilterType>('all');
 
   // Modal
   const deleteModal = useRef<ModalRef>(null);
@@ -115,10 +117,8 @@ const InvoiceList: React.FC<Props> = ({
   const deleteNoteField = useRef<TextAreaRef>(null);
 
   useEffect(() => {
-    if (init || refresh !== 0) {
-      fetchInvoices().catch(console.error);
-    }
-  }, [init, refresh]);
+    fetchInvoices().catch(console.error);
+  }, [init, refresh, filter]);
 
   async function loadMore() {
     if (!endOfList && invoices.length) {
@@ -136,7 +136,7 @@ const InvoiceList: React.FC<Props> = ({
 
   async function fetchInvoices(afterDate?: number) {
     try {
-      const result = await getInvoicesAfter(afterDate);
+      const result = await getInvoicesAfter(filter, afterDate);
       if (result.length < RESULT_LIMIT) {
         setEndOfList(true);
       }
@@ -156,7 +156,11 @@ const InvoiceList: React.FC<Props> = ({
     setEndOfList(false);
     if (queryString.length) {
       try {
-        const result = await getFilteredInvoices(queryString, afterDate);
+        const result = await getFilteredInvoices(
+          queryString,
+          filter,
+          afterDate,
+        );
         if (result.length < RESULT_LIMIT) {
           setEndOfList(true);
         }
@@ -197,6 +201,11 @@ const InvoiceList: React.FC<Props> = ({
     setInit(true);
   }
 
+  function changeFilter(f: FilterType) {
+    setInit(true);
+    setFilter(f);
+  }
+
   if (init) {
     return <Loading title={t<string>('invoice.invoices')} />;
   }
@@ -205,7 +214,12 @@ const InvoiceList: React.FC<Props> = ({
     <Card
       width="2xl"
       title={t<string>('invoice.invoices')}
-      options={<SearchBar search={search} />}>
+      options={
+        <HStack>
+          <Filters value={filter} setFilter={changeFilter} />
+          <SearchBar search={search} />
+        </HStack>
+      }>
       {invoices.length ? (
         <>
           <ScrollView mb={2} maxHeight={{ md: '720px', lg: '480px' }}>

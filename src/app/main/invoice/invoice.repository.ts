@@ -14,6 +14,7 @@ import {
   TaxSettingsType,
 } from '@app/main/options/sales-tax/sales-tax.repository';
 import { InclusionType } from '@app/main/lists/reports/menu/inclusion-picker';
+import { FilterType } from '@app/main/lists/invoices/list/filters';
 
 export const RESULT_LIMIT = 20;
 
@@ -112,6 +113,7 @@ export async function getInvoicesRange(
 }
 
 export async function getInvoicesAfter(
+  filter: FilterType,
   afterDate?: number,
 ): Promise<InvoiceType[]> {
   let query = getInvoiceCollection()
@@ -121,6 +123,9 @@ export async function getInvoicesAfter(
   if (afterDate) {
     query = query.startAfter(afterDate);
   }
+  if (filter === 'pending') {
+    query = query.where('payment', '==', 'pending');
+  }
 
   let result = await query.get();
 
@@ -129,6 +134,7 @@ export async function getInvoicesAfter(
 
 export async function getFilteredInvoices(
   queryString: string,
+  filter: FilterType,
   afterDate?: number,
 ): Promise<InvoiceType[]> {
   let query = (field: string, order: 'asc' | 'desc') =>
@@ -139,14 +145,19 @@ export async function getFilteredInvoices(
       .limit(RESULT_LIMIT);
 
   let query1 = query('invoiceNumber', 'desc');
-
   let query2 = query('client.name', 'asc');
   let query3 = query('client.phone', 'asc');
 
   if (afterDate) {
     query1 = query1.startAfter(afterDate);
-    query2 = query1.startAfter(afterDate);
-    query3 = query1.startAfter(afterDate);
+    query2 = query2.startAfter(afterDate);
+    query3 = query3.startAfter(afterDate);
+  }
+
+  if (filter === 'pending') {
+    query1 = query1.where('payment', '==', 'pending');
+    query2 = query2.where('payment', '==', 'pending');
+    query3 = query3.where('payment', '==', 'pending');
   }
 
   let result1 = invoicesToArray(await query1.get()).map(v => JSON.stringify(v));

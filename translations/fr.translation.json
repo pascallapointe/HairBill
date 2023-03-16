@@ -138,7 +138,8 @@
     "deleted": "Supprimé",
     "generate": "Générer le rapport",
     "print": "Imprimer",
-    "to": "à"
+    "to": "à",
+    "all": "Tous"
   },
   "services": {
     "title": "Gérer les services",

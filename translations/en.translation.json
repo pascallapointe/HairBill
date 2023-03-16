@@ -139,7 +139,8 @@
     "deleted": "Deleted",
     "generate": "Generate Report",
     "print": "Print",
-    "to": "to"
+    "to": "to",
+    "all": "All"
   },
   "services": {
     "title": "Manage services",

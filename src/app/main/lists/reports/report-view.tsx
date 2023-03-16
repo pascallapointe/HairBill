@@ -27,7 +27,6 @@ const ReportView: React.FC<Props> = ({ route }) => {
   }, []);
 
   async function fetchInvoices() {
-    console.log(start, end, include, settings);
     try {
       const result = await getInvoicesRange(start, end, include);
 
