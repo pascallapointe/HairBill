@@ -123,7 +123,7 @@
     "targetYear": "Année ciblée",
     "targetMonth": "Mois ciblé",
     "targetQuarter": "Période ciblée",
-    "fiscalStart": "Début fiscale",
+    "fiscalStart": "Débuter en",
     "reportType": "Type de rapport",
     "annual": "Annuel",
     "quarterly": "Trimestrielle",
@@ -190,7 +190,7 @@
     "september": "Septembre",
     "october": "Octobre",
     "november": "Novembre",
-    "December": "Décembre"
+    "december": "Décembre"
   },
   "exception": {
     "unauthenticated": "Utilisateur non identifié",

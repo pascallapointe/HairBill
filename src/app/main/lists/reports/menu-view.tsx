@@ -102,7 +102,10 @@ const MenuView: React.FC<Props> = ({ navigation }) => {
           break;
         case 'custom':
         default:
-          range = generateTimeRange(yearField.current.getValue());
+          range = generateTimeRange(
+            yearField.current.getValue(),
+            monthField.current.getValue(),
+          );
       }
 
       const inclusions =
