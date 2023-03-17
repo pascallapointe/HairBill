@@ -22,7 +22,6 @@ const InclusionPicker = forwardRef<
   { value?: InclusionType[] }
 >(({ value = ['cash', 'transfer', 'check'] }, ref) => {
   const { t } = useTranslation();
-  const [init, setInit] = useState(false);
   const [error, setError] = useState(false);
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
   const [inclusions, setInclusions] = useState<InclusionType[]>(value);
@@ -41,10 +40,6 @@ const InclusionPicker = forwardRef<
   }
 
   function validate(val?: InclusionType[]): boolean {
-    if (!init) {
-      setInit(true);
-    }
-
     let result = z
       .string()
       .array()

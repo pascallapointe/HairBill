@@ -16,6 +16,8 @@
   "general": "General",
   "tax": "Tax",
   "noResult": "No result",
+  "selectDate": "Select Date",
+  "select": "Select",
   "validation": {
     "required": "Required",
     "stringType": "Required",
@@ -140,7 +142,10 @@
     "generate": "Generate Report",
     "print": "Print",
     "to": "to",
-    "all": "All"
+    "all": "All",
+    "startOn": "Start on",
+    "endOn": "End on",
+    "rangeError": "Ending date must be greater or equal to starting date"
   },
   "services": {
     "title": "Manage services",

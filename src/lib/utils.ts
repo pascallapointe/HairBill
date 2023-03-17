@@ -86,3 +86,15 @@ export function generateTimeRange(
     ).getTime(),
   };
 }
+
+export function generateDateRange(
+  startOn: Date,
+  endOn: Date,
+): { startTime: number; endTime: number } {
+  return {
+    startTime: new Date(
+      `${createTimestamp(startOn, false)}T00:00:00`,
+    ).getTime(),
+    endTime: new Date(`${createTimestamp(endOn, false)}T23:59:59`).getTime(),
+  };
+}

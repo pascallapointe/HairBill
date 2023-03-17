@@ -6,9 +6,12 @@
 2. Clean build folder `Product > Clean build folder`
 3. Build settings *Build active arch only* to *yes*
 4. Excluded Architectures `Any iOS Sim SDK` to `arm64`
+   Be mindful of what scheme you are building for (release or debug).
 5. Build from Xcode once.
 
 *Note:* `pod install` command will regenerate the build settings file.
+`project.pbxproj` will be overwrite every install.
+
 
 ### Resources
 

@@ -16,6 +16,8 @@
   "general": "Général",
   "tax": "Taxe",
   "noResult": "Aucun résultat",
+  "selectDate": "Sélectionner une date",
+  "select": "Sélectionner",
   "validation": {
     "required": "Obligatoire",
     "stringType": "Obligatoire",
@@ -139,7 +141,10 @@
     "generate": "Générer le rapport",
     "print": "Imprimer",
     "to": "à",
-    "all": "Tous"
+    "all": "Tous",
+    "startOn": "Débuter le",
+    "endOn": "Terminer le",
+    "rangeError": "La date de fin doit-être plus grande ou égale à celle du début"
   },
   "services": {
     "title": "Gérer les services",

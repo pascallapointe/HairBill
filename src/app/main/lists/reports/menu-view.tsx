@@ -27,6 +27,9 @@ import {
 } from '@app/main/options/sales-tax/sales-tax.repository';
 import { getGeneralSettings } from '@app/main/options/general/general.repository';
 import { SettingsType } from '@app/main/menu';
+import RangePicker, {
+  RangePickerRef,
+} from '@app/main/lists/reports/menu/range-picker';
 
 interface Props extends NativeStackScreenProps<NavigatorParamList, 'lists'> {}
 
@@ -42,6 +45,7 @@ const MenuView: React.FC<Props> = ({ navigation }) => {
   const monthField = useRef<MonthPickerRef>(null);
   const quarterField = useRef<QuarterPickerRef>(null);
   const inclusionsField = useRef<InclusionPickerRef>(null);
+  const rangeField = useRef<RangePickerRef>(null);
 
   useEffect(() => {
     fetchSettings()
@@ -77,7 +81,8 @@ const MenuView: React.FC<Props> = ({ navigation }) => {
       !yearField.current ||
       !monthField.current ||
       !quarterField.current ||
-      !inclusionsField.current
+      !inclusionsField.current ||
+      !rangeField.current
     ) {
       return false;
     }
@@ -101,6 +106,12 @@ const MenuView: React.FC<Props> = ({ navigation }) => {
           );
           break;
         case 'custom':
+          if (rangeField.current.validate()) {
+            range = rangeField.current.getValue();
+          } else {
+            return false;
+          }
+          break;
         default:
           range = generateTimeRange(
             yearField.current.getValue(),
@@ -170,6 +181,12 @@ const MenuView: React.FC<Props> = ({ navigation }) => {
           </Heading>
           <Divider mb={2} bg="violet.700" />
           <QuarterPicker ref={quarterField} value={1} />
+        </Box>
+        <Box
+          display={format === 'custom' ? 'flex' : 'none'}
+          mx={2}
+          alignItems="center">
+          <RangePicker ref={rangeField} />
         </Box>
         <Box mx={2} alignItems="center">
           <Heading size="md" mt={2} color="violet.700">
