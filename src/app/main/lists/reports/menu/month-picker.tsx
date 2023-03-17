@@ -47,7 +47,7 @@ const MonthPicker = forwardRef<MonthPickerRef, { value: number }>(
         <HStack alignItems="flex-start">
           <Button
             onPress={() => setMonth(v => (v ? (v - 1) % 12 : 11))}
-            p={1}
+            p={2}
             size="md"
             variant="ghost"
             colorScheme="pink">
@@ -61,6 +61,7 @@ const MonthPicker = forwardRef<MonthPickerRef, { value: number }>(
           </Button>
           <Text
             mx={1}
+            p={1}
             minW="110px"
             fontSize="xl"
             fontWeight="bold"
@@ -70,7 +71,7 @@ const MonthPicker = forwardRef<MonthPickerRef, { value: number }>(
           </Text>
           <Button
             onPress={() => setMonth(v => (v + 1) % 12)}
-            p={1}
+            p={2}
             size="md"
             variant="ghost"
             colorScheme="pink">

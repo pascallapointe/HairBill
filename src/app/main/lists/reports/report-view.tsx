@@ -162,7 +162,7 @@ const ReportView: React.FC<Props> = ({ route }) => {
       .map(v => t<string>('lists.' + v))
       .join(', ')}</h4>`;
 
-    const SUBHEADER = `<div style="float: right"><h3 style="margin: 0 0">${settings.generalSettings.shopName}</h3><h6 style="margin-top: 0; margin-bottom: 5px">${settings.generalSettings.address}</h6><h5 style="margin: 0 0; text-align: right;">${settings.generalSettings.employeeName}</h5><h5 style="margin: 0 0; text-align: right;">${settings.generalSettings.phone}</h5></div>`;
+    const SUBHEADER = `<div style="float: right"><h3 style="margin: 0 0; text-align: right">${settings.generalSettings.shopName}</h3><h6 style="margin-top: 0; margin-bottom: 5px; text-align: right;">${settings.generalSettings.address}</h6><h5 style="margin: 0 0; text-align: right;">${settings.generalSettings.employeeName}</h5><h5 style="margin: 0 0; text-align: right;">${settings.generalSettings.phone}</h5></div>`;
 
     let TABLEHEADER = `<thead><tr><th>Date</th><th>${
       t<string>('invoice.invoice') + ' #'

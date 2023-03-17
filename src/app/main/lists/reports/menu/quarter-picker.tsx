@@ -25,7 +25,7 @@ const QuarterPicker = forwardRef<QuarterPickerRef, { value: number }>(
         <HStack alignItems="flex-start">
           <Button
             onPress={() => setQuarter(v => (v ? (v - 1) % 4 : 3))}
-            p={1}
+            p={2}
             size="md"
             variant="ghost"
             colorScheme="pink">
@@ -39,6 +39,7 @@ const QuarterPicker = forwardRef<QuarterPickerRef, { value: number }>(
           </Button>
           <Text
             mx={1}
+            p={1}
             minW="40px"
             fontSize="xl"
             fontWeight="bold"
@@ -48,7 +49,7 @@ const QuarterPicker = forwardRef<QuarterPickerRef, { value: number }>(
           </Text>
           <Button
             onPress={() => setQuarter(v => (v + 1) % 4)}
-            p={1}
+            p={2}
             size="md"
             variant="ghost"
             colorScheme="pink">

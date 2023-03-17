@@ -26,7 +26,7 @@ const Filters: React.FC<{
           leftIcon={
             value === v ? <Icon as={FontAwesomeIcon} name="eye" /> : undefined
           }
-          size="xs"
+          size="sm"
           colorScheme={value === v ? 'lime' : 'muted'}
           shadow={4}
           onPress={() => setFilter(v)}>

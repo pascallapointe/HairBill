@@ -20,7 +20,7 @@ const YearPicker = forwardRef<YearPickerRef, { value: number }>(
         <HStack alignItems="flex-start">
           <Button
             onPress={() => setYear(v => v - 1)}
-            p={1}
+            p={2}
             size="md"
             variant="ghost"
             colorScheme="pink">
@@ -34,6 +34,7 @@ const YearPicker = forwardRef<YearPickerRef, { value: number }>(
           </Button>
           <Text
             mx={1}
+            p={1}
             minW="30px"
             fontSize="xl"
             fontWeight="bold"
@@ -43,7 +44,7 @@ const YearPicker = forwardRef<YearPickerRef, { value: number }>(
           </Text>
           <Button
             onPress={() => setYear(v => v + 1)}
-            p={1}
+            p={2}
             size="md"
             variant="ghost"
             colorScheme="pink">

@@ -130,7 +130,7 @@ const MenuView: React.FC<Props> = ({ navigation }) => {
       width={{ md: '700px', lg: '1000px' }}
       title={t<string>('lists.reportParameters')}
       pb={4}>
-      <Heading size="md" mt={2} color="violet.700">
+      <Heading size="md" mt={2} color="violet.700" textAlign="center">
         {t<string>('lists.reportType')}
       </Heading>
       <Divider mb={2} bg="violet.700" />
