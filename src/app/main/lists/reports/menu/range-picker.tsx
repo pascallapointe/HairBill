@@ -23,7 +23,7 @@ export type RangePickerRef = {
 };
 
 const RangePicker = forwardRef<RangePickerRef>(({}, ref) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [error, setError] = useState(false);
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
   const [startOn, setStartOn] = useState(new Date());
@@ -80,6 +80,7 @@ const RangePicker = forwardRef<RangePickerRef>(({}, ref) => {
             modal
             title={t<string>('selectDate')}
             confirmText={t<string>('select')}
+            locale={i18n.language}
             mode="date"
             open={openStart}
             date={startOn}
@@ -109,6 +110,7 @@ const RangePicker = forwardRef<RangePickerRef>(({}, ref) => {
             modal
             title={t<string>('selectDate')}
             confirmText={t<string>('select')}
+            locale={i18n.language}
             mode="date"
             open={openEnd}
             date={endOn}

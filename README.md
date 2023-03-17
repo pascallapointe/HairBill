@@ -30,4 +30,5 @@
 * https://github.com/thiendangit/react-native-thermal-receipt-printer-image-qr
 * [**Search Vector Icons Database**](https://oblador.github.io/react-native-vector-icons/)
 * https://github.com/react-native-webview/react-native-webview
+* https://github.com/henninghall/react-native-date-picker
 
