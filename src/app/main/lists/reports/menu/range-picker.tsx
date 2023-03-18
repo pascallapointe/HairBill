@@ -7,6 +7,7 @@ import {
   FormControl,
   Heading,
   HStack,
+  Icon,
   Text,
 } from 'native-base';
 import { z } from 'zod';
@@ -14,6 +15,7 @@ import ValidationErrors from '@components/form/validation-errors';
 import DatePicker from 'react-native-date-picker';
 import { useTranslation } from 'react-i18next';
 import { createTimestamp, generateDateRange } from '@lib/utils';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
 export type DateRange = { startTime: number; endTime: number };
 
@@ -72,8 +74,11 @@ const RangePicker = forwardRef<RangePickerRef>(({}, ref) => {
             <Text fontSize="xl" fontWeight="bold" mr={2}>
               {createTimestamp(startOn, false)}
             </Text>
-            <Button colorScheme="purple" onPress={() => setOpenStart(true)}>
-              {t<string>('change')}
+            <Button
+              variant="outline"
+              colorScheme="purple"
+              onPress={() => setOpenStart(true)}>
+              <Icon as={FontAwesome5Icon} name="pen" color="yellow.500" />
             </Button>
           </HStack>
           <DatePicker
@@ -102,8 +107,11 @@ const RangePicker = forwardRef<RangePickerRef>(({}, ref) => {
             <Text fontSize="xl" fontWeight="bold" mr={2}>
               {createTimestamp(endOn, false)}
             </Text>
-            <Button colorScheme="purple" onPress={() => setOpenEnd(true)}>
-              {t<string>('change')}
+            <Button
+              variant="outline"
+              colorScheme="purple"
+              onPress={() => setOpenEnd(true)}>
+              <Icon as={FontAwesome5Icon} name="pen" color="yellow.500" />
             </Button>
           </HStack>
           <DatePicker
