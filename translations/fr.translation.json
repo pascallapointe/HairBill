@@ -49,6 +49,7 @@
     "createAccount": "Créer un compte",
     "noAccountYet": "Vous n'avez pas encore de compte",
     "backToSignIn": "Retour à la connexion",
+    "resendEmail": "Renvoyer le courriel de vérification",
     "authFailure": {
       "title": "Échec de l'identification",
       "message1": "Veuillez vérifier vos identifiants.",

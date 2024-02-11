@@ -32,6 +32,7 @@ const SignInView: React.FC<Props> = ({ navigation }) => {
   const [passwordValue, setPasswordValue] = useState('');
   const errorModal = useRef<ModalRef>(null);
   const emailCheckModal = useRef<ModalRef>(null);
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
 
   // Check the last signed-in email in localstorage
   useEffect(() => {
@@ -53,6 +54,7 @@ const SignInView: React.FC<Props> = ({ navigation }) => {
           AsyncStorage.setItem('userID', cred.user.uid);
 
           if (!cred.user.emailVerified) {
+            setUser(cred.user);
             emailCheckModal.current && emailCheckModal.current.open();
           }
 
@@ -164,6 +166,18 @@ const SignInView: React.FC<Props> = ({ navigation }) => {
             <Text fontSize="md" textAlign="center">
               {t('auth.emailCheck.message2')}
             </Text>
+            {!user?.emailVerified ? (
+              <Button
+                variant="solid"
+                mt={2}
+                colorScheme="blue"
+                onPress={() => user?.sendEmailVerification()}>
+                {/*todo: add email verification feedback on press logic*/}
+                {t('auth.resendEmail')}
+              </Button>
+            ) : (
+              ''
+            )}
           </Modal>
         </KeyboardAvoidingView>
       </SafeAreaView>

@@ -50,6 +50,7 @@
     "createAccount": "Create an account",
     "noAccountYet": "Don't have an account yet",
     "backToSignIn": "Back to Sign-In",
+    "resendEmail": "Resend verification email",
     "authFailure": {
       "title": "Authentication Failure",
       "message1": "Please check your authentication credentials.",

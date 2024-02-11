@@ -18,9 +18,6 @@ const App = () => {
     if (fbUser?.emailVerified) {
       setUser(fbUser);
     } else {
-      if (fbUser) {
-        auth().signOut().catch(console.error);
-      }
       setUser(null);
     }
 
