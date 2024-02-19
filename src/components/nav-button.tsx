@@ -15,7 +15,7 @@ const NavButton: React.FC<Props> = ({ action, text, icon }) => {
       isLoading={wait}
       onPress={() => {
         setWait(true);
-        action().then(() => setWait(false));
+        setTimeout(() => action().then(() => setWait(false)), 1);
       }}
       bg="violet.800"
       _pressed={{ opacity: '40' }}
