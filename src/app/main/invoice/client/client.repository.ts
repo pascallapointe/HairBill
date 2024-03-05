@@ -38,6 +38,17 @@ export function addClient(client: NewClientType): ClientType {
   return { id: doc.id, name: client.name, phone: client.phone };
 }
 
+export function updateClient(client: ClientType): void {
+  const doc = getClientCollection().doc(client.id);
+
+  doc
+    .update({
+      name: client.name,
+      phone: client.phone,
+    })
+    .catch(console.error);
+}
+
 export function removeClient(id: string): void {
   const doc = getClientCollection().doc(id);
   doc.delete().catch(console.error);

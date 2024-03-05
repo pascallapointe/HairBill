@@ -121,7 +121,9 @@
     "title": "Listes & Rapports",
     "reports": "Rapports",
     "report": "Rapport",
+    "clients": "Clients",
     "searchPlaceholder": "#Facture, Nom, Tél.",
+    "clientSearchPlaceholder": "Nom ou Téléphone",
     "reportParameters": "Paramètres du rapport",
     "targetYear": "Année ciblée",
     "targetMonth": "Mois ciblé",
@@ -145,7 +147,10 @@
     "all": "Tous",
     "startOn": "Débuter le",
     "endOn": "Terminer le",
-    "rangeError": "La date de fin doit-être plus grande ou égale à celle du début"
+    "rangeError": "La date de fin doit-être plus grande ou égale à celle du début",
+    "clientDelete": "Les facture sauvegardées garderont les informations du client.",
+    "addClientModal": "Ajouter un nouveau client",
+    "editClientModal": "Modifier client"
   },
   "services": {
     "title": "Gérer les services",

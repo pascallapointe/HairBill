@@ -2,6 +2,7 @@ import React, {
   forwardRef,
   useEffect,
   useImperativeHandle,
+  useRef,
   useState,
 } from 'react';
 import { z, ZodType } from 'zod';
@@ -13,7 +14,11 @@ import type {
   iOSClearButtonModeType,
   KeyboardType,
 } from '@type/form.type';
-import { NativeSyntheticEvent, TextInputFocusEventData } from 'react-native';
+import {
+  HostComponent,
+  NativeSyntheticEvent,
+  TextInputFocusEventData,
+} from 'react-native';
 import type { ThemeComponentSizeType } from 'native-base/lib/typescript/components/types';
 
 interface Props extends IFormControlProps {
@@ -44,6 +49,7 @@ export type InputRef = {
   clearValue: () => void;
   updateSchema: (newSchema: ZodType) => void;
   getValue: () => string;
+  blur: () => void;
 };
 
 const InputLabel: React.FC<{
@@ -97,6 +103,7 @@ const TextInput = forwardRef<InputRef, Props>(
     ref,
   ) => {
     const [init, setInit] = useState(false);
+    const inputField = useRef<React.ElementRef<HostComponent<unknown>>>(null);
     const [_value, setValue] = useState(value);
     const [error, setError] = useState(false);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
@@ -147,6 +154,7 @@ const TextInput = forwardRef<InputRef, Props>(
       clearValue,
       updateSchema,
       getValue,
+      blur,
     }));
 
     function getValue(): string {
@@ -166,6 +174,10 @@ const TextInput = forwardRef<InputRef, Props>(
       bindValue && bindValue('');
     }
 
+    function blur() {
+      inputField.current && inputField.current.blur();
+    }
+
     function updateSchema(newSchema: ZodType) {
       setSchema(newSchema);
     }
@@ -174,6 +186,7 @@ const TextInput = forwardRef<InputRef, Props>(
       <FormControl isInvalid={error} isRequired={required} {...props}>
         <InputLabel label={label} />
         <Input
+          ref={inputField}
           onBlur={initAndValidate}
           onChangeText={handleChange}
           clearButtonMode={clear}
