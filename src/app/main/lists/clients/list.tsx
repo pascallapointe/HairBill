@@ -216,7 +216,7 @@ const ClientList: React.FC = () => {
   }
 
   function displayFilteredItems() {
-    let list: ClientType[] = [];
+    let list: ClientType[];
     if (!filter.length) {
       list = [...clients];
     } else {

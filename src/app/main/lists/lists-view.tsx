@@ -29,8 +29,8 @@ const ListsView: React.FC<Props> = ({ navigation, route }) => {
     showReceiptRef.current && showReceiptRef.current.viewReceipt(receipt);
   }
 
-  function display(view: View) {
-    switch (view) {
+  function display(v: View) {
+    switch (v) {
       case 'invoices':
         return (
           <>
