@@ -25,6 +25,7 @@ import {
 } from '@app/main/invoice/client/client.repository.ts';
 import EditClient from '@app/main/lists/clients/edit.tsx';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import { debounce } from 'lodash';
 
 const LoadingItem = () => {
   return (
@@ -76,11 +77,8 @@ const SearchBar: React.FC<{ search: (v: string) => void }> = ({ search }) => {
         autoCapitalize="words"
         placeholder={t<string>('lists.clientSearchPlaceholder')}
         clear="while-editing"
-        InputRightElement={
-          <Button onPress={handleSearch} rounded="none" colorScheme="violet">
-            <FontAwesome5Icon name="search" color="white" />
-          </Button>
-        }
+        icon={<FontAwesome5Icon name="search" />}
+        onChange={debounce(handleSearch, 700)}
       />
     </HStack>
   );

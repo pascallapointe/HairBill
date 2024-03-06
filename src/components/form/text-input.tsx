@@ -23,6 +23,7 @@ import type { ThemeComponentSizeType } from 'native-base/lib/typescript/componen
 
 interface Props extends IFormControlProps {
   bindValue?: (val: any) => void;
+  onChange?: () => void;
   label?: string;
   value?: string;
   placeholder?: string;
@@ -79,6 +80,7 @@ const TextInput = forwardRef<InputRef, Props>(
       label,
       value = '',
       bindValue,
+      onChange,
       placeholder,
       size = 'md',
       color = 'light.600',
@@ -164,8 +166,18 @@ const TextInput = forwardRef<InputRef, Props>(
     function handleChange(val: string) {
       setValue(val);
       bindValue && bindValue(val);
+
       if (init && validation) {
         validate(val);
+      }
+
+      if (onChange) {
+        onChange();
+        // Trigger without delay if debounced and empty value
+        if (!val.length && typeof onChange.flush === 'function') {
+          // Let time to state to update using timeout
+          setTimeout(onChange.flush, 1);
+        }
       }
     }
 
