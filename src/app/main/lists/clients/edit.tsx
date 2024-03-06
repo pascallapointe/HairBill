@@ -21,6 +21,7 @@ const EditClient: React.FC<{
         value={client?.name}
         label={t<string>('invoice.clientName')}
         placeholder={t<string>('invoice.clientName')}
+        autoCapitalize="words"
         clear="while-editing"
         schema={z
           .string({
