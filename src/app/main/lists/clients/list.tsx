@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import {
   Box,
   Button,
-  Center,
   HStack,
   Icon,
   Skeleton,
@@ -27,6 +26,11 @@ import EditClient from '@app/main/lists/clients/edit.tsx';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { debounce } from 'lodash';
 
+const ALPHABET = [
+  ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'],
+  ['N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
+];
+
 const LoadingItem = () => {
   return (
     <HStack py={2} borderBottomWidth={1} borderColor="muted.300">
@@ -47,7 +51,7 @@ const LoadingItem = () => {
 const Loading: React.FC<{ title: string }> = ({ title }) => {
   return (
     <Card width="2xl" title={title}>
-      <Box overflow="hidden" maxHeight={{ md: '730px', lg: '480px' }}>
+      <Box overflow="hidden" maxHeight={{ md: '760px', lg: '510px' }}>
         {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((v, i) => (
           <LoadingItem key={i} />
         ))}
@@ -80,6 +84,43 @@ const SearchBar: React.FC<{ search: (v: string) => void }> = ({ search }) => {
     </HStack>
   );
 };
+
+const AlphaFilter: React.FC<{ setAlpha: (v: string) => void }> = memo(
+  ({ setAlpha }) => {
+    return (
+      <VStack width="655px" alignItems="center">
+        <HStack>
+          {ALPHABET[0].map((v, index) => (
+            <Button
+              m={1}
+              width="40px"
+              key={'alpha1' + index}
+              variant="outline"
+              colorScheme="purple"
+              _text={{ fontWeight: 'bold' }}
+              onPress={() => setAlpha(v)}>
+              {v}
+            </Button>
+          ))}
+        </HStack>
+        <HStack>
+          {ALPHABET[1].map((v, index) => (
+            <Button
+              m={1}
+              width="40px"
+              key={'alpha2' + index}
+              variant="outline"
+              colorScheme="purple"
+              _text={{ fontWeight: 'bold' }}
+              onPress={() => setAlpha(v)}>
+              {v}
+            </Button>
+          ))}
+        </HStack>
+      </VStack>
+    );
+  },
+);
 
 const ClientList: React.FC = () => {
   const { t } = useTranslation();
@@ -235,9 +276,9 @@ const ClientList: React.FC = () => {
 
     return list.length ? (
       <FlatList
-        maxHeight={{ md: '720px', lg: '480px' }}
+        height={{ md: '650px', lg: '400px' }}
         mb={2}
-        initialNumToRender={20}
+        initialNumToRender={12}
         removeClippedSubviews={true}
         data={list}
         renderItem={({ item }) => (
@@ -268,20 +309,23 @@ const ClientList: React.FC = () => {
       width="2xl"
       title={t<string>('lists.clients')}
       options={
-        <HStack>
-          <Button
-            mx={1}
-            leftIcon={<Icon as={FontAwesomeIcon} name="plus" />}
-            size="sm"
-            colorScheme="lime"
-            shadow={4}
-            onPress={() => {
-              addModal.current && addModal.current.open();
-            }}>
-            {t<string>('add')}
-          </Button>
-          <SearchBar search={setFilter} />
-        </HStack>
+        <VStack alignItems="flex-end" space={'xs'}>
+          <HStack>
+            <Button
+              mx={1}
+              leftIcon={<Icon as={FontAwesomeIcon} name="plus" />}
+              size="sm"
+              colorScheme="lime"
+              shadow={4}
+              onPress={() => {
+                addModal.current && addModal.current.open();
+              }}>
+              {t<string>('add')}
+            </Button>
+            <SearchBar search={setFilter} />
+          </HStack>
+          <AlphaFilter setAlpha={setAlpha} />
+        </VStack>
       }>
       {displayFilteredItems()}
       <Modal
