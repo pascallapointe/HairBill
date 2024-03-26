@@ -25,7 +25,7 @@ const ListItem: React.FC<{
           fontSize="sm"
           fontWeight="bold"
           color="muted.500">
-          {item.phone.length ? item.phone : ' '}
+          {item.phone ?? ' '}
         </Text>
       </HStack>
       <HStack ml="auto" maxH="40px">
@@ -37,7 +37,7 @@ const ListItem: React.FC<{
           <Icon as={FontAwesome5Icon} name="pen" color="yellow.500" />
         </Button>
         <Button
-          onPress={() => (item.id ? remove(item) : null)}
+          onPress={() => remove(item)}
           ml={2}
           variant="outline"
           colorScheme="danger">

@@ -1,14 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Box,
   Button,
   Center,
   HStack,
   Icon,
-  ScrollView,
   Skeleton,
   Text,
   VStack,
+  FlatList,
 } from 'native-base';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import Card from '@components/card';
@@ -47,14 +47,11 @@ const LoadingItem = () => {
 const Loading: React.FC<{ title: string }> = ({ title }) => {
   return (
     <Card width="2xl" title={title}>
-      <Box overflow="hidden" maxHeight={{ md: '720px', lg: '480px' }}>
+      <Box overflow="hidden" maxHeight={{ md: '730px', lg: '480px' }}>
         {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((v, i) => (
           <LoadingItem key={i} />
         ))}
       </Box>
-      <Center my={2}>
-        <Skeleton w="80px" h="40px" rounded={4} startColor="violet.200" />
-      </Center>
     </Card>
   );
 };
@@ -89,6 +86,7 @@ const ClientList: React.FC = () => {
   const [init, setInit] = useState(true);
   const [clients, setClients] = useState<ClientType[]>([]);
   const [filter, setFilter] = useState<string>('');
+  const [alpha, setAlpha] = useState<string>('a');
 
   // Modal
   const addModal = useRef<ModalRef>(null);
@@ -116,7 +114,7 @@ const ClientList: React.FC = () => {
         setErrorMessage(t<string>(e.message ?? 'exception.database'));
         errorModal.current && errorModal.current.open();
       });
-  }, [init]);
+  }, []);
 
   function resetClientTarget() {
     setClientTarget({ id: '', name: '', phone: '' });
@@ -145,10 +143,15 @@ const ClientList: React.FC = () => {
           phone:
             (addPhoneField.current && addPhoneField.current.getValue()) ?? '',
         });
-        const list = [...clients];
-        list.push(client);
-        list.sort((a, b) => (a.name > b.name ? 1 : -1));
-        setClients(list);
+        addModal.current && addModal.current.close();
+        setInit(true);
+        setTimeout(() => {
+          const list = [...clients];
+          list.push(client);
+          list.sort((a, b) => (a.name > b.name ? 1 : -1));
+          setClients(list);
+          setInit(false);
+        }, 1);
       } catch (e: any) {
         setErrorMessage(t<string>(e.message ?? 'exception.database'));
         errorModal.current && errorModal.current.open();
@@ -213,30 +216,40 @@ const ClientList: React.FC = () => {
     resetClientTarget();
   }
 
-  function displayFilteredItems() {
-    let list: ClientType[];
-    if (!filter.length) {
-      list = [...clients];
-    } else {
-      const regex = new RegExp(filter, 'gi');
-      list = clients.filter(
-        ({ name, phone }) => name.match(regex) || phone.match(regex),
+  const displayFilteredItems = useCallback(() => {
+    let list: ClientType[] = [...clients];
+    const alphaFilter = new RegExp('^' + alpha, 'gi');
+    list = list.filter(({ name }) => name.match(alphaFilter));
+
+    if (filter.length) {
+      const searchFilter = new RegExp(filter, 'gi');
+      list = list.filter(
+        ({ name, phone }) =>
+          name.match(searchFilter) || phone.match(searchFilter),
       );
     }
 
+    list.sort((a, b) =>
+      a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
+    );
+
     return list.length ? (
-      <>
-        <ScrollView mb={2} maxHeight={{ md: '720px', lg: '480px' }}>
-          {list.map(item => (
-            <ListItem
-              key={item.id}
-              edit={edit}
-              remove={confirmDelete}
-              item={item}
-            />
-          ))}
-        </ScrollView>
-      </>
+      <FlatList
+        maxHeight={{ md: '720px', lg: '480px' }}
+        mb={2}
+        initialNumToRender={20}
+        removeClippedSubviews={true}
+        data={list}
+        renderItem={({ item }) => (
+          <ListItem
+            key={item.id}
+            item={item}
+            remove={confirmDelete}
+            edit={edit}
+          />
+        )}
+        keyExtractor={item => item.id}
+      />
     ) : (
       <Box p={20} alignItems="center">
         <Text fontSize="lg" fontWeight="bold" color="muted.400">
@@ -244,7 +257,7 @@ const ClientList: React.FC = () => {
         </Text>
       </Box>
     );
-  }
+  }, [alpha, filter, clients]);
 
   if (init) {
     return <Loading title={t<string>('lists.clients')} />;
